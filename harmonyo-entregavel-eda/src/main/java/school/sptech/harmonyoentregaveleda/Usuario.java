@@ -1,4 +1,8 @@
-package school.sptech;
+package school.sptech.harmonyoentregaveleda;
+
+import java.time.Instant;
+import java.util.Calendar;
+import java.util.Date;
 
 public abstract class Usuario {
 
@@ -6,17 +10,22 @@ public abstract class Usuario {
     private String nome;
     private String sobrenome;
     private String cpf;
+    private Date dataNasc;
     private String sexo;
     private String email;
     private String senha;
     private String telefone;
     private Integer fkEndereco;
 
-    public Usuario(Integer id, String nome, String sobrenome, String cpf, String sexo, String email, String senha, String telefone, Integer fkEndereco) {
+    public Usuario() {
+    }
+
+    public Usuario(Integer id, String nome, String sobrenome, String cpf, Date dataNasc, String sexo, String email, String senha, String telefone, Integer fkEndereco) {
         this.id = id;
         this.nome = nome;
         this.sobrenome = sobrenome;
         this.cpf = cpf;
+        this.dataNasc = dataNasc;
         this.sexo = sexo;
         this.email = email;
         this.senha = senha;
@@ -24,6 +33,29 @@ public abstract class Usuario {
         this.fkEndereco = fkEndereco;
     }
 
+    public abstract Boolean validarIdade();
+
+    public Integer getIdade(){
+
+        Date dataAtual = Date.from(Instant.now());
+
+        Calendar calendar = Calendar.getInstance();
+
+        Integer idade = 0;
+
+        calendar.setTime(dataAtual);
+
+        if (calendar.get(Calendar.MONTH) >= this.dataNasc.getMonth()) {
+            if (calendar.get(Calendar.DAY_OF_MONTH) >= this.dataNasc.getDay()) {
+                idade = calendar.get(Calendar.YEAR) - this.dataNasc.getYear();
+
+            }
+        } else {
+            idade = calendar.get(Calendar.YEAR) - this.dataNasc.getYear() - 1;
+        }
+
+        return idade;
+    }
     public Integer getId() {
         return id;
     }
@@ -54,6 +86,15 @@ public abstract class Usuario {
 
     public void setCpf(String cpf) {
         this.cpf = cpf;
+    }
+
+
+    public Date getDataNasc() {
+        return dataNasc;
+    }
+
+    public void setDataNasc(Date dataNasc) {
+        this.dataNasc = dataNasc;
     }
 
     public String getSexo() {
