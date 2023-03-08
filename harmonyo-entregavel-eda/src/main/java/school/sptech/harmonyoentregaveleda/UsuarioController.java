@@ -18,35 +18,25 @@ public class UsuarioController {
     @GetMapping()
     public List<Usuario> exibirUsuarios(){return ltUsuarios;}
 
-    @GetMapping("/cadastro/{tipo}")
-    public String cadastrar(@PathVariable String tipo, @RequestBody Usuario usuario){
+    @PostMapping("/cadastro/professor")
+    public String cadastrarProfessor(@RequestBody Professor professor){
+        if (professor.validarIdade()) {
+            ltUsuarios.add(professor);
 
-        if (tipo.equalsIgnoreCase("aluno")){
-
-            Aluno aluno = new Aluno(usuario);
-
-            if (aluno.validarIdade()){
-                ltUsuarios.add(aluno);
-
-                return "Aluno Cadastrado com Sucesso !";
-            }
-            else {
-                return "Aluno não cadastrado. Motivo: Menor de 15 anos !";
-            }
-        }
-        else if (tipo.equalsIgnoreCase("professor")) {
-
-            Professor professor = new Professor(usuario);
-
-            if (professor.validarIdade()) {
-                ltUsuarios.add(professor);
-
-                return "Professor Cadastrado com Sucesso !";
-            } else {
-                return "Professor não cadastrado. Motivo: Menor de 18 anos !";
-            }
+            return "Professor Cadastrado com Sucesso !";
         }
 
-        return "Error Ao Cadastrar. Objeto Usuário Inválido !";
+        return "Professor não cadastrado. Motivo: Menor de 18 anos !";
+    }
+
+    @PostMapping("/cadastro/aluno")
+    public String cadastrarAluno(@RequestBody Aluno aluno){
+
+        if (aluno.validarIdade()) {
+            ltUsuarios.add(aluno);
+            return "Aluno Cadastrado com Sucesso !";
+        }
+
+        return "Aluno não cadastrado. Motivo: Menor de 15 anos !";
     }
 }

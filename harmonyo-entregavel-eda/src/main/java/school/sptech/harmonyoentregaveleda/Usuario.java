@@ -1,8 +1,13 @@
 package school.sptech.harmonyoentregaveleda;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 
 public abstract class Usuario {
 
@@ -10,52 +15,59 @@ public abstract class Usuario {
     private String nome;
     private String sobrenome;
     private String cpf;
-    private Date dataNasc;
+
+    @JsonFormat(pattern="yyyy-MM-dd")
+    private LocalDate dataNasc;
     private String sexo;
     private String email;
     private String senha;
     private String telefone;
-    private Integer fkEndereco;
+    private Endereco endereco;
 
     public Usuario() {
     }
 
-    public Usuario(Integer id, String nome, String sobrenome, String cpf, Date dataNasc, String sexo, String email, String senha, String telefone, Integer fkEndereco) {
+    public Usuario(Integer id, String nome, String sobrenome, String cpf,
+                   LocalDate dataNasc, String sexo, String email,
+                   String senha, String telefone) {
         this.id = id;
         this.nome = nome;
         this.sobrenome = sobrenome;
         this.cpf = cpf;
-        this.dataNasc = dataNasc;
         this.sexo = sexo;
         this.email = email;
         this.senha = senha;
         this.telefone = telefone;
-        this.fkEndereco = fkEndereco;
+        this.dataNasc = dataNasc;
+    }
+
+    @JsonProperty("endereco")
+    public void desempacotarEndereco(Map<String, String> endereco) {
+        this.endereco = new Endereco(
+                endereco.get("endereco"),
+                endereco.get("numero"),
+                endereco.get("complemento"),
+                endereco.get("cidade"),
+                endereco.get("estado"),
+                endereco.get("cep")
+        );
     }
 
     public abstract Boolean validarIdade();
 
-    public Integer getIdade(){
+    public Integer calcularIdade(){
 
-        Date dataAtual = Date.from(Instant.now());
+        LocalDate dataAtual = LocalDate.now();
+        Integer idade = dataAtual.compareTo(this.dataNasc);
 
-        Calendar calendar = Calendar.getInstance();
-
-        Integer idade = 0;
-
-        calendar.setTime(dataAtual);
-
-        if (calendar.get(Calendar.MONTH) >= this.dataNasc.getMonth()) {
-            if (calendar.get(Calendar.DAY_OF_MONTH) >= this.dataNasc.getDay()) {
-                idade = calendar.get(Calendar.YEAR) - this.dataNasc.getYear();
-
-            }
-        } else {
-            idade = calendar.get(Calendar.YEAR) - this.dataNasc.getYear() - 1;
+        if (dataAtual.getMonth().getValue() < this.dataNasc.getMonth().getValue() &&
+        dataAtual.getDayOfMonth() < this.dataNasc.getDayOfMonth()) {
+            idade--;
         }
 
         return idade;
     }
+
     public Integer getId() {
         return id;
     }
@@ -89,11 +101,11 @@ public abstract class Usuario {
     }
 
 
-    public Date getDataNasc() {
+    public LocalDate getDataNasc() {
         return dataNasc;
     }
 
-    public void setDataNasc(Date dataNasc) {
+    public void setDataNasc(LocalDate dataNasc) {
         this.dataNasc = dataNasc;
     }
 
@@ -129,11 +141,11 @@ public abstract class Usuario {
         this.telefone = telefone;
     }
 
-    public Integer getFkEndereco() {
-        return fkEndereco;
+    public Endereco getEndereco() {
+        return endereco;
     }
 
-    public void setFkEndereco(Integer fkEndereco) {
-        this.fkEndereco = fkEndereco;
+    public void setFkEndereco(Endereco endereco) {
+        this.endereco = endereco;
     }
 }
