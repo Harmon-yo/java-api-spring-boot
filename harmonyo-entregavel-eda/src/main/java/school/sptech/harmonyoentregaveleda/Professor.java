@@ -11,14 +11,17 @@ public class Professor extends Usuario{
         super(id, nome, sobrenome, cpf, dataNasc, sexo, email, senha, telefone);
     }
 
-    /*public Professor(Usuario usuario) {
-        super(usuario.getId(), usuario.getNome(), usuario.getSobrenome(),
-                usuario.getCpf(), usuario.getDataNasc(), usuario.getSexo(),
-                usuario.getEmail(), usuario.getSenha(), usuario.getTelefone(), usuario.getEndereco());
-    }*/
-
     @Override
     public Boolean validarIdade() {
         return super.calcularIdade() >= 18;
+    }
+
+
+    public void adicionarInstrumento(String nome, String nivelConhecimento, String descricaoNaipe) {
+        /*
+        Adicionar emprestaInstrumento.
+        */
+        Instrumento novoInstrumento = new InstrumentoProfessor(nome, nivelConhecimento, descricaoNaipe, false);
+        super.getInstrumentos().add(novoInstrumento);
     }
 }

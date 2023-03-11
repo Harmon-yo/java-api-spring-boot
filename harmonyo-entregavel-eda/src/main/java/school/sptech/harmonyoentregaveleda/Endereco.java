@@ -1,15 +1,15 @@
 package school.sptech.harmonyoentregaveleda;
 
 public class Endereco {
-    private String endereco;
+    private String logradouro;
     private String numero;
     private String complemento;
     private String cidade;
     private String estado;
     private String cep;
 
-    public Endereco(String endereco, String numero, String complemento, String cidade, String estado, String cep) {
-        this.endereco = endereco;
+    public Endereco(String logradouro, String numero, String complemento, String cidade, String estado, String cep) {
+        this.logradouro = logradouro;
         this.numero = numero;
         this.complemento = complemento;
         this.cidade = cidade;
@@ -17,8 +17,8 @@ public class Endereco {
         this.cep = cep;
     }
 
-    public String getEndereco() {
-        return endereco;
+    public String getLogradouro() {
+        return logradouro;
     }
 
     public String getNumero() {

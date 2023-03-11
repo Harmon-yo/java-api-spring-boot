@@ -6,12 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/usuario")
-public class UsuarioController {
+@RequestMapping("/usuarios")
+public class UsuariosController {
 
     private List<Usuario> ltUsuarios;
 
-    public UsuarioController() {
+    public UsuariosController() {
         this.ltUsuarios = new ArrayList<>();
     }
 
@@ -38,5 +38,23 @@ public class UsuarioController {
         }
 
         return "Aluno não cadastrado. Motivo: Menor de 15 anos !";
+    }
+
+    @PostMapping("/autenticacao/aluno")
+    public void autenticarAluno(@RequestBody Aluno aluno) {
+         this.ltUsuarios.stream()
+                 .filter(usuario -> usuario.getEmail().equals(aluno.getEmail()) &&
+                                    usuario.getSenha().equals(aluno.getSenha()))
+                 .findFirst()
+                 .ifPresent(Usuario::autenticarConta);
+    }
+
+    @DeleteMapping("/desativacao/aluno")
+    public void desativarAluno(@RequestBody Aluno aluno) {
+        this.ltUsuarios.stream()
+                .filter(usuario -> usuario.getEmail().equals(aluno.getEmail()) &&
+                        usuario.getSenha().equals(aluno.getSenha()))
+                .findFirst()
+                .ifPresent(Usuario::desativarConta);
     }
 }

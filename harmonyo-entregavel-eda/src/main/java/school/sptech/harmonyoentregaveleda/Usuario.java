@@ -5,9 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.util.*;
 
 public abstract class Usuario {
 
@@ -23,6 +22,8 @@ public abstract class Usuario {
     private String senha;
     private String telefone;
     private Endereco endereco;
+    private EstadoConta estadoConta;
+    private List<Instrumento> instrumentos;
 
     public Usuario() {
     }
@@ -39,18 +40,8 @@ public abstract class Usuario {
         this.senha = senha;
         this.telefone = telefone;
         this.dataNasc = dataNasc;
-    }
-
-    @JsonProperty("endereco")
-    public void desempacotarEndereco(Map<String, String> endereco) {
-        this.endereco = new Endereco(
-                endereco.get("endereco"),
-                endereco.get("numero"),
-                endereco.get("complemento"),
-                endereco.get("cidade"),
-                endereco.get("estado"),
-                endereco.get("cep")
-        );
+        this.estadoConta = new EstadoConta();
+        this.instrumentos = new ArrayList<>();
     }
 
     public abstract Boolean validarIdade();
@@ -145,7 +136,25 @@ public abstract class Usuario {
         return endereco;
     }
 
-    public void setFkEndereco(Endereco endereco) {
+    public void setEndereco(Endereco endereco) {
         this.endereco = endereco;
     }
+
+    public List<Instrumento> getInstrumentos() {
+        return instrumentos;
+    }
+
+    public void autenticarConta() {
+        this.estadoConta.setOnline(true);
+        this.estadoConta.setUltimaVezOnline(LocalDateTime.now());
+    }
+
+    public void desativarConta() {
+        this.estadoConta.setAtivo(false);
+        this.estadoConta.setOnline(false);
+        this.estadoConta.setUltimaVezOnline(LocalDateTime.now());
+    }
+
+    public abstract void adicionarInstrumento(String nome, String nivelConhecimento, String descricaoNaipe);
+//    public abstract void adicionarInstrumento(String nome, String nivelConhecimento, String descricaoNaipe, boolean emprestaInstrumento);
 }
