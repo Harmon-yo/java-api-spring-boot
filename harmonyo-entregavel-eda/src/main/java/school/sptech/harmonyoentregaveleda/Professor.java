@@ -8,7 +8,7 @@ public class Professor extends Usuario{
     public Professor(Integer id, String nome, String sobrenome,
                      String cpf, LocalDate dataNasc, String sexo,
                      String email, String senha, String telefone) {
-        super(id, nome, sobrenome, cpf, dataNasc, sexo, email, senha, telefone);
+        super(nome, sobrenome, cpf, dataNasc, sexo, email, senha, telefone);
     }
 
     @Override

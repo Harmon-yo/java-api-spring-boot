@@ -28,10 +28,9 @@ public abstract class Usuario {
     public Usuario() {
     }
 
-    public Usuario(Integer id, String nome, String sobrenome, String cpf,
+    public Usuario(String nome, String sobrenome, String cpf,
                    LocalDate dataNasc, String sexo, String email,
                    String senha, String telefone) {
-        this.id = id;
         this.nome = nome;
         this.sobrenome = sobrenome;
         this.cpf = cpf;
@@ -144,13 +143,21 @@ public abstract class Usuario {
         return instrumentos;
     }
 
+    public EstadoConta getEstadoConta() {
+        return estadoConta;
+    }
+
     public void autenticarConta() {
         this.estadoConta.setOnline(true);
-        this.estadoConta.setUltimaVezOnline(LocalDateTime.now());
     }
 
     public void desativarConta() {
         this.estadoConta.setAtivo(false);
+        this.estadoConta.setOnline(false);
+        this.estadoConta.setUltimaVezOnline(LocalDateTime.now());
+    }
+
+    public void deslogarConta() {
         this.estadoConta.setOnline(false);
         this.estadoConta.setUltimaVezOnline(LocalDateTime.now());
     }

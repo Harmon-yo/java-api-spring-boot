@@ -20,7 +20,7 @@ public class UsuariosController {
 
     @PostMapping("/cadastro/professor")
     public String cadastrarProfessor(@RequestBody Professor professor){
-        if (professor.validarIdade()) {
+        if (professor.validarIdade() && !this.validarEmail(professor.getEmail())) {
             ltUsuarios.add(professor);
 
             return "Professor Cadastrado com Sucesso !";
@@ -32,7 +32,7 @@ public class UsuariosController {
     @PostMapping("/cadastro/aluno")
     public String cadastrarAluno(@RequestBody Aluno aluno){
 
-        if (aluno.validarIdade()) {
+        if (aluno.validarIdade() && !this.validarEmail(aluno.getEmail())) {
             ltUsuarios.add(aluno);
             return "Aluno Cadastrado com Sucesso !";
         }
@@ -49,6 +49,14 @@ public class UsuariosController {
                  .ifPresent(Usuario::autenticarConta);
     }
 
+    @PostMapping("/desautenticacao/aluno/{email}")
+    public void deslogarAluno(@PathVariable String email) {
+        this.ltUsuarios.stream()
+                .filter(usuario -> usuario.getEmail().equals(email))
+                .findFirst()
+                .ifPresent(Usuario::deslogarConta);
+    }
+
     @DeleteMapping("/desativacao/aluno")
     public void desativarAluno(@RequestBody Aluno aluno) {
         this.ltUsuarios.stream()
@@ -56,5 +64,10 @@ public class UsuariosController {
                         usuario.getSenha().equals(aluno.getSenha()))
                 .findFirst()
                 .ifPresent(Usuario::desativarConta);
+    }
+
+    public boolean validarEmail(String email) {
+        return this.ltUsuarios.stream()
+                .anyMatch(usuarioCadastrado -> usuarioCadastrado.getEmail().equals(email));
     }
 }
