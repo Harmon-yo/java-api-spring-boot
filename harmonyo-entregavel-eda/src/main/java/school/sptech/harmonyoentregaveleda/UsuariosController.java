@@ -4,6 +4,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -16,58 +18,125 @@ public class UsuariosController {
     }
 
     @GetMapping()
-    public List<Usuario> exibirUsuarios(){return ltUsuarios;}
+    public List<UsuarioDTO> exibirUsuarios(){
+        return this.ltUsuarios.stream()
+            .map(UsuarioDTO::new)
+            .collect(Collectors.toList());}
 
     @PostMapping("/cadastro/professor")
     public String cadastrarProfessor(@RequestBody Professor professor){
-        if (professor.validarIdade() && !this.validarEmail(professor.getEmail())) {
-            ltUsuarios.add(professor);
+        if (professor.validarIdade()) {
 
-            return "Professor Cadastrado com Sucesso !";
+            if (this.validarEmailCadastrado(professor.getEmail())) {
+                ltUsuarios.add(professor);
+
+                return "Professor Cadastrado com Sucesso!";
+            }
+
+            return "Email já cadastrado.";
         }
 
-        return "Professor não cadastrado. Motivo: Menor de 18 anos !";
+        return "Professor não cadastrado. Motivo: Menor de 18 anos!";
     }
 
     @PostMapping("/cadastro/aluno")
     public String cadastrarAluno(@RequestBody Aluno aluno){
 
-        if (aluno.validarIdade() && !this.validarEmail(aluno.getEmail())) {
-            ltUsuarios.add(aluno);
-            return "Aluno Cadastrado com Sucesso !";
+        if (aluno.validarIdade()) {
+            if (this.validarEmailCadastrado(aluno.getEmail())) {
+                ltUsuarios.add(aluno);
+
+                return "Aluno Cadastrado com Sucesso!";
+            }
+
+            return "Email já cadastrado.";
         }
 
         return "Aluno não cadastrado. Motivo: Menor de 15 anos !";
     }
 
     @PostMapping("/autenticacao/aluno")
-    public void autenticarAluno(@RequestBody Aluno aluno) {
-         this.ltUsuarios.stream()
-                 .filter(usuario -> usuario.getEmail().equals(aluno.getEmail()) &&
-                                    usuario.getSenha().equals(aluno.getSenha()))
-                 .findFirst()
-                 .ifPresent(Usuario::autenticarConta);
+    public String autenticarAluno(@RequestBody Aluno aluno) {
+        Optional<Usuario> usuarioOptional = procurarUsuarioCadastrado(aluno.getEmail(),
+                                                                          aluno.getSenha());
+        if (usuarioOptional.isPresent()) {
+            Aluno alunoCadastrado = (Aluno) usuarioOptional.get();
+            alunoCadastrado.autenticarConta();
+
+            return String.format("Aluno %s Autenticado com sucesso.", alunoCadastrado.getNome());
+        }
+
+        return "Usuário não encontrado";
     }
 
-    @PostMapping("/desautenticacao/aluno/{email}")
-    public void deslogarAluno(@PathVariable String email) {
-        this.ltUsuarios.stream()
-                .filter(usuario -> usuario.getEmail().equals(email))
-                .findFirst()
-                .ifPresent(Usuario::deslogarConta);
+    @GetMapping("/desautenticacao/aluno/{email}")
+    public String deslogarAluno(@PathVariable String email) {
+        Optional<Usuario> usuarioOptional = procurarUsuarioCadastrado(email);
+
+        if (usuarioOptional.isPresent()) {
+            Aluno alunoCadastrado = (Aluno) usuarioOptional.get();
+            alunoCadastrado.desativarConta();
+
+            return "Deslogado com sucesso.";
+        }
+
+        return "Usuario Não encontrado.";
     }
 
     @DeleteMapping("/desativacao/aluno")
-    public void desativarAluno(@RequestBody Aluno aluno) {
-        this.ltUsuarios.stream()
-                .filter(usuario -> usuario.getEmail().equals(aluno.getEmail()) &&
-                        usuario.getSenha().equals(aluno.getSenha()))
-                .findFirst()
-                .ifPresent(Usuario::desativarConta);
+    public String desativarAluno(@RequestBody Aluno aluno) {
+        Optional<Usuario> usuarioOptional = procurarUsuarioCadastrado(aluno.getEmail(),
+                                                                      aluno.getSenha());
+
+        if (usuarioOptional.isPresent()) {
+            Aluno alunoCadastrado = (Aluno) usuarioOptional.get();
+            alunoCadastrado.desativarConta();
+
+            return String.format("Conta com o email %s desativada com sucesso.", alunoCadastrado.getEmail());
+        }
+
+        return "Usuario Não encontrado.";
     }
 
-    public boolean validarEmail(String email) {
+    @PatchMapping("/edicao-email/{email}")
+    public String editarEmailAluno(@PathVariable String email, @RequestBody Aluno aluno) {
+        Optional<Usuario> usuarioOptional = procurarUsuarioCadastrado(email);
+
+        if (usuarioOptional.isPresent()) {
+            Aluno alunoEncontrado = (Aluno) usuarioOptional.get();
+
+            if (alunoEncontrado.getSenha().equals(aluno.getSenha())) {
+
+                if (!alunoEncontrado.getEmail().equals(aluno.getEmail())) {
+                    alunoEncontrado.setEmail(aluno.getEmail());
+                    return "Email alterado.";
+                }
+
+                return "Email semelhante.";
+            }
+
+            return "Senha inválida.";
+
+        }
+
+        return "usuário não encontrado";
+    }
+
+    public boolean validarEmailCadastrado(String email) {
         return this.ltUsuarios.stream()
-                .anyMatch(usuarioCadastrado -> usuarioCadastrado.getEmail().equals(email));
+                .noneMatch(usuarioCadastrado -> usuarioCadastrado.getEmail().equals(email));
+    }
+
+    public Optional<Usuario> procurarUsuarioCadastrado(String email) {
+        return this.ltUsuarios.stream()
+                .filter(usuarioCadastrado -> usuarioCadastrado.getEmail().equals(email))
+                .findFirst();
+    }
+
+    public Optional<Usuario> procurarUsuarioCadastrado(String email, String senha) {
+        return this.ltUsuarios.stream()
+                .filter(usuarioCadastrado -> usuarioCadastrado.getEmail().equals(email) &&
+                        usuarioCadastrado.getSenha().equals(senha))
+                .findFirst();
     }
 }
