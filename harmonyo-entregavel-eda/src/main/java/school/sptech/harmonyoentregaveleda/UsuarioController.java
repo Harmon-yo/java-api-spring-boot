@@ -9,18 +9,18 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/usuarios")
-public class UsuariosController {
+public class UsuarioController {
 
     private List<Usuario> ltUsuarios;
 
-    public UsuariosController() {
+    public UsuarioController() {
         this.ltUsuarios = new ArrayList<>();
     }
 
     @GetMapping()
     public List<UsuarioDTO> exibirUsuarios(){
         return this.ltUsuarios.stream()
-            .map(UsuarioDTO::new)
+            .map(UsuarioDTOMapper::mapearUsuario)
             .collect(Collectors.toList());}
 
     @PostMapping("/cadastro/professor")

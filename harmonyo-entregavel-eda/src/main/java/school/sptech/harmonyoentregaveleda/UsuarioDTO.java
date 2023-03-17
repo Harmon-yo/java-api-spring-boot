@@ -15,13 +15,7 @@ public class UsuarioDTO {
     private EstadoConta estadoConta;
     private List<Instrumento> instrumentos;
 
-    public UsuarioDTO(Usuario usuario) {
-        this.nome = usuario.getNome();
-        this.sobrenome = usuario.getSobrenome();
-        this.dataNasc = usuario.getDataNasc();
-        this.sexo = usuario.getSexo();
-        this.estadoConta = usuario.getEstadoConta();
-        this.instrumentos = usuario.getInstrumentos();
+    public UsuarioDTO() {
     }
 
     public String getNome() {
@@ -46,5 +40,29 @@ public class UsuarioDTO {
 
     public List<Instrumento> getInstrumentos() {
         return instrumentos;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public void setSobrenome(String sobrenome) {
+        this.sobrenome = sobrenome;
+    }
+
+    public void setDataNasc(LocalDate dataNasc) {
+        this.dataNasc = dataNasc;
+    }
+
+    public void setSexo(String sexo) {
+        this.sexo = sexo;
+    }
+
+    public void setEstadoConta(EstadoConta estadoConta) {
+        this.estadoConta = estadoConta;
+    }
+
+    public void setInstrumentos(List<Instrumento> instrumentos) {
+        this.instrumentos = instrumentos;
     }
 }
