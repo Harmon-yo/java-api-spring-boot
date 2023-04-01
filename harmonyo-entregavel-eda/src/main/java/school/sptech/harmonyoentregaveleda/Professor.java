@@ -1,9 +1,17 @@
 package school.sptech.harmonyoentregaveleda;
 
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
 import java.time.LocalDate;
 import java.util.Date;
 
+@Entity
+@DiscriminatorValue("1")
 public class Professor extends Usuario{
+
+    public Professor() {
+    }
 
     public Professor(Integer id, String nome, String sobrenome,
                      String cpf, LocalDate dataNasc, String sexo,

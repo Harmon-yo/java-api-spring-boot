@@ -2,25 +2,49 @@ package school.sptech.harmonyoentregaveleda;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.validator.constraints.br.CPF;
 
+import javax.persistence.*;
+import javax.validation.constraints.*;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
+/*@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Entity(name="usuarios")
+@DiscriminatorColumn(name="usuario_type",
+    discriminatorType = DiscriminatorType.INTEGER)*/
 public abstract class Usuario {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @Size(min=4)
     private String nome;
-    private String sobrenome;
+
+    @CPF
     private String cpf;
 
     @JsonFormat(pattern="yyyy-MM-dd")
     private LocalDate dataNasc;
+
+    @Min(1)
+    @Max(3)
     private String sexo;
+
+    @Email
     private String email;
+
+    @Size(min=3)
     private String senha;
+
+    @Pattern(
+            regexp = "(\\(?\\d{2}\\)?\\s)?(\\d{4,5}\\-\\d{4})",
+            message = "Indique um telefone válido"
+    )
     private String telefone;
+
     private Endereco endereco;
     private EstadoConta estadoConta;
     private List<Instrumento> instrumentos;
@@ -28,11 +52,10 @@ public abstract class Usuario {
     public Usuario() {
     }
 
-    public Usuario(String nome, String sobrenome, String cpf,
+    public Usuario(String nome, String cpf,
                    LocalDate dataNasc, String sexo, String email,
                    String senha, String telefone) {
         this.nome = nome;
-        this.sobrenome = sobrenome;
         this.cpf = cpf;
         this.sexo = sexo;
         this.email = email;
@@ -72,14 +95,6 @@ public abstract class Usuario {
 
     public void setNome(String nome) {
         this.nome = nome;
-    }
-
-    public String getSobrenome() {
-        return sobrenome;
-    }
-
-    public void setSobrenome(String sobrenome) {
-        this.sobrenome = sobrenome;
     }
 
     public String getCpf() {

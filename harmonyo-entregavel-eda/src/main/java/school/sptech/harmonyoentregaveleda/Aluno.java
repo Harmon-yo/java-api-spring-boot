@@ -1,17 +1,26 @@
 package school.sptech.harmonyoentregaveleda;
 
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 
+@Entity
+@DiscriminatorValue("2")
 public class Aluno extends Usuario {
+
+    public Aluno() {
+    }
 
     public Aluno(Integer id, String nome, String sobrenome,
                  String cpf, LocalDate dataNasc, String sexo,
                  String email, String senha, String telefone) {
         super(nome, sobrenome, cpf, dataNasc, sexo, email, senha, telefone);
     }
+
+
 
     @Override
     public Boolean validarIdade() {

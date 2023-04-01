@@ -1,5 +1,7 @@
 package school.sptech.harmonyoentregaveleda;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -11,20 +13,26 @@ import java.util.stream.Collectors;
 @RequestMapping("/usuarios")
 public class UsuarioController {
 
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
     private List<Usuario> ltUsuarios;
 
-    public UsuarioController() {
-        this.ltUsuarios = new ArrayList<>();
+    @GetMapping()
+    public ResponseEntity<List<UsuarioDTO>> exibir(){
+        List<UsuarioDTO> usuarios = this.usuarioRepository.findAll().stream()
+                .map(UsuarioDTOMapper::mapearUsuario)
+                .toList();
+
+        if (usuarios.isEmpty()) {
+            return ResponseEntity.status(204).build();
+        }
+
+        return ResponseEntity.status(200).body(usuarios);
     }
 
-    @GetMapping()
-    public List<UsuarioDTO> exibirUsuarios(){
-        return this.ltUsuarios.stream()
-            .map(UsuarioDTOMapper::mapearUsuario)
-            .collect(Collectors.toList());}
-
     @PostMapping("/cadastro/professor")
-    public String cadastrarProfessor(@RequestBody Professor professor){
+    public String cadastrar(@RequestBody Professor professor){
         if (professor.validarIdade()) {
 
             if (this.validarEmailCadastrado(professor.getEmail())) {
@@ -37,22 +45,6 @@ public class UsuarioController {
         }
 
         return "Professor não cadastrado. Motivo: Menor de 18 anos!";
-    }
-
-    @PostMapping("/cadastro/aluno")
-    public String cadastrarAluno(@RequestBody Aluno aluno){
-
-        if (aluno.validarIdade()) {
-            if (this.validarEmailCadastrado(aluno.getEmail())) {
-                ltUsuarios.add(aluno);
-
-                return "Aluno Cadastrado com Sucesso!";
-            }
-
-            return "Email já cadastrado.";
-        }
-
-        return "Aluno não cadastrado. Motivo: Menor de 15 anos !";
     }
 
     @PostMapping("/autenticacao/aluno")
