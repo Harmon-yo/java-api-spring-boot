@@ -5,6 +5,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,11 +17,10 @@ import school.sptech.harmobyospringapi.service.usuario.autenticacao.Autenticacao
 
 import java.io.IOException;
 import java.util.Objects;
-import java.util.logging.Logger;
 
 public class AutenticacaoFilter extends OncePerRequestFilter {
 
-    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(AutenticacaoFilter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AutenticacaoFilter.class);
 
     private final AutenticacaoService autenticacaoService;
 
@@ -47,7 +47,8 @@ public class AutenticacaoFilter extends OncePerRequestFilter {
 
             }catch (ExpiredJwtException exception){
 
-                LOGGER.info("[FALHA NA AUTENTICAÇÃO] - Token expirado, usuario: {} - {}", exception.getClaims().getSubject(), exception.getMessage());
+                LOGGER.info("[FALHA NA AUTENTICAÇÃO] - Token expirado, usuario: {} - {}",
+                        exception.getClaims().getSubject(), exception.getMessage());
 
                 LOGGER.trace("[FALHA AUTENTICACAO] - stack trace: %s", exception);
 
@@ -67,6 +68,7 @@ public class AutenticacaoFilter extends OncePerRequestFilter {
         UserDetails userDetails = autenticacaoService.loadUserByUsername(username);
 
         if (jwtTokenMenager.validateToken(jwtToken, userDetails)){
+
             UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                     new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities()

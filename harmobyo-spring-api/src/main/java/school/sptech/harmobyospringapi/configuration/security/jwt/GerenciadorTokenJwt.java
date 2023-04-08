@@ -3,12 +3,14 @@ package school.sptech.harmobyospringapi.configuration.security.jwt;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDate;
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -36,8 +38,10 @@ public class GerenciadorTokenJwt {
                                                                      .collect(Collectors.joining(","));
 
         return Jwts.builder().setSubject(authentication.getName())
-                .signWith(SignatureAlgorithm.HS256, this.secret).setIssuedAt(new Date(System.currentTimeMillis()))
+                .signWith(parseSecret()).setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + jwtTokenValidity * 1_000)).compact();
+
+
     }
 
 
@@ -59,6 +63,14 @@ public class GerenciadorTokenJwt {
     }
 
    public Claims getAllClaimsFromToken(String token){
-        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+        return Jwts.parserBuilder()
+                    .setSigningKey(parseSecret())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
    }
+
+    private SecretKey parseSecret() {
+        return Keys.hmacShaKeyFor(this.secret.getBytes(StandardCharsets.UTF_8));
+    }
 }
