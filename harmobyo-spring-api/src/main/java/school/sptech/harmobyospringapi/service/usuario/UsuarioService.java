@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import school.sptech.harmobyospringapi.configuration.security.jwt.GerenciadorTokenJwt;
 import school.sptech.harmobyospringapi.domain.Usuario;
+import school.sptech.harmobyospringapi.lista.ListaGenericaObj;
 import school.sptech.harmobyospringapi.repository.UsuarioRepository;
+import school.sptech.harmobyospringapi.service.EntitadeNaoEncontradaException;
 import school.sptech.harmobyospringapi.service.usuario.autenticacao.dto.UsuarioLoginDto;
 import school.sptech.harmobyospringapi.service.usuario.autenticacao.dto.UsuarioTokenDto;
 import school.sptech.harmobyospringapi.service.usuario.dto.UsuarioCriacaoDto;
@@ -109,6 +111,112 @@ public class UsuarioService {
 
         return UsuarioMapper.of(usuarioAutenticado,token);
 
+    }
+
+
+    public UsuarioExibicaoDto buscarProfessorPorNome(String nome){
+
+        List<Usuario> ltUsuarios = this.usuarioRepository.findByCategoriaEquals("Professor");
+
+        ListaGenericaObj<Usuario> ltUsuariosGenerica = new ListaGenericaObj<>(ltUsuarios.size());
+
+
+        ltUsuarios.forEach(ltUsuariosGenerica::adiciona);
+
+
+        ltUsuariosGenerica = new UsuarioComparador(ltUsuariosGenerica).ordenacaoAlfabetica();
+
+
+        int indiceUsuarioEncontrado = new UsuarioComparador(ltUsuariosGenerica).pesquisaBinariaPorNome(nome);
+
+
+        if (indiceUsuarioEncontrado == -1){
+            throw new EntitadeNaoEncontradaException("Professor com o nome " + nome + " não encontrado !");
+        }
+
+        return UsuarioMapper.ofUsuarioExibicao(ltUsuariosGenerica.getElemento(indiceUsuarioEncontrado));
+
+    }
+
+    public UsuarioExibicaoDto buscarAlunoPorNome(String nome){
+
+        List<Usuario> ltUsuarios = this.usuarioRepository.findByCategoriaEquals("Aluno");
+
+        ListaGenericaObj<Usuario> ltUsuariosGenerica = new ListaGenericaObj<>(ltUsuarios.size());
+
+
+        ltUsuarios.forEach(ltUsuariosGenerica::adiciona);
+
+
+        ltUsuariosGenerica = new UsuarioComparador(ltUsuariosGenerica).ordenacaoAlfabetica();
+
+
+        int indiceUsuarioEncontrado = new UsuarioComparador(ltUsuariosGenerica).pesquisaBinariaPorNome(nome);
+
+
+        if (indiceUsuarioEncontrado == -1){
+            throw new EntitadeNaoEncontradaException("Aluno com o nome " + nome + " não encontrado !");
+        }
+
+        return UsuarioMapper.ofUsuarioExibicao(ltUsuariosGenerica.getElemento(indiceUsuarioEncontrado));
+
+    }
+
+    public List<UsuarioExibicaoDto> exibeProfessoresOrdemAlfabetica(){
+
+        List<Usuario> ltUsuarios = this.usuarioRepository.findByCategoriaEquals("Professor");
+
+        ListaGenericaObj<Usuario> ltUsuariosGenerica = new ListaGenericaObj<>(ltUsuarios.size());
+
+        ltUsuarios.forEach(ltUsuariosGenerica::adiciona);
+
+        ltUsuariosGenerica = new UsuarioComparador(ltUsuariosGenerica).ordenacaoAlfabetica();
+
+        ltUsuarios.clear();
+
+        for (int i = 0; i < ltUsuariosGenerica.size(); i ++){
+            ltUsuarios.add(ltUsuariosGenerica.getElemento(i));
+        }
+
+        return ltUsuarios.stream().map(UsuarioMapper::ofUsuarioExibicao).toList();
+    }
+
+    public List<UsuarioExibicaoDto> exibeAlunosOrdemAlfabetica(){
+
+        List<Usuario> ltUsuarios = this.usuarioRepository.findByCategoriaEquals("Aluno");
+
+        ListaGenericaObj<Usuario> ltUsuariosGenerica = new ListaGenericaObj<>(ltUsuarios.size());
+
+        ltUsuarios.forEach(ltUsuariosGenerica::adiciona);
+
+        ltUsuariosGenerica = new UsuarioComparador(ltUsuariosGenerica).ordenacaoAlfabetica();
+
+        ltUsuarios.clear();
+
+        for (int i = 0; i < ltUsuariosGenerica.size(); i ++){
+            ltUsuarios.add(ltUsuariosGenerica.getElemento(i));
+        }
+
+        return ltUsuarios.stream().map(UsuarioMapper::ofUsuarioExibicao).toList();
+    }
+
+    public List<UsuarioExibicaoDto> exibeTodosOrdemAlfabetica(){
+
+        List<Usuario> ltUsuarios = this.usuarioRepository.findAll();
+
+        ListaGenericaObj<Usuario> ltUsuariosGenerica = new ListaGenericaObj<>(ltUsuarios.size());
+
+        ltUsuarios.forEach(ltUsuariosGenerica::adiciona);
+
+        ltUsuariosGenerica = new UsuarioComparador(ltUsuariosGenerica).ordenacaoAlfabetica();
+
+        ltUsuarios.clear();
+
+        for (int i = 0; i < ltUsuariosGenerica.size(); i ++){
+            ltUsuarios.add(ltUsuariosGenerica.getElemento(i));
+        }
+
+        return ltUsuarios.stream().map(UsuarioMapper::ofUsuarioExibicao).toList();
     }
 
 

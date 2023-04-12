@@ -4,6 +4,8 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import school.sptech.harmobyospringapi.domain.Usuario;
+import school.sptech.harmobyospringapi.lista.ListaGenericaObj;
 import school.sptech.harmobyospringapi.service.usuario.UsuarioService;
 import school.sptech.harmobyospringapi.service.usuario.autenticacao.dto.UsuarioLoginDto;
 import school.sptech.harmobyospringapi.service.usuario.autenticacao.dto.UsuarioTokenDto;
@@ -82,4 +84,60 @@ public class UsuarioController {
 
         return ResponseEntity.status(200).body(usuarioTokenDto);
     }
+
+    @GetMapping("/busca/professor")
+    public ResponseEntity<UsuarioExibicaoDto> buscarProfessorPorNome(@RequestParam String nome){
+
+        UsuarioExibicaoDto professorEncontrado = this.usuarioService.buscarProfessorPorNome(nome);
+
+        return ResponseEntity.status(200).body(professorEncontrado);
+    }
+
+    @GetMapping("/busca/aluno")
+    public ResponseEntity<UsuarioExibicaoDto> buscarAlunoPorNome(@RequestParam String nome){
+
+        UsuarioExibicaoDto alunoEncontrado = this.usuarioService.buscarAlunoPorNome(nome);
+
+        return ResponseEntity.status(200).body(alunoEncontrado);
+    }
+
+    @GetMapping("/professores/alfabetica")
+    public ResponseEntity<List<UsuarioExibicaoDto>> exibeProfessoresOrdemAlfabetica(){
+
+        List<UsuarioExibicaoDto> ltUsuariosExibicao = this.usuarioService.exibeProfessoresOrdemAlfabetica();
+
+        if (ltUsuariosExibicao.isEmpty()){
+
+            return ResponseEntity.status(204).build();
+        }
+
+        return ResponseEntity.status(200).body(ltUsuariosExibicao);
+    }
+
+    @GetMapping("/alunos/alfabetica")
+    public ResponseEntity<List<UsuarioExibicaoDto>> exibeAlunosOrdemAlfabetica(){
+
+        List<UsuarioExibicaoDto> ltUsuariosExibicao = this.usuarioService.exibeAlunosOrdemAlfabetica();
+
+        if (ltUsuariosExibicao.isEmpty()){
+
+            return ResponseEntity.status(204).build();
+        }
+
+        return ResponseEntity.status(200).body(ltUsuariosExibicao);
+    }
+
+    @GetMapping("/alfabetica")
+    public ResponseEntity<List<UsuarioExibicaoDto>> exibeTodosOrdemAlfabetica(){
+
+        List<UsuarioExibicaoDto> ltUsuariosExibicao = this.usuarioService.exibeTodosOrdemAlfabetica();
+
+        if (ltUsuariosExibicao.isEmpty()){
+
+            return ResponseEntity.status(204).build();
+        }
+
+        return ResponseEntity.status(200).body(ltUsuariosExibicao);
+    }
+
 }

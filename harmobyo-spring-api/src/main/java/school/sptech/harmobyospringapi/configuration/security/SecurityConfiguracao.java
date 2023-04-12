@@ -54,6 +54,7 @@ public class SecurityConfiguracao {
             new AntPathRequestMatcher("/swagger-ui/**"),
             new AntPathRequestMatcher("/usuarios/login/**"),
             new AntPathRequestMatcher("/usuarios/cadastro/**"),
+            new AntPathRequestMatcher("/**"),
             new AntPathRequestMatcher("/h2-console/**")
     };
 
