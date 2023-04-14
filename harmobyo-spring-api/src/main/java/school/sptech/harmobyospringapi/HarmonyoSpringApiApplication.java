@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class HarmobyoSpringApiApplication {
+public class HarmonyoSpringApiApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(HarmobyoSpringApiApplication.class, args);
+		SpringApplication.run(HarmonyoSpringApiApplication.class, args);
 	}
 
 }

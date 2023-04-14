@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>school.sptech</groupId>
-	<artifactId>harmobyo-spring-api</artifactId>
+	<artifactId>harmonyo-spring-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>harmobyo-spring-api</name>
 	<description>API em Spring Boot Harmonyo</description>

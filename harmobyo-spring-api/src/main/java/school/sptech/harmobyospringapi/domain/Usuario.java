@@ -1,10 +1,7 @@
 package school.sptech.harmobyospringapi.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import org.hibernate.validator.constraints.br.CPF;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -40,7 +37,10 @@ public class Usuario {
     )
     private String telefone;
 
-    private Integer fkEndereco;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "fk_endereco", referencedColumnName = "id")
+    private Endereco fkEndereco;
 
     private String categoria;
     private boolean ativo;
@@ -111,11 +111,11 @@ public class Usuario {
         this.telefone = telefone;
     }
 
-    public Integer getFkEndereco() {
+    public Endereco getFkEndereco() {
         return fkEndereco;
     }
 
-    public void setFkEndereco(Integer fkEndereco) {
+    public void setFkEndereco(Endereco fkEndereco) {
         this.fkEndereco = fkEndereco;
     }
 
