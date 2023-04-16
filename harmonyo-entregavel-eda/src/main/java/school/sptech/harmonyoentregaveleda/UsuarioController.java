@@ -1,5 +1,9 @@
 package school.sptech.harmonyoentregaveleda;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +15,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/usuarios")
+@Api(value = "Endpoints para gerenciar usuários")
 public class UsuarioController {
 
     @Autowired
@@ -18,6 +23,11 @@ public class UsuarioController {
 
     private List<Usuario> ltUsuarios;
 
+    @ApiOperation(value = "Exibe a lista de todos os usuários cadastrados")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Lista de usuários exibida com sucesso"),
+            @ApiResponse(code = 204, message = "Não há usuários cadastrados")
+    })
     @GetMapping()
     public ResponseEntity<List<UsuarioDTO>> exibir(){
         List<UsuarioDTO> usuarios = this.usuarioRepository.findAll().stream()
@@ -31,6 +41,11 @@ public class UsuarioController {
         return ResponseEntity.status(200).body(usuarios);
     }
 
+    @ApiOperation(value = "Cadastra um professor")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Professor cadastrado com sucesso"),
+            @ApiResponse(code = 400, message = "Email já cadastrado ou o professor é menor de 18 anos")
+    })
     @PostMapping("/cadastro/professor")
     public String cadastrar(@RequestBody Professor professor){
         if (professor.validarIdade()) {
@@ -47,6 +62,11 @@ public class UsuarioController {
         return "Professor não cadastrado. Motivo: Menor de 18 anos!";
     }
 
+    @ApiOperation(value = "Autentica um aluno")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Aluno autenticado com sucesso"),
+            @ApiResponse(code = 404, message = "Usuário não encontrado")
+    })
     @PostMapping("/autenticacao/aluno")
     public String autenticarAluno(@RequestBody Aluno aluno) {
         Optional<Usuario> usuarioOptional = procurarUsuarioCadastrado(aluno.getEmail(),
@@ -61,6 +81,11 @@ public class UsuarioController {
         return "Usuário não encontrado";
     }
 
+    @ApiOperation(value = "Desloga um aluno")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Aluno deslogado com sucesso"),
+            @ApiResponse(code = 404, message = "Usuário não encontrado")
+    })
     @GetMapping("/desautenticacao/aluno/{email}")
     public String deslogarAluno(@PathVariable String email) {
         Optional<Usuario> usuarioOptional = procurarUsuarioCadastrado(email);
@@ -75,6 +100,11 @@ public class UsuarioController {
         return "Usuario Não encontrado.";
     }
 
+    @ApiOperation(value = "Desativa a conta de um aluno")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Conta desativada com sucesso"),
+            @ApiResponse(code = 404, message = "Usuário não encontrado")
+    })
     @DeleteMapping("/desativacao/aluno")
     public String desativarAluno(@RequestBody Aluno aluno) {
         Optional<Usuario> usuarioOptional = procurarUsuarioCadastrado(aluno.getEmail(),
@@ -90,6 +120,12 @@ public class UsuarioController {
         return "Usuario Não encontrado.";
     }
 
+    @ApiOperation(value = "Edita o email de um aluno")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Email do aluno alterado com sucesso"),
+            @ApiResponse(code = 400, message = "Senha inválida ou email semelhante"),
+            @ApiResponse(code = 404, message = "Usuário não encontrado")
+    })
     @PatchMapping("/edicao-email/{email}")
     public String editarEmailAluno(@PathVariable String email, @RequestBody Aluno aluno) {
         Optional<Usuario> usuarioOptional = procurarUsuarioCadastrado(email);
