@@ -1,17 +1,24 @@
 package school.sptech.harmonyospringapi.service.endereco.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public class EnderecoExibicaoDto {
+
+    @Schema(description = "Logradouro do endereço", example = "Rua Haddock Lobo")
     private String logradouro;
 
+    @Schema(description = "Número do endereço", example = "595")
     private String numero;
 
+    @Schema(description = "Complemento do endereço", example = "John Doe")
     private String complemento;
 
+    @Schema(description = "Cidade do endereço", example = "São Paulo")
     private String cidade;
 
+    @Schema(description = "Bairro do endereço", example = "Cerqueira César")
     private String bairro;
 
     public String getLogradouro() {

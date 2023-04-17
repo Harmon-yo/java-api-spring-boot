@@ -76,21 +76,21 @@ public class UsuarioService {
         return UsuarioMapper.ofUsuarioExibicao(novoUsuario);
     }
 
-    public List<UsuarioExibicaoDto> exibirCadastrados(){
+    public List<UsuarioExibicaoDto> listarCadastrados(){
 
         List<Usuario> ltUsuarios = this.usuarioRepository.findAll();
 
         return ltUsuarios.stream().map(UsuarioMapper::ofUsuarioExibicao).toList();
     }
 
-    public List<UsuarioExibicaoDto> exibirAlunos(){
+    public List<UsuarioExibicaoDto> listarAlunos(){
 
         List<Usuario> ltUsuarios = this.usuarioRepository.findByCategoriaEquals("Aluno");
 
         return ltUsuarios.stream().map(UsuarioMapper::ofUsuarioExibicao).toList();
     }
 
-    public List<UsuarioExibicaoDto> exibirProfessores(){
+    public List<UsuarioExibicaoDto> listarProfessores(){
 
         List<Usuario> ltUsuarios = this.usuarioRepository.findByCategoriaEquals("Professor");
 
@@ -121,6 +121,22 @@ public class UsuarioService {
 
     }
 
+
+    public UsuarioExibicaoDto buscarProfessorPorId(Integer id){
+
+        Optional<Usuario> optionalUsuario = this.usuarioRepository.findById(id);
+
+
+        if (optionalUsuario.isEmpty()){
+            throw new EntitadeNaoEncontradaException(
+                    String.format(
+                        "Professor com o id %d não encontrado !",
+                        id
+                    ));
+        }
+
+        return UsuarioMapper.ofUsuarioExibicao(optionalUsuario.get());
+    }
 
     public UsuarioExibicaoDto buscarProfessorPorNome(String nome){
 
