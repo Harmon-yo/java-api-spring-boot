@@ -12,14 +12,18 @@
 				"method": "GET",
 				"header": [
 					{
-						"key": "Host",
-						"value": "",
-						"type": "text",
-						"disabled": true
+						"key": "Accept-Encoding",
+						"value": "gzip, deflate, br",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"type": "text"
 					},
 					{
 						"key": "Authorization",
-						"value": "",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb2guZG9lQGdtYWlsLmNvbSIsImlhdCI6MTY4MDkxMDc0NCwiZXhwIjoxNjg0NTEwNzQ0fQ.D6uA5sdJJ6mTaZ5YL4foDkS1z3hzG2SOiYyvgNtC0WI",
 						"type": "text",
 						"disabled": true
 					}
@@ -85,7 +89,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"nome\": \"César Alves\",\r\n    \"email\": \"joh.doe@gmail.com\",\r\n    \"cpf\": \"891.579.480-03\",\r\n    \"sexo\": \"Masculino\",\r\n    \"senha\": \"123456\"\r\n}",
+					"raw": "{\r\n                \"nome\": \"Duarte\",\r\n                \"email\": \"duarte@gmail.com\",\r\n                \"cpf\": \"693.664.230-60\",\r\n                \"sexo\": \"Masculino\",\r\n                \"senha\": \"1234\",\r\n                \"categoria\": \"Aluno\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -115,7 +119,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"nome\": \"Vinicius Alves\",\r\n    \"email\": \"Vinicius@gmail.com\",\r\n    \"cpf\": \"891.579.480-03\",\r\n    \"sexo\": \"Masculino\",\r\n    \"senha\": \"12346789\"\r\n}",
+					"raw": "{\r\n    \"nome\": \"Junin\",\r\n    \"email\": \"Vinicius@gmail.com\",\r\n    \"cpf\": \"693.664.230-60\",\r\n    \"sexo\": \"Masculino\",\r\n    \"senha\": \"12346789\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -145,7 +149,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"email\": \"Vinicius@gmail.com\",\r\n    \"senha\": \"12346789\"\r\n}",
+					"raw": "{\r\n    \"email\": \"duarte@gmail.com\",\r\n    \"senha\": \"1234\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -162,6 +166,122 @@
 					"path": [
 						"usuarios",
 						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Buscar Profesor Por Nome",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/usuarios/busca/professor?nome=Vinicius+Alves",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"usuarios",
+						"busca",
+						"professor"
+					],
+					"query": [
+						{
+							"key": "nome",
+							"value": "Vinicius+Alves"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Buscar Aluno Por Nome",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/usuarios/busca/aluno?nome=Duarte",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"usuarios",
+						"busca",
+						"aluno"
+					],
+					"query": [
+						{
+							"key": "nome",
+							"value": "Duarte"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Exibe Todos Por Ordem Alfabética",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/usuarios/alfabetica",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"usuarios",
+						"alfabetica"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Exibe Professores Por Ordem Alfabética",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/usuarios/professores/alfabetica",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"usuarios",
+						"professores",
+						"alfabetica"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Exibe Alunos Por Ordem Alfabética",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/usuarios/alunos/alfabetica",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"usuarios",
+						"alunos",
+						"alfabetica"
 					]
 				}
 			},

@@ -15,18 +15,16 @@ public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @Size(min = 4)
+
     private String nome;
 
-    @Email
     private String email;
 
-    @CPF
     private String cpf;
 
     private String sexo;
 
-    @Size(min = 3)
+
     private String senha;
 
     private LocalDate dataNasc;
