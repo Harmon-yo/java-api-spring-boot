@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,7 @@ public class EnderecoController {
             @ApiResponse(responseCode = "200", description = "Endereços encontrados."),
             @ApiResponse(responseCode = "204", description = "Não há endereços cadastrados.", content = @Content(schema = @Schema(hidden = true)))
     })
+    @SecurityRequirement(name = "Bearer")
     @GetMapping
     public ResponseEntity<List<Endereco>> listarEnderecos(){
         List<Endereco> ltEnderecos = this.enderecoService.listarEnderecos();
@@ -50,6 +52,7 @@ public class EnderecoController {
             @ApiResponse(responseCode = "201", description = "Endereço cadastrado."),
             @ApiResponse(responseCode = "400", description = "O endereço não foi digitado corretamente.", content = @Content(schema = @Schema(hidden = true)))
     })
+    @SecurityRequirement(name = "Bearer")
     @PostMapping("/{idUsuario}")
     public ResponseEntity<UsuarioExibicaoDto> cadastrarEndereco(@RequestBody @Valid Endereco endereco
             , @PathVariable Integer idUsuario){
@@ -68,6 +71,7 @@ public class EnderecoController {
             @ApiResponse(responseCode = "201", description = "Endereço atualizado."),
             @ApiResponse(responseCode = "400", description = "O endereço não foi digitado corretamente.", content = @Content(schema = @Schema(hidden = true)))
     })
+    @SecurityRequirement(name = "Bearer")
     @PatchMapping("/{idUsuario}")
     public ResponseEntity<UsuarioExibicaoDto> atualizarEndereco(@Valid @RequestBody Endereco endereco, @PathVariable Integer idUsuario){
 
@@ -78,6 +82,7 @@ public class EnderecoController {
 
     @Operation(summary = "Deleta um endereço")
     @ApiResponse(responseCode = "200", description = "Endereço removido.")
+    @SecurityRequirement(name = "Bearer")
     @DeleteMapping()
     public ResponseEntity<Void> deletarEndereco(@RequestBody @Valid Endereco endereco){
        this.enderecoService.deletarEndereco(endereco);

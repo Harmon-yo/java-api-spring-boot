@@ -47,7 +47,6 @@ public class UsuarioController {
         return ResponseEntity.status(200).body(ltUsuariosExibicao);
     }
 
-    //    Recomendo mudar o nome para listar
     @Operation(summary = "Obtém uma lista de todos os alunos cadastrados", description = "")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Alunos encontrados."),
@@ -66,7 +65,6 @@ public class UsuarioController {
         return ResponseEntity.status(200).body(ltUsuariosExibicao);
     }
 
-    //    Recomendo mudar o nome para listar
     @Operation(summary = "Obtém uma lista de todos os professores cadastrados", description = "")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Professores encontrados."),
@@ -126,6 +124,7 @@ public class UsuarioController {
             @ApiResponse(responseCode = "200", description = "Professor encontrado."),
             @ApiResponse(responseCode = "404", description = "Professor não encontrado.")
     })
+    @SecurityRequirement(name = "Bearer")
     @GetMapping("/busca/professor/{id}")
     public ResponseEntity<UsuarioExibicaoDto> buscarProfessorPorId(@RequestParam Integer id){
 
@@ -145,6 +144,7 @@ public class UsuarioController {
     */
     @Operation(summary = "Obtém um professor pelo seu nome", description = "")
     @ApiResponse(responseCode = "200", description = "Professor encontrado.")
+    @SecurityRequirement(name = "Bearer")
     @GetMapping("/busca/professor")
     public ResponseEntity<UsuarioExibicaoDto> buscarProfessorPorNome(@RequestParam String nome){
 
@@ -160,6 +160,7 @@ public class UsuarioController {
     */
     @Operation(summary = "Obtém um aluno pelo seu nome", description = "")
     @ApiResponse(responseCode = "200", description = "Aluno encontrado.")
+    @SecurityRequirement(name = "Bearer")
     @GetMapping("/busca/aluno")
     public ResponseEntity<UsuarioExibicaoDto> buscarAlunoPorNome(@RequestParam String nome){
 
@@ -173,6 +174,7 @@ public class UsuarioController {
             @ApiResponse(responseCode = "200", description = "Professores ordenados por ordem alfabética encontrados."),
             @ApiResponse(responseCode = "204", description = "Não há professores cadastrados.")
     })
+    @SecurityRequirement(name = "Bearer")
     @GetMapping("/professores/alfabetica")
     public ResponseEntity<List<UsuarioExibicaoDto>> exibeProfessoresOrdemAlfabetica(){
 
@@ -191,6 +193,7 @@ public class UsuarioController {
             @ApiResponse(responseCode = "200", description = "Alunos ordenados por ordem alfabética encontrados."),
             @ApiResponse(responseCode = "204", description = "Não há alunos cadastrados.")
     })
+    @SecurityRequirement(name = "Bearer")
     @GetMapping("/alunos/alfabetica")
     public ResponseEntity<List<UsuarioExibicaoDto>> exibeAlunosOrdemAlfabetica(){
 
@@ -209,6 +212,7 @@ public class UsuarioController {
             @ApiResponse(responseCode = "200", description = "Usuários ordenados por ordem alfabética encontrados."),
             @ApiResponse(responseCode = "204", description = "Não há usuários cadastrados.")
     })
+    @SecurityRequirement(name = "Bearer")
     @GetMapping("/alfabetica")
     public ResponseEntity<List<UsuarioExibicaoDto>> exibeTodosOrdemAlfabetica(){
 
