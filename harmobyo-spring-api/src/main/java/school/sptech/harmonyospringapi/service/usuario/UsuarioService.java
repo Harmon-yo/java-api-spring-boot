@@ -1,8 +1,6 @@
 package school.sptech.harmonyospringapi.service.usuario;
 
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -14,25 +12,31 @@ import school.sptech.harmonyospringapi.configuration.security.jwt.GerenciadorTok
 import school.sptech.harmonyospringapi.domain.Endereco;
 import school.sptech.harmonyospringapi.domain.Usuario;
 import school.sptech.harmonyospringapi.lista.ListaGenericaObj;
+import school.sptech.harmonyospringapi.repository.AlunoRepository;
+import school.sptech.harmonyospringapi.repository.ProfessorRepository;
 import school.sptech.harmonyospringapi.repository.UsuarioRepository;
-import school.sptech.harmonyospringapi.service.EntitadeNaoEncontradaException;
+import school.sptech.harmonyospringapi.service.exceptions.EntitadeNaoEncontradaException;
 import school.sptech.harmonyospringapi.service.endereco.EnderecoService;
 import school.sptech.harmonyospringapi.service.endereco.dto.EnderecoExibicaoDto;
 import school.sptech.harmonyospringapi.service.endereco.dto.EnderecoMapper;
 import school.sptech.harmonyospringapi.service.usuario.autenticacao.dto.UsuarioLoginDto;
 import school.sptech.harmonyospringapi.service.usuario.autenticacao.dto.UsuarioTokenDto;
-import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioCriacaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioMapper;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UsuarioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private AlunoRepository alunoRepository;
+
+    @Autowired
+    private ProfessorRepository professorRepository;
 
     @Autowired
     private EnderecoService enderecoService;
@@ -46,53 +50,10 @@ public class UsuarioService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    public UsuarioExibicaoDto cadastrarAluno(UsuarioCriacaoDto usuarioCriacaoDto){
-
-        String senhaCriptofrada = passwordEncoder.encode(usuarioCriacaoDto.getSenha());
-
-        usuarioCriacaoDto.setSenha(senhaCriptofrada);
-
-        usuarioCriacaoDto.setCategoria("Aluno");
-
-        final Usuario novoUsuario = UsuarioMapper.of(usuarioCriacaoDto);
-
-        this.usuarioRepository.save(novoUsuario);
-
-        return UsuarioMapper.ofUsuarioExibicao(novoUsuario);
-    }
-
-    public UsuarioExibicaoDto cadastrarProfessor(UsuarioCriacaoDto usuarioCriacaoDto){
-
-        String senhaCriptofrada = passwordEncoder.encode(usuarioCriacaoDto.getSenha());
-
-        usuarioCriacaoDto.setSenha(senhaCriptofrada);
-
-        usuarioCriacaoDto.setCategoria("Professor");
-
-        final Usuario novoUsuario = UsuarioMapper.of(usuarioCriacaoDto);
-
-        this.usuarioRepository.save(novoUsuario);
-
-        return UsuarioMapper.ofUsuarioExibicao(novoUsuario);
-    }
 
     public List<UsuarioExibicaoDto> listarCadastrados(){
 
         List<Usuario> ltUsuarios = this.usuarioRepository.findAll();
-
-        return ltUsuarios.stream().map(UsuarioMapper::ofUsuarioExibicao).toList();
-    }
-
-    public List<UsuarioExibicaoDto> listarAlunos(){
-
-        List<Usuario> ltUsuarios = this.usuarioRepository.findByCategoriaEquals("Aluno");
-
-        return ltUsuarios.stream().map(UsuarioMapper::ofUsuarioExibicao).toList();
-    }
-
-    public List<UsuarioExibicaoDto> listarProfessores(){
-
-        List<Usuario> ltUsuarios = this.usuarioRepository.findByCategoriaEquals("Professor");
 
         return ltUsuarios.stream().map(UsuarioMapper::ofUsuarioExibicao).toList();
     }
@@ -122,107 +83,6 @@ public class UsuarioService {
     }
 
 
-    public UsuarioExibicaoDto buscarProfessorPorId(Integer id){
-
-        Optional<Usuario> optionalUsuario = this.usuarioRepository.findById(id);
-
-
-        if (optionalUsuario.isEmpty()){
-            throw new EntitadeNaoEncontradaException(
-                    String.format(
-                        "Professor com o id %d não encontrado !",
-                        id
-                    ));
-        }
-
-        return UsuarioMapper.ofUsuarioExibicao(optionalUsuario.get());
-    }
-
-    public UsuarioExibicaoDto buscarProfessorPorNome(String nome){
-
-        List<Usuario> ltUsuarios = this.usuarioRepository.findByCategoriaEquals("Professor");
-
-        ListaGenericaObj<Usuario> ltUsuariosGenerica = new ListaGenericaObj<>(ltUsuarios.size());
-
-
-        ltUsuarios.forEach(ltUsuariosGenerica::adiciona);
-
-
-        ltUsuariosGenerica = new UsuarioComparador(ltUsuariosGenerica).ordenacaoAlfabetica();
-
-
-        int indiceUsuarioEncontrado = new UsuarioComparador(ltUsuariosGenerica).pesquisaBinariaPorNome(nome);
-
-
-        if (indiceUsuarioEncontrado == -1){
-            throw new EntitadeNaoEncontradaException("Professor com o nome " + nome + " não encontrado !");
-        }
-
-        return UsuarioMapper.ofUsuarioExibicao(ltUsuariosGenerica.getElemento(indiceUsuarioEncontrado));
-
-    }
-
-    public UsuarioExibicaoDto buscarAlunoPorNome(String nome){
-
-        List<Usuario> ltUsuarios = this.usuarioRepository.findByCategoriaEquals("Aluno");
-
-        ListaGenericaObj<Usuario> ltUsuariosGenerica = new ListaGenericaObj<>(ltUsuarios.size());
-
-
-        ltUsuarios.forEach(ltUsuariosGenerica::adiciona);
-
-
-        ltUsuariosGenerica = new UsuarioComparador(ltUsuariosGenerica).ordenacaoAlfabetica();
-
-
-        int indiceUsuarioEncontrado = new UsuarioComparador(ltUsuariosGenerica).pesquisaBinariaPorNome(nome);
-
-
-        if (indiceUsuarioEncontrado == -1){
-            throw new EntitadeNaoEncontradaException("Aluno com o nome " + nome + " não encontrado !");
-        }
-
-        return UsuarioMapper.ofUsuarioExibicao(ltUsuariosGenerica.getElemento(indiceUsuarioEncontrado));
-
-    }
-
-    public List<UsuarioExibicaoDto> exibeProfessoresOrdemAlfabetica(){
-
-        List<Usuario> ltUsuarios = this.usuarioRepository.findByCategoriaEquals("Professor");
-
-        ListaGenericaObj<Usuario> ltUsuariosGenerica = new ListaGenericaObj<>(ltUsuarios.size());
-
-        ltUsuarios.forEach(ltUsuariosGenerica::adiciona);
-
-        ltUsuariosGenerica = new UsuarioComparador(ltUsuariosGenerica).ordenacaoAlfabetica();
-
-        ltUsuarios.clear();
-
-        for (int i = 0; i < ltUsuariosGenerica.size(); i ++){
-            ltUsuarios.add(ltUsuariosGenerica.getElemento(i));
-        }
-
-        return ltUsuarios.stream().map(UsuarioMapper::ofUsuarioExibicao).toList();
-    }
-
-    public List<UsuarioExibicaoDto> exibeAlunosOrdemAlfabetica(){
-
-        List<Usuario> ltUsuarios = this.usuarioRepository.findByCategoriaEquals("Aluno");
-
-        ListaGenericaObj<Usuario> ltUsuariosGenerica = new ListaGenericaObj<>(ltUsuarios.size());
-
-        ltUsuarios.forEach(ltUsuariosGenerica::adiciona);
-
-        ltUsuariosGenerica = new UsuarioComparador(ltUsuariosGenerica).ordenacaoAlfabetica();
-
-        ltUsuarios.clear();
-
-        for (int i = 0; i < ltUsuariosGenerica.size(); i ++){
-            ltUsuarios.add(ltUsuariosGenerica.getElemento(i));
-        }
-
-        return ltUsuarios.stream().map(UsuarioMapper::ofUsuarioExibicao).toList();
-    }
 
     public List<UsuarioExibicaoDto> exibeTodosOrdemAlfabetica(){
 

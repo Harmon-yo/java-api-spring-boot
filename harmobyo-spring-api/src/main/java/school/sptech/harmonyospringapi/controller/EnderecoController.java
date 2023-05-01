@@ -47,25 +47,6 @@ public class EnderecoController {
         return ResponseEntity.status(200).body(ltEnderecos);
     }
 
-    @Operation(summary = "Cadastra um endereço do usuário")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Endereço cadastrado."),
-            @ApiResponse(responseCode = "400", description = "O endereço não foi digitado corretamente.", content = @Content(schema = @Schema(hidden = true)))
-    })
-    @SecurityRequirement(name = "Bearer")
-    @PostMapping("/{idUsuario}")
-    public ResponseEntity<UsuarioExibicaoDto> cadastrarEndereco(@RequestBody @Valid Endereco endereco
-            , @PathVariable Integer idUsuario){
-
-        UsuarioExibicaoDto enderecoCadastrado = this.usuarioService.inserirEndereco(idUsuario, endereco);
-
-        if(enderecoCadastrado != null){
-            return ResponseEntity.status(201).body(enderecoCadastrado);
-        }
-        return ResponseEntity.status(400).build();
-
-    }
-
     @Operation(summary = "Atualiza um endereço do usuário")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Endereço atualizado."),
@@ -80,14 +61,6 @@ public class EnderecoController {
         return ResponseEntity.status(200).body(enderecoAtualizado);
     }
 
-    @Operation(summary = "Deleta um endereço")
-    @ApiResponse(responseCode = "200", description = "Endereço removido.")
-    @SecurityRequirement(name = "Bearer")
-    @DeleteMapping()
-    public ResponseEntity<Void> deletarEndereco(@RequestBody @Valid Endereco endereco){
-       this.enderecoService.deletarEndereco(endereco);
-        return ResponseEntity.status(200).build();
-    }
 
 
 }

@@ -1,5 +1,7 @@
 package school.sptech.harmonyospringapi.service.usuario.dto;
 
+import school.sptech.harmonyospringapi.domain.Aluno;
+import school.sptech.harmonyospringapi.domain.Professor;
 import school.sptech.harmonyospringapi.domain.Usuario;
 import school.sptech.harmonyospringapi.service.usuario.autenticacao.dto.UsuarioTokenDto;
 
@@ -7,30 +9,55 @@ import java.time.LocalDateTime;
 
 public class UsuarioMapper {
 
-    public static Usuario of(UsuarioCriacaoDto usuarioCriacaoDto){
+    public static Aluno ofAlunoCriacao(UsuarioCriacaoDto usuarioCriacaoDto){
 
-        Usuario usuario = new Usuario();
+        Aluno novoAluno = new Aluno();
 
-        usuario.setNome(usuarioCriacaoDto.getNome());
+        novoAluno.setNome(usuarioCriacaoDto.getNome());
 
-        usuario.setEmail(usuarioCriacaoDto.getEmail());
+        novoAluno.setEmail(usuarioCriacaoDto.getEmail());
 
-        usuario.setCpf(usuarioCriacaoDto.getCpf());
+        novoAluno.setCpf(usuarioCriacaoDto.getCpf());
 
-        usuario.setSexo(usuarioCriacaoDto.getSexo());
+        novoAluno.setSexo(usuarioCriacaoDto.getSexo());
 
-        usuario.setSenha(usuarioCriacaoDto.getSenha()) ;
+        novoAluno.setSenha(usuarioCriacaoDto.getSenha()) ;
 
-        usuario.setCategoria(usuarioCriacaoDto.getCategoria());
+        novoAluno.setEndereco(usuarioCriacaoDto.getEndereco());
 
-        usuario.setAtivo(true);
+        novoAluno.setAtivo(true);
 
-        usuario.setUltimaVezOnline(LocalDateTime.now());
+        novoAluno.setUltimaVezOnline(LocalDateTime.now());
 
-        return usuario;
+        return novoAluno;
+    }
+
+    public static Professor ofProfessorCriacao(UsuarioCriacaoDto usuarioCriacaoDto){
+
+        Professor novoProfessor = new Professor();
+
+        novoProfessor.setNome(usuarioCriacaoDto.getNome());
+
+        novoProfessor.setEmail(usuarioCriacaoDto.getEmail());
+
+        novoProfessor.setCpf(usuarioCriacaoDto.getCpf());
+
+        novoProfessor.setSexo(usuarioCriacaoDto.getSexo());
+
+        novoProfessor.setSenha(usuarioCriacaoDto.getSenha()) ;
+
+        novoProfessor.setEndereco(usuarioCriacaoDto.getEndereco());
+
+        novoProfessor.setAtivo(true);
+
+        novoProfessor.setUltimaVezOnline(LocalDateTime.now());
+
+        return novoProfessor;
     }
 
     public static UsuarioExibicaoDto ofUsuarioExibicao(Usuario usuario){
+
+        String categoria = usuario instanceof Aluno ? "Aluno" : "Professor";
 
         UsuarioExibicaoDto usuarioExibicaoDto = new UsuarioExibicaoDto();
 
@@ -40,7 +67,7 @@ public class UsuarioMapper {
 
         usuarioExibicaoDto.setEmail(usuario.getEmail());
 
-        usuarioExibicaoDto.setCategoria(usuario.getCategoria());
+        usuarioExibicaoDto.setCategoria(categoria);
 
         usuarioExibicaoDto.setAtivo(usuario.isAtivo());
 

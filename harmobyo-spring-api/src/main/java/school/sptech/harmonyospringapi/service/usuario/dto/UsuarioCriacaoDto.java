@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 import org.hibernate.validator.constraints.br.CPF;
+import school.sptech.harmonyospringapi.domain.Endereco;
 
 public class UsuarioCriacaoDto {
 
@@ -24,7 +25,8 @@ public class UsuarioCriacaoDto {
     @Schema(description = "Senha do usuário", example = "123456")
     @Size(min = 3)
     private String senha;
-    private String categoria;
+
+    private Endereco endereco;
 
 
 
@@ -68,11 +70,11 @@ public class UsuarioCriacaoDto {
         this.senha = senha;
     }
 
-    public String getCategoria() {
-        return categoria;
+    public Endereco getEndereco() {
+        return endereco;
     }
 
-    public void setCategoria(String categoria) {
-        this.categoria = categoria;
+    public void setEndereco(Endereco endereco) {
+        this.endereco = endereco;
     }
 }

@@ -12,7 +12,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
 
     Optional<Usuario> findByEmail(String email);
 
-    List<Usuario> findByCategoriaEquals(String categoria);
+    boolean existsByEmail(String email);
 
-
+    boolean existsByCpf(String cpf);
 }

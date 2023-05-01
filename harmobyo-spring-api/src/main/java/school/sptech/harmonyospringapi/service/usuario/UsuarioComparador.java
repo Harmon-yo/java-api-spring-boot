@@ -40,41 +40,6 @@ public class UsuarioComparador {
         return ltUsuarios;
     }
 
-//    public ListaGenericaObj<Usuario> ordenacaoAlfabeticaOtimizado(){
-//
-////        int contadorTrocas = 0;
-////
-////        int qtdComparacoes = 0;
-//
-//        int menorPosicaoAlfabetica;
-//
-//        for (int i = 0; i < ltUsuarios.size() - 1; i++) {
-//
-//            menorPosicaoAlfabetica = i;
-//
-//            for (int j = i + 1; j < ltUsuarios.size(); j++) {
-//
-//                if (ltUsuarios.getElemento(i).getNome().compareToIgnoreCase(ltUsuarios.getElemento(j).getNome()) > 0) {
-//
-//                    menorPosicaoAlfabetica = j;
-//
-//                }
-//
-////                qtdComparacoes++;
-//            }
-//
-//            Usuario usuarioAux = ltUsuarios.getElemento(i);
-//
-//            ltUsuarios.setElemento(i, ltUsuarios.getElemento(menorPosicaoAlfabetica));
-//
-//            ltUsuarios.setElemento(menorPosicaoAlfabetica, usuarioAux);
-//
-////            contadorTrocas++;
-//        }
-//
-//        return ltUsuarios;
-//
-//    }
 
 
     public int pesquisaBinariaPorNome(String nome){

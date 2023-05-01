@@ -10,7 +10,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-public class Usuario {
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "categoria", discriminatorType = DiscriminatorType.STRING)
+public abstract class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,11 +39,11 @@ public class Usuario {
 
 
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(referencedColumnName = "id", name = "endereco_id")
     private Endereco endereco;
 
-
+    @Column(insertable=false, updatable=false)
     private String categoria;
     private boolean ativo;
     private boolean autenticado;
