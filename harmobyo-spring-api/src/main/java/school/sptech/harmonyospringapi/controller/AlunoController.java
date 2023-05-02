@@ -18,6 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/alunos")
+@CrossOrigin("http://localhost:3000")
 public class AlunoController{
 
     @Autowired

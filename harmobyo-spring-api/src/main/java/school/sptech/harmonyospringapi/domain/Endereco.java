@@ -18,8 +18,7 @@ public class Endereco {
     @Size(min = 5, message = "O logradouro deve ter no mínimo 5 caracteres")
     private String logradouro;
 
-    @NotBlank
-    @Size(min = 1, message = "O número deve ter no mínimo 1 caracter")
+
     private String numero;
 
     private String complemento;
