@@ -2,13 +2,11 @@ package school.sptech.harmonyospringapi.service.instrumento.dto;
 
 import school.sptech.harmonyospringapi.service.naipe.dto.NaipeExibicaoSemInstrumentosDto;
 
-public class InstrumentoExibicaoDto {
+public class InstrumentoExibicaoSemNaipeDto {
 
     private Integer id;
 
     private String nome;
-
-    private NaipeExibicaoSemInstrumentosDto naipe;
 
     public Integer getId() {
         return id;
@@ -26,11 +24,4 @@ public class InstrumentoExibicaoDto {
         this.nome = nome;
     }
 
-    public NaipeExibicaoSemInstrumentosDto getNaipe() {
-        return naipe;
-    }
-
-    public void setNaipe(NaipeExibicaoSemInstrumentosDto naipe) {
-        this.naipe = naipe;
-    }
 }

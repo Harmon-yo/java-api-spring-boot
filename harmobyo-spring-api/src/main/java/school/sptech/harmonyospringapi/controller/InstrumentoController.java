@@ -1,6 +1,7 @@
 package school.sptech.harmonyospringapi.controller;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,7 @@ public class InstrumentoController {
 
     @SecurityRequirement(name = "Bearer")
     @PostMapping
-    public ResponseEntity<InstrumentoExibicaoDto> cadastrar(@RequestBody InstrumentoCriacaoDto instrumentoCriacaoDto) {
+    public ResponseEntity<InstrumentoExibicaoDto> cadastrar(@RequestBody @Valid InstrumentoCriacaoDto instrumentoCriacaoDto) {
         InstrumentoExibicaoDto instrumentoExibicaoDto = this.instrumentoService.cadastrar(instrumentoCriacaoDto);
 
         return instrumentoExibicaoDto == null ? ResponseEntity.status(409).build() : ResponseEntity.status(201).body(instrumentoExibicaoDto);

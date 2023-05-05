@@ -1,22 +1,34 @@
 package school.sptech.harmonyospringapi.service.instrumento.dto;
 
 import school.sptech.harmonyospringapi.domain.Instrumento;
+import school.sptech.harmonyospringapi.service.naipe.dto.NaipeMapper;
 
 public class InstrumentoMapper {
     public static Instrumento of(InstrumentoCriacaoDto instrumentoCriacaoDto) {
         Instrumento instrumento = new Instrumento();
 
         instrumento.setNome(instrumentoCriacaoDto.getNome());
+        instrumento.setNaipe(instrumentoCriacaoDto.getNaipe());
 
         return instrumento;
     }
 
     public static InstrumentoExibicaoDto ofInstrumentoExibicao(Instrumento instrumento) {
-        InstrumentoExibicaoDto instrumentoCriacaoDto = new InstrumentoExibicaoDto();
+        InstrumentoExibicaoDto instrumentoExibicaoDto = new InstrumentoExibicaoDto();
 
-        instrumentoCriacaoDto.setId(instrumento.getId());
-        instrumentoCriacaoDto.setNome(instrumento.getNome());
+        instrumentoExibicaoDto.setId(instrumento.getId());
+        instrumentoExibicaoDto.setNome(instrumento.getNome());
+        instrumentoExibicaoDto.setNaipe(NaipeMapper.ofNaipeExibicaoSemInstrumentos(instrumento.getNaipe()));
 
-        return instrumentoCriacaoDto;
+        return instrumentoExibicaoDto;
+    }
+
+    public static InstrumentoExibicaoSemNaipeDto ofInstrumentoExibicaoSemNaipe(Instrumento instrumento) {
+        InstrumentoExibicaoSemNaipeDto instrumentoExibicaoDto = new InstrumentoExibicaoSemNaipeDto();
+
+        instrumentoExibicaoDto.setId(instrumento.getId());
+        instrumentoExibicaoDto.setNome(instrumento.getNome());
+
+        return instrumentoExibicaoDto;
     }
 }
