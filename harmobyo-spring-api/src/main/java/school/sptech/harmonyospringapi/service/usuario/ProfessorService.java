@@ -56,7 +56,7 @@ public class ProfessorService {
         }
     }
 
-    public List<UsuarioExibicaoDto> exibirTodos(){
+    public List<UsuarioExibicaoDto> obterTodos(){
 
         List<Professor> ltProfessores = this.professorRepository.findAll();
 
@@ -80,7 +80,7 @@ public class ProfessorService {
     }
 
 
-    public UsuarioExibicaoDto buscarPorNome(String nome){
+    public UsuarioExibicaoDto obterPorNome(String nome){
 
         List<Professor> ltProfessores = this.professorRepository.findAll();
 
@@ -105,7 +105,7 @@ public class ProfessorService {
     }
 
 
-    public List<UsuarioExibicaoDto> exibeEmOrdemAlfabetica(){
+    public List<UsuarioExibicaoDto> obterTodosEmOrdemAlfabetica(){
 
         List<Professor> ltProfessores = this.professorRepository.findAll();
 
@@ -135,5 +135,4 @@ public class ProfessorService {
             );
         }
     }
-
 }

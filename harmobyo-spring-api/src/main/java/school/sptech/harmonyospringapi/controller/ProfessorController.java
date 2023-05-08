@@ -10,7 +10,11 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import school.sptech.harmonyospringapi.service.professor_instrumento.ProfessorInstrumentoService;
+import school.sptech.harmonyospringapi.service.professor_instrumento.dto.ProfessorInstrumentoCriacaoApenasIdDto;
+import school.sptech.harmonyospringapi.service.professor_instrumento.dto.ProfessorInstrumentoExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.ProfessorService;
+import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioCriacaoApenasIdDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioCriacaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioExibicaoDto;
 
@@ -22,6 +26,9 @@ public class ProfessorController {
 
     @Autowired
     private ProfessorService professorService;
+
+    @Autowired
+    private ProfessorInstrumentoService professorInstrumentoService;
 
     @Operation(summary = "Cadastra um professor", description = "")
     @ApiResponse(responseCode = "201", description = "Professor cadastrado.")
@@ -38,12 +45,10 @@ public class ProfessorController {
             @ApiResponse(responseCode = "200", description = "Professores encontrados."),
             @ApiResponse(responseCode = "204", description = "Não há professores cadastrados.", content = @Content(schema = @Schema(hidden = true)))
     })
-
-
     @GetMapping
-    public ResponseEntity<List<UsuarioExibicaoDto>> exibirTodos() {
+    public ResponseEntity<List<UsuarioExibicaoDto>> obterTodos() {
 
-        List<UsuarioExibicaoDto> ltUsuariosExibicao = this.professorService.exibirTodos();
+        List<UsuarioExibicaoDto> ltUsuariosExibicao = this.professorService.obterTodos();
 
         if (ltUsuariosExibicao.isEmpty()) {
 
@@ -74,9 +79,9 @@ public class ProfessorController {
     })
     @SecurityRequirement(name = "Bearer")
     @GetMapping("/ordem-alfabetica")
-    public ResponseEntity<List<UsuarioExibicaoDto>> exibeEmOrdemAlfabetica() {
+    public ResponseEntity<List<UsuarioExibicaoDto>> obterTodosEmOrdemAlfabetica() {
 
-        List<UsuarioExibicaoDto> ltUsuariosExibicao = this.professorService.exibeEmOrdemAlfabetica();
+        List<UsuarioExibicaoDto> ltUsuariosExibicao = this.professorService.obterTodosEmOrdemAlfabetica();
 
         if (ltUsuariosExibicao.isEmpty()) {
 
@@ -96,9 +101,9 @@ public class ProfessorController {
     @ApiResponse(responseCode = "200", description = "Professor encontrado.")
     @SecurityRequirement(name = "Bearer")
     @GetMapping("/nome")
-    public ResponseEntity<UsuarioExibicaoDto> buscarPorNome(@RequestParam String nome) {
+    public ResponseEntity<UsuarioExibicaoDto> obterPorNome(@RequestParam String nome) {
 
-        UsuarioExibicaoDto professorEncontrado = this.professorService.buscarPorNome(nome);
+        UsuarioExibicaoDto professorEncontrado = this.professorService.obterPorNome(nome);
 
         return ResponseEntity.status(200).body(professorEncontrado);
     }
@@ -114,6 +119,22 @@ public class ProfessorController {
 
         this.professorService.deletarPorId(id);
 
-        return ResponseEntity.status(200).build();
+        return ResponseEntity.status(204).build();
+    }
+
+
+    @GetMapping("/{id}/instrumentos")
+    public ResponseEntity<List<ProfessorInstrumentoExibicaoDto>> obterTodosInstrumentos(@PathVariable int id) {
+        List<ProfessorInstrumentoExibicaoDto> professorInstrumentoExibicaoDtos = this.professorInstrumentoService.obterTodos(id);
+        return professorInstrumentoExibicaoDtos.isEmpty() ? ResponseEntity.status(204).build()
+                : ResponseEntity.status(200).body(professorInstrumentoExibicaoDtos);
+    }
+
+    @PostMapping("/{id}/instrumentos")
+    public ResponseEntity<ProfessorInstrumentoExibicaoDto> adicionarInstrumentos(@PathVariable int id, @RequestBody @Valid ProfessorInstrumentoCriacaoApenasIdDto professorInstrumentoCriacaoApenasIdDto) {
+
+        ProfessorInstrumentoExibicaoDto professorInstrumentoExibicaoDto = this.professorInstrumentoService.cadastrar(id, professorInstrumentoCriacaoApenasIdDto);
+
+        return ResponseEntity.status(201).body(professorInstrumentoExibicaoDto);
     }
 }

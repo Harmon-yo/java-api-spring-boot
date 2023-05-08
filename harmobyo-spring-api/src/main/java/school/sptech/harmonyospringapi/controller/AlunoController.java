@@ -10,7 +10,13 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import school.sptech.harmonyospringapi.domain.Aluno;
+import school.sptech.harmonyospringapi.service.aluno_instrumento.AlunoInstrumentoService;
+import school.sptech.harmonyospringapi.service.aluno_instrumento.dto.AlunoInstrumentoCriacaoApenasIdDto;
+import school.sptech.harmonyospringapi.service.aluno_instrumento.dto.AlunoInstrumentoCriacaoDto;
+import school.sptech.harmonyospringapi.service.aluno_instrumento.dto.AlunoInstrumentoExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.AlunoService;
+import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioCriacaoApenasIdDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioCriacaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioExibicaoDto;
 
@@ -23,6 +29,9 @@ public class AlunoController{
 
     @Autowired
     private AlunoService alunoService;
+
+    @Autowired
+    private AlunoInstrumentoService alunoInstrumentoService;
 
     @Operation(summary = "Cadastra um aluno", description = "")
     @ApiResponse(responseCode = "201", description = "Aluno cadastrado.")
@@ -111,5 +120,22 @@ public class AlunoController{
         this.alunoService.deletarPorId(id);
 
         return ResponseEntity.status(200).build();
+    }
+
+    @SecurityRequirement(name = "Bearer")
+    @GetMapping("/{id}/instrumentos")
+    public ResponseEntity<List<AlunoInstrumentoExibicaoDto>> obterTodosInstrumentos(@PathVariable int id) {
+        List<AlunoInstrumentoExibicaoDto> alunoInstrumentoExibicaoDtos = this.alunoInstrumentoService.obterTodos(id);
+
+        return alunoInstrumentoExibicaoDtos.isEmpty() ? ResponseEntity.status(204).build()
+                : ResponseEntity.status(200).body(alunoInstrumentoExibicaoDtos);
+    }
+
+    @SecurityRequirement(name = "Bearer")
+    @PostMapping("/{id}/instrumentos")
+    public ResponseEntity<AlunoInstrumentoExibicaoDto> cadastrarInstrumento(@PathVariable int id, @RequestBody @Valid AlunoInstrumentoCriacaoApenasIdDto alunoInstrumentoCriacaoDto) {
+        AlunoInstrumentoExibicaoDto alunoInstrumentoExibicaoDto = this.alunoInstrumentoService.cadastrar(id, alunoInstrumentoCriacaoDto);
+
+        return ResponseEntity.status(201).body(alunoInstrumentoExibicaoDto);
     }
 }

@@ -1,5 +1,6 @@
 package school.sptech.harmonyospringapi.service.professor_instrumento.dto;
 
+import school.sptech.harmonyospringapi.domain.Instrumento;
 import school.sptech.harmonyospringapi.domain.Professor;
 import school.sptech.harmonyospringapi.domain.ProfessorInstrumento;
 import school.sptech.harmonyospringapi.domain.ProfessorInstrumentoKey;
@@ -35,4 +36,19 @@ public class ProfessorInstrumentoMapper {
 
         return professorInstrumento;
     }
+
+    public static ProfessorInstrumentoCriacaoDto ofProfessorInstrumentoCriacao(ProfessorInstrumentoCriacaoApenasIdDto professorInstrumentoCriacaoApenasIdDto,
+                                                                                           Professor professor,
+                                                                                           Instrumento instrumento) {
+
+        ProfessorInstrumentoCriacaoDto professorInstrumentoCriacaoDto = new ProfessorInstrumentoCriacaoDto();
+        professorInstrumentoCriacaoDto.setProfessor(professor);
+        professorInstrumentoCriacaoDto.setInstrumento(instrumento);
+        professorInstrumentoCriacaoDto.setNivelConhecimento(professorInstrumentoCriacaoApenasIdDto.getNivelConhecimento());
+        professorInstrumentoCriacaoDto.setEmprestaInstrumento(professorInstrumentoCriacaoApenasIdDto.isEmprestaInstrumento());
+
+        return professorInstrumentoCriacaoDto;
+    }
+
+
 }
