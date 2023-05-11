@@ -21,34 +21,19 @@ public class ProfessorInstrumentoMapper {
         return professorInstrumentoExibicaoDto;
     }
 
-    public static ProfessorInstrumento of(ProfessorInstrumentoCriacaoDto professorInstrumentoCriacaoDto) {
+    public static ProfessorInstrumento of(ProfessorInstrumentoCriacaoDto professorInstrumentoCriacaoDto, Professor professor, Instrumento instrumento) {
 
         ProfessorInstrumentoKey professorInstrumentoKey = new ProfessorInstrumentoKey();
-        professorInstrumentoKey.setProfessorFk(professorInstrumentoCriacaoDto.getProfessor().getId());
-        professorInstrumentoKey.setInstrumentoFk(professorInstrumentoCriacaoDto.getProfessor().getId());
+        professorInstrumentoKey.setProfessorFk(professor.getId());
+        professorInstrumentoKey.setInstrumentoFk(instrumento.getId());
 
         ProfessorInstrumento professorInstrumento = new ProfessorInstrumento();
         professorInstrumento.setId(professorInstrumentoKey);
-        professorInstrumento.setProfessor(professorInstrumentoCriacaoDto.getProfessor());
-        professorInstrumento.setInstrumento(professorInstrumentoCriacaoDto.getInstrumento());
+        professorInstrumento.setProfessor(professor);
+        professorInstrumento.setInstrumento(instrumento);
         professorInstrumento.setNivelConhecimento(professorInstrumentoCriacaoDto.getNivelConhecimento());
         professorInstrumento.setEmprestaInstrumento(professorInstrumentoCriacaoDto.isEmprestaInstrumento());
 
         return professorInstrumento;
     }
-
-    public static ProfessorInstrumentoCriacaoDto ofProfessorInstrumentoCriacao(ProfessorInstrumentoCriacaoApenasIdDto professorInstrumentoCriacaoApenasIdDto,
-                                                                                           Professor professor,
-                                                                                           Instrumento instrumento) {
-
-        ProfessorInstrumentoCriacaoDto professorInstrumentoCriacaoDto = new ProfessorInstrumentoCriacaoDto();
-        professorInstrumentoCriacaoDto.setProfessor(professor);
-        professorInstrumentoCriacaoDto.setInstrumento(instrumento);
-        professorInstrumentoCriacaoDto.setNivelConhecimento(professorInstrumentoCriacaoApenasIdDto.getNivelConhecimento());
-        professorInstrumentoCriacaoDto.setEmprestaInstrumento(professorInstrumentoCriacaoApenasIdDto.isEmprestaInstrumento());
-
-        return professorInstrumentoCriacaoDto;
-    }
-
-
 }

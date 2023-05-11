@@ -27,15 +27,15 @@ public class InstrumentoService {
     /* Ver se da para criar o naipe depois de criar o instrumento */
     public InstrumentoExibicaoDto cadastrar(InstrumentoCriacaoDto instrumentoCriacaoDto) {
         if (this.instrumentoRepository.existsInstrumentoByNomeIgnoreCase(instrumentoCriacaoDto.getNome())) throw new EntidadeConflitanteException("Erro ao cadastrar. Instrumento já cadastrado!");
-        Optional<Naipe> optionalNaipe = this.naipeRepository.findById(instrumentoCriacaoDto.getNaipe().getId());
+        Optional<Naipe> optionalNaipe = this.naipeRepository.findById(instrumentoCriacaoDto.getNaipeId());
+
         if (optionalNaipe.isEmpty()) throw new EntitadeNaoEncontradaException("Erro ao cadastrar. Naipe não cadastrado!");
 
+        Naipe naipe = optionalNaipe.get();
 
+        Instrumento novoInstrumento = InstrumentoMapper.of(instrumentoCriacaoDto, naipe);
 
-        instrumentoCriacaoDto.setNaipe(optionalNaipe.get());
-        Instrumento novoInstrumento = InstrumentoMapper.of(instrumentoCriacaoDto);
-        this.instrumentoRepository.save(novoInstrumento);
-        return InstrumentoMapper.ofInstrumentoExibicao(novoInstrumento);
+        return InstrumentoMapper.ofInstrumentoExibicao(this.instrumentoRepository.save(novoInstrumento));
     }
 
     public List<InstrumentoExibicaoDto> listar() {

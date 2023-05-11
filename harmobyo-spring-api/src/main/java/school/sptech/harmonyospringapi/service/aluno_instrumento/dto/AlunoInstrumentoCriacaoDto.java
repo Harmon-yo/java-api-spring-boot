@@ -1,5 +1,6 @@
 package school.sptech.harmonyospringapi.service.aluno_instrumento.dto;
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -8,26 +9,20 @@ import school.sptech.harmonyospringapi.domain.Instrumento;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioCriacaoApenasIdDto;
 
 public class AlunoInstrumentoCriacaoDto {
-    private Aluno aluno;
 
-    private Instrumento instrumento;
+    @Min(1)
+    @NotNull
+    private Integer instrumentoId;
 
+    @NotBlank
     private String nivelConhecimento;
 
-    public Aluno getAluno() {
-        return aluno;
+    public Integer getInstrumentoId() {
+        return instrumentoId;
     }
 
-    public void setAluno(Aluno aluno) {
-        this.aluno = aluno;
-    }
-
-    public Instrumento getInstrumento() {
-        return instrumento;
-    }
-
-    public void setInstrumento(Instrumento instrumento) {
-        this.instrumento = instrumento;
+    public void setInstrumentoId(Integer instrumentoId) {
+        this.instrumentoId = instrumentoId;
     }
 
     public String getNivelConhecimento() {

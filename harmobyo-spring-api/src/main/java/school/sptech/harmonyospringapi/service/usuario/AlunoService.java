@@ -54,7 +54,7 @@ public class AlunoService {
         }
     }
 
-    public List<UsuarioExibicaoDto> exibirTodos() {
+    public List<UsuarioExibicaoDto> obterTodos() {
 
         List<Aluno> ltAlunos = this.alunoRepository.findAll();
 
@@ -101,7 +101,7 @@ public class AlunoService {
 
     }
 
-    public List<UsuarioExibicaoDto> exibeEmOrdemAlfabetica() {
+    public List<UsuarioExibicaoDto> obterTodosEmOrdemAlfabetica() {
 
         List<Aluno> ltAlunos = this.alunoRepository.findAll();
 

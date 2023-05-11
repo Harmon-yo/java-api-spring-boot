@@ -6,15 +6,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import school.sptech.harmonyospringapi.service.professor_instrumento.ProfessorInstrumentoService;
-import school.sptech.harmonyospringapi.service.professor_instrumento.dto.ProfessorInstrumentoCriacaoApenasIdDto;
+import school.sptech.harmonyospringapi.service.professor_instrumento.dto.ProfessorInstrumentoCriacaoDto;
 import school.sptech.harmonyospringapi.service.professor_instrumento.dto.ProfessorInstrumentoExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.ProfessorService;
-import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioCriacaoApenasIdDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioCriacaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioExibicaoDto;
 
@@ -22,6 +22,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/professores")
+@Tag(name = "Professores")
 public class ProfessorController {
 
     @Autowired
@@ -131,9 +132,9 @@ public class ProfessorController {
     }
 
     @PostMapping("/{id}/instrumentos")
-    public ResponseEntity<ProfessorInstrumentoExibicaoDto> adicionarInstrumentos(@PathVariable int id, @RequestBody @Valid ProfessorInstrumentoCriacaoApenasIdDto professorInstrumentoCriacaoApenasIdDto) {
+    public ResponseEntity<ProfessorInstrumentoExibicaoDto> adicionarInstrumentos(@PathVariable int id, @RequestBody @Valid ProfessorInstrumentoCriacaoDto professorInstrumentoCriacaoDto) {
 
-        ProfessorInstrumentoExibicaoDto professorInstrumentoExibicaoDto = this.professorInstrumentoService.cadastrar(id, professorInstrumentoCriacaoApenasIdDto);
+        ProfessorInstrumentoExibicaoDto professorInstrumentoExibicaoDto = this.professorInstrumentoService.cadastrar(id, professorInstrumentoCriacaoDto);
 
         return ResponseEntity.status(201).body(professorInstrumentoExibicaoDto);
     }

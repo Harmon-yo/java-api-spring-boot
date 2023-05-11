@@ -9,7 +9,6 @@ import school.sptech.harmonyospringapi.repository.InstrumentoRepository;
 import school.sptech.harmonyospringapi.repository.ProfessorInstrumentoRepository;
 import school.sptech.harmonyospringapi.repository.ProfessorRepository;
 import school.sptech.harmonyospringapi.service.professor_instrumento.dto.ProfessorInstrumentoCriacaoDto;
-import school.sptech.harmonyospringapi.service.professor_instrumento.dto.ProfessorInstrumentoCriacaoApenasIdDto;
 import school.sptech.harmonyospringapi.service.professor_instrumento.dto.ProfessorInstrumentoExibicaoDto;
 import school.sptech.harmonyospringapi.service.professor_instrumento.dto.ProfessorInstrumentoMapper;
 import school.sptech.harmonyospringapi.service.exceptions.EntitadeNaoEncontradaException;
@@ -36,8 +35,8 @@ public class ProfessorInstrumentoService {
                 .toList();
     }
 
-    public ProfessorInstrumentoExibicaoDto cadastrar(Integer professorId, ProfessorInstrumentoCriacaoApenasIdDto professorInstrumentoCriacaoApenasIdDto) {
-        Integer instrumentoId = professorInstrumentoCriacaoApenasIdDto.getInstrumento().getId();
+    public ProfessorInstrumentoExibicaoDto cadastrar(Integer professorId, ProfessorInstrumentoCriacaoDto professorInstrumentoCriacaoDto) {
+        Integer instrumentoId = professorInstrumentoCriacaoDto.getInstrumentoId();
 
         Optional<Professor> optionalProfessor = this.professorRepository.findById(professorId);
         Optional<Instrumento> optionalInstrumento = this.instrumentoRepository.findById(instrumentoId);
@@ -45,12 +44,11 @@ public class ProfessorInstrumentoService {
         if (optionalProfessor.isEmpty()) throw new EntitadeNaoEncontradaException("Professor com id inexistente");
         if (optionalInstrumento.isEmpty()) throw new EntitadeNaoEncontradaException("Instrumento com id inexistente");
 
-        ProfessorInstrumentoCriacaoDto professorInstrumentoCriacaoDto =
-                ProfessorInstrumentoMapper.ofProfessorInstrumentoCriacao(professorInstrumentoCriacaoApenasIdDto, optionalProfessor.get(),
-                        optionalInstrumento.get());
+        Professor professorCadastrado = optionalProfessor.get();
+        Instrumento instrumentoCadastrado = optionalInstrumento.get();
 
         ProfessorInstrumento professorInstrumentoCadastrado = this.professorInstrumentoRepository
-                .save(ProfessorInstrumentoMapper.of(professorInstrumentoCriacaoDto));
+                .save(ProfessorInstrumentoMapper.of(professorInstrumentoCriacaoDto, professorCadastrado, instrumentoCadastrado));
 
         return ProfessorInstrumentoMapper.ofProfessorInstrumentoExibicao(professorInstrumentoCadastrado);
     }

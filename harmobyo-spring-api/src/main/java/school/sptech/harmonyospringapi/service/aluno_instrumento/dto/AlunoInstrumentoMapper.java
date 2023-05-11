@@ -23,29 +23,20 @@ public class AlunoInstrumentoMapper {
         return alunoInstrumentoExibicaoDto;
     }
 
-    public static AlunoInstrumento of(AlunoInstrumentoCriacaoDto alunoInstrumentoCriacaoDto) {
+    public static AlunoInstrumento of(AlunoInstrumentoCriacaoDto alunoInstrumentoCriacaoDto,
+                                      Aluno aluno,
+                                      Instrumento instrumento) {
+
         AlunoInstrumentoKey alunoInstrumentoKey = new AlunoInstrumentoKey();
-        alunoInstrumentoKey.setAlunoFk(alunoInstrumentoCriacaoDto.getAluno().getId());
-        alunoInstrumentoKey.setInstrumentoFk(alunoInstrumentoCriacaoDto.getInstrumento().getId());
+        alunoInstrumentoKey.setAlunoFk(aluno.getId());
+        alunoInstrumentoKey.setInstrumentoFk(instrumento.getId());
 
         AlunoInstrumento alunoInstrumento = new AlunoInstrumento();
         alunoInstrumento.setId(alunoInstrumentoKey);
-        alunoInstrumento.setAluno(alunoInstrumentoCriacaoDto.getAluno());
-        alunoInstrumento.setInstrumento(alunoInstrumentoCriacaoDto.getInstrumento());
+        alunoInstrumento.setAluno(aluno);
+        alunoInstrumento.setInstrumento(instrumento);
         alunoInstrumento.setNivelConhecimento(alunoInstrumentoCriacaoDto.getNivelConhecimento());
 
         return alunoInstrumento;
-    }
-
-    public static AlunoInstrumentoCriacaoDto ofAlunoInstrumentoCriacaoDto(AlunoInstrumentoCriacaoApenasIdDto alunoInstrumentoCriacaoApenasIdDto,
-                                                                                           Aluno aluno,
-                                                                                           Instrumento instrumento) {
-
-        AlunoInstrumentoCriacaoDto alunoInstrumentoCriacaoDto = new AlunoInstrumentoCriacaoDto();
-        alunoInstrumentoCriacaoDto.setAluno(aluno);
-        alunoInstrumentoCriacaoDto.setInstrumento(instrumento);
-        alunoInstrumentoCriacaoDto.setNivelConhecimento(alunoInstrumentoCriacaoApenasIdDto.getNivelConhecimento());
-
-        return alunoInstrumentoCriacaoDto;
     }
 }

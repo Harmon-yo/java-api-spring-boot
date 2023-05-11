@@ -6,17 +6,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import school.sptech.harmonyospringapi.domain.Aluno;
 import school.sptech.harmonyospringapi.service.aluno_instrumento.AlunoInstrumentoService;
-import school.sptech.harmonyospringapi.service.aluno_instrumento.dto.AlunoInstrumentoCriacaoApenasIdDto;
 import school.sptech.harmonyospringapi.service.aluno_instrumento.dto.AlunoInstrumentoCriacaoDto;
 import school.sptech.harmonyospringapi.service.aluno_instrumento.dto.AlunoInstrumentoExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.AlunoService;
-import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioCriacaoApenasIdDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioCriacaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioExibicaoDto;
 
@@ -25,6 +23,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/alunos")
 @CrossOrigin("http://localhost:3000")
+@Tag(name = "Alunos")
 public class AlunoController{
 
     @Autowired
@@ -49,9 +48,9 @@ public class AlunoController{
             @ApiResponse(responseCode = "204", description = "Não há alunos cadastrados.", content = @Content(schema = @Schema(hidden = true)))
     })
     @GetMapping
-    public ResponseEntity<List<UsuarioExibicaoDto>> listarAlunos(){
+    public ResponseEntity<List<UsuarioExibicaoDto>> obterTodos(){
 
-        List<UsuarioExibicaoDto> ltUsuariosExibicao = this.alunoService.exibirTodos();
+        List<UsuarioExibicaoDto> ltUsuariosExibicao = this.alunoService.obterTodos();
 
         if (ltUsuariosExibicao.isEmpty()){
 
@@ -96,9 +95,9 @@ public class AlunoController{
     })
     @SecurityRequirement(name = "Bearer")
     @GetMapping("/ordem-alfabetica")
-    public ResponseEntity<List<UsuarioExibicaoDto>> exibeAlunosOrdemAlfabetica(){
+    public ResponseEntity<List<UsuarioExibicaoDto>> obterTodosEmOrdemAlfabetica(){
 
-        List<UsuarioExibicaoDto> ltUsuariosExibicao = this.alunoService.exibeEmOrdemAlfabetica();
+        List<UsuarioExibicaoDto> ltUsuariosExibicao = this.alunoService.obterTodosEmOrdemAlfabetica();
 
         if (ltUsuariosExibicao.isEmpty()){
 
@@ -133,7 +132,8 @@ public class AlunoController{
 
     @SecurityRequirement(name = "Bearer")
     @PostMapping("/{id}/instrumentos")
-    public ResponseEntity<AlunoInstrumentoExibicaoDto> cadastrarInstrumento(@PathVariable int id, @RequestBody @Valid AlunoInstrumentoCriacaoApenasIdDto alunoInstrumentoCriacaoDto) {
+
+    public ResponseEntity<AlunoInstrumentoExibicaoDto> cadastrarInstrumento(@PathVariable int id, @RequestBody @Valid AlunoInstrumentoCriacaoDto alunoInstrumentoCriacaoDto) {
         AlunoInstrumentoExibicaoDto alunoInstrumentoExibicaoDto = this.alunoInstrumentoService.cadastrar(id, alunoInstrumentoCriacaoDto);
 
         return ResponseEntity.status(201).body(alunoInstrumentoExibicaoDto);

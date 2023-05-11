@@ -1,14 +1,15 @@
 package school.sptech.harmonyospringapi.service.instrumento.dto;
 
 import school.sptech.harmonyospringapi.domain.Instrumento;
+import school.sptech.harmonyospringapi.domain.Naipe;
 import school.sptech.harmonyospringapi.service.naipe.dto.NaipeMapper;
 
 public class InstrumentoMapper {
-    public static Instrumento of(InstrumentoCriacaoDto instrumentoCriacaoDto) {
+    public static Instrumento of(InstrumentoCriacaoDto instrumentoCriacaoDto, Naipe naipe) {
         Instrumento instrumento = new Instrumento();
 
         instrumento.setNome(instrumentoCriacaoDto.getNome());
-        instrumento.setNaipe(instrumentoCriacaoDto.getNaipe());
+        instrumento.setNaipe(naipe);
 
         return instrumento;
     }
