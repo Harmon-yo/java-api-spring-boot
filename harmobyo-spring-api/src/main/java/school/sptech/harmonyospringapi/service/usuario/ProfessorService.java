@@ -5,7 +5,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import school.sptech.harmonyospringapi.domain.Professor;
 import school.sptech.harmonyospringapi.domain.Usuario;
-import school.sptech.harmonyospringapi.lista.ListaGenericaObj;
+import school.sptech.harmonyospringapi.utils.ListaGenericaObj;
 import school.sptech.harmonyospringapi.repository.ProfessorRepository;
 import school.sptech.harmonyospringapi.repository.UsuarioRepository;
 import school.sptech.harmonyospringapi.service.exceptions.EntidadeConflitanteException;

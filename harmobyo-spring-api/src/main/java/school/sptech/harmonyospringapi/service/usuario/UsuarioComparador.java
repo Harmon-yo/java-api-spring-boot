@@ -1,7 +1,7 @@
 package school.sptech.harmonyospringapi.service.usuario;
 
 import school.sptech.harmonyospringapi.domain.Usuario;
-import school.sptech.harmonyospringapi.lista.ListaGenericaObj;
+import school.sptech.harmonyospringapi.utils.ListaGenericaObj;
 
 public class UsuarioComparador {
 

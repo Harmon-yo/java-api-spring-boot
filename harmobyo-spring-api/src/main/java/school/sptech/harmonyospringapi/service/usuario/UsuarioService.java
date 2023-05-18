@@ -11,7 +11,7 @@ import org.springframework.web.server.ResponseStatusException;
 import school.sptech.harmonyospringapi.configuration.security.jwt.GerenciadorTokenJwt;
 import school.sptech.harmonyospringapi.domain.Endereco;
 import school.sptech.harmonyospringapi.domain.Usuario;
-import school.sptech.harmonyospringapi.lista.ListaGenericaObj;
+import school.sptech.harmonyospringapi.utils.ListaGenericaObj;
 import school.sptech.harmonyospringapi.repository.AlunoRepository;
 import school.sptech.harmonyospringapi.repository.ProfessorRepository;
 import school.sptech.harmonyospringapi.repository.UsuarioRepository;

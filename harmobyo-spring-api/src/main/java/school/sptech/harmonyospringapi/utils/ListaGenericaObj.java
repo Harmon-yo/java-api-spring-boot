@@ -1,4 +1,4 @@
-package school.sptech.harmonyospringapi.lista;
+package school.sptech.harmonyospringapi.utils;
 
 public class ListaGenericaObj<T>{
 
