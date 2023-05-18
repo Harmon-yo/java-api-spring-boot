@@ -26,9 +26,11 @@ public class AulaService {
     private UsuarioRepository usuarioRepository;
 
     public List<UsuarioExibicaoDto> setFilaDeEspera(int idProfessor, int idAula, int idAluno) {
-    //TODO: Colocar o Id do professor, Id da aula e Id do aluno a ser add na fila
+        //TODO: Colocar o Id do professor, Id da aula e Id do aluno a ser add na fila
+        //TODO: Adicionar uma AlunoFilaDeEsperaDTO contendo o nome do aluno e o instrumento desejado
 
 //        FilaObj<Usuario> l = new FilaObj<>(listAulas.size());
 //        return ltAlunos.stream().map(UsuarioMapper::ofUsuarioExibicao).toList();
+        return null;
     }
 }
