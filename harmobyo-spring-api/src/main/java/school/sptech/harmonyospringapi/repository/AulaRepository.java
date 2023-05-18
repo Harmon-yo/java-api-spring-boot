@@ -8,5 +8,5 @@ import school.sptech.harmonyospringapi.domain.Usuario;
 import java.util.List;
 
 public interface AulaRepository extends JpaRepository<Aula, AulaKey> {
-    List<Usuario> findByCategoriaContainsAlunoIgnoreCase();
+
 }

@@ -1,5 +1,6 @@
 package school.sptech.harmonyospringapi.controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,11 +17,13 @@ public class AlunoFilaDeEsperaController {
     @Autowired
     private AlunoFilaDeEsperaService service;
 
+    @SecurityRequirement(name = "Bearer")
     @GetMapping("/primeiro-aluno")
     public ResponseEntity<AlunoFilaDeEsperaDTO> pollAlunoFilaDeEspera(){
         return ResponseEntity.ok().body(service.pollAluno());
     }
 
+    @SecurityRequirement(name = "Bearer")
     @PostMapping
     public ResponseEntity<FilaObj<AlunoFilaDeEsperaDTO>> postFilaAlunoDeEspera(){
         return ResponseEntity.ok().body(service.getFilaEsperaAluno());

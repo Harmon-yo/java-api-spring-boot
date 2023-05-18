@@ -14,6 +14,4 @@ public class Professor extends Usuario{
     @OneToMany(mappedBy = "professor")
     private List<ProfessorInstrumento> professorInstrumentos;
 
-    //TODO atualizar a capacidade da fila de acordo com o banco
-    private FilaObj<Aluno> filaDeEsperaAlunos = new FilaObj<>(10);
 }
