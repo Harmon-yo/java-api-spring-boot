@@ -134,7 +134,7 @@ public class ProfessorController {
     @PostMapping("/{id}/instrumentos")
     public ResponseEntity<ProfessorInstrumentoExibicaoDto> adicionarInstrumentos(@PathVariable int id, @RequestBody @Valid ProfessorInstrumentoCriacaoDto professorInstrumentoCriacaoDto) {
 
-        ProfessorInstrumentoExibicaoDto professorInstrumentoExibicaoDto = this.professorInstrumentoService.cadastrar(id, professorInstrumentoCriacaoDto);
+        ProfessorInstrumentoExibicaoDto professorInstrumentoExibicaoDto = this.professorInstrumentoService.criar(id, professorInstrumentoCriacaoDto);
 
         return ResponseEntity.status(201).body(professorInstrumentoExibicaoDto);
     }

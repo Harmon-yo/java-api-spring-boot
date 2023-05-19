@@ -12,4 +12,7 @@ public class Aluno extends Usuario{
 
     @OneToMany(mappedBy = "aluno")
     private List<AlunoInstrumento> alunoInstrumentos;
+
+    @OneToMany(mappedBy = "aluno")
+    private List<Pedido> pedidos;
 }

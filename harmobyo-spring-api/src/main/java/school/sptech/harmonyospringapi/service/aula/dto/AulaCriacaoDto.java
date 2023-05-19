@@ -1,31 +1,43 @@
 package school.sptech.harmonyospringapi.service.aula.dto;
 
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MapsId;
-import school.sptech.harmonyospringapi.domain.Aluno;
-import school.sptech.harmonyospringapi.domain.AulaKey;
-import school.sptech.harmonyospringapi.domain.Instrumento;
-import school.sptech.harmonyospringapi.domain.Professor;
-
-import java.time.LocalDateTime;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 
 public class AulaCriacaoDto {
 
-    private Integer alunoId;
+    @Min(0)
+    @NotNull
+    private Double valorAula;
 
-    private Integer professorId;
+    @Min(1)
+    @NotNull
+    private Integer usuarioId;
 
+    @Min(1)
+    @NotNull
     private Integer instrumentoId;
 
-    private LocalDateTime horario;
+    public Double getValorAula() {
+        return valorAula;
+    }
 
-    private Double avaliacao;
+    public void setValorAula(Double valorAula) {
+        this.valorAula = valorAula;
+    }
 
-    private String comentario;
+    public Integer getUsuarioId() {
+        return usuarioId;
+    }
 
-    private Double valor;
+    public void setUsuarioId(Integer usuarioId) {
+        this.usuarioId = usuarioId;
+    }
 
-    private String status;
+    public Integer getInstrumentoId() {
+        return instrumentoId;
+    }
+
+    public void setInstrumentoId(Integer instrumentoId) {
+        this.instrumentoId = instrumentoId;
+    }
 }

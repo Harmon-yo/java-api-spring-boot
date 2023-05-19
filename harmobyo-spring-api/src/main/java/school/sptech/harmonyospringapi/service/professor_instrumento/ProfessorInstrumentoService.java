@@ -37,7 +37,7 @@ public class ProfessorInstrumentoService {
                 .toList();
     }
 
-    public ProfessorInstrumentoExibicaoDto cadastrar(Integer professorId, ProfessorInstrumentoCriacaoDto professorInstrumentoCriacaoDto) {
+    public ProfessorInstrumentoExibicaoDto criar(Integer professorId, ProfessorInstrumentoCriacaoDto professorInstrumentoCriacaoDto) {
         Integer instrumentoId = professorInstrumentoCriacaoDto.getInstrumentoId();
 
         Professor professorCadastrado = this.professorService.obterProfessorPorId(professorId);

@@ -37,7 +37,7 @@ public class AlunoInstrumentoService {
                 .toList();
     }
 
-    public AlunoInstrumentoExibicaoDto cadastrar(Integer alunoId, AlunoInstrumentoCriacaoDto alunoInstrumentoCriacaoDto) {
+    public AlunoInstrumentoExibicaoDto criar(Integer alunoId, AlunoInstrumentoCriacaoDto alunoInstrumentoCriacaoDto) {
         Integer instrumentoId = alunoInstrumentoCriacaoDto.getInstrumentoId();
 
         Aluno aluno = this.alunoService.obterAlunoPorId(alunoId);

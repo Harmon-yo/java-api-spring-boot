@@ -134,7 +134,7 @@ public class AlunoController{
     @PostMapping("/{id}/instrumentos")
 
     public ResponseEntity<AlunoInstrumentoExibicaoDto> cadastrarInstrumento(@PathVariable int id, @RequestBody @Valid AlunoInstrumentoCriacaoDto alunoInstrumentoCriacaoDto) {
-        AlunoInstrumentoExibicaoDto alunoInstrumentoExibicaoDto = this.alunoInstrumentoService.cadastrar(id, alunoInstrumentoCriacaoDto);
+        AlunoInstrumentoExibicaoDto alunoInstrumentoExibicaoDto = this.alunoInstrumentoService.criar(id, alunoInstrumentoCriacaoDto);
 
         return ResponseEntity.status(201).body(alunoInstrumentoExibicaoDto);
     }

@@ -8,16 +8,26 @@ import java.io.Serializable;
 @Embeddable
 public class AulaKey implements Serializable {
 
-    @Column(name = "aula_id")
-    private Integer aulaId;
 
-    @Column(name = "aluno_fk")
-    private Integer alunoFk;
-
-    @Column(name = "professor_fk")
-    private Integer professorFk;
+    @Column(name = "usuario_fk")
+    private Integer usuarioFk;
 
     @Column(name = "instrumento_fk")
     private Integer instrumentoFk;
 
+    public Integer getUsuarioFk() {
+        return usuarioFk;
+    }
+
+    public void setUsuarioFk(Integer usuarioFk) {
+        this.usuarioFk = usuarioFk;
+    }
+
+    public Integer getInstrumentoFk() {
+        return instrumentoFk;
+    }
+
+    public void setInstrumentoFk(Integer instrumentoFk) {
+        this.instrumentoFk = instrumentoFk;
+    }
 }

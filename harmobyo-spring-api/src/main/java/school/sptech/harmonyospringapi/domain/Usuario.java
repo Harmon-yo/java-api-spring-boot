@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -26,10 +27,12 @@ public abstract class Usuario {
 
     private String sexo;
 
-
     private String senha;
 
     private LocalDate dataNasc;
+
+    @OneToMany(mappedBy = "usuario")
+    private List<Aula> aulas;
 
     @Pattern(
             regexp = "(\\(?\\d{2}\\)?\\s)?(\\d{4,5}\\-\\d{4})",

@@ -1,30 +1,48 @@
 package school.sptech.harmonyospringapi.service.aula.dto;
 
-import school.sptech.harmonyospringapi.domain.Aluno;
 import school.sptech.harmonyospringapi.domain.AulaKey;
-import school.sptech.harmonyospringapi.domain.Instrumento;
-import school.sptech.harmonyospringapi.domain.Professor;
-
-import java.time.LocalDateTime;
+import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoExibicaoDto;
+import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioExibicaoDto;
 
 public class AulaExibicaoDto {
 
-    private AulaKey aulaKey;
+    private AulaKey id;
 
-    private Aluno aluno;
+    private Double valorAula;
 
-    private Professor professor;
+    private UsuarioExibicaoDto usuario;
 
-    private Instrumento instrumento;
+    private InstrumentoExibicaoDto instrumento;
 
-    private LocalDateTime horario;
+    public AulaKey getId() {
+        return id;
+    }
 
-    private Double avaliacao;
+    public void setId(AulaKey id) {
+        this.id = id;
+    }
 
-    private String comentario;
+    public Double getValorAula() {
+        return valorAula;
+    }
 
-    private Double valor;
+    public void setValorAula(Double valorAula) {
+        this.valorAula = valorAula;
+    }
 
-    private String status;
+    public UsuarioExibicaoDto getUsuario() {
+        return usuario;
+    }
 
+    public void setUsuario(UsuarioExibicaoDto usuario) {
+        this.usuario = usuario;
+    }
+
+    public InstrumentoExibicaoDto getInstrumento() {
+        return instrumento;
+    }
+
+    public void setInstrumento(InstrumentoExibicaoDto instrumento) {
+        this.instrumento = instrumento;
+    }
 }

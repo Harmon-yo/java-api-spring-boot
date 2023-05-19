@@ -19,6 +19,9 @@ public class Instrumento {
     @OneToMany(mappedBy = "instrumento")
     private List<AlunoInstrumento> alunoInstrumentos;
 
+    @OneToMany(mappedBy = "instrumento")
+    private List<Aula> aulas;
+
     @ManyToOne
     private Naipe naipe;
 
