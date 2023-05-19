@@ -1,6 +1,7 @@
 package school.sptech.harmonyospringapi.service.fila_de_espera;
 
 import org.springframework.stereotype.Service;
+import school.sptech.harmonyospringapi.service.exceptions.FilaVaziaException;
 import school.sptech.harmonyospringapi.service.fila_de_espera.dto.AlunoFilaDeEsperaDTO;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioExibicaoDto;
 import school.sptech.harmonyospringapi.utils.FilaObj;
@@ -36,6 +37,9 @@ public class AlunoFilaDeEsperaService {
     }
 
     public AlunoFilaDeEsperaDTO pollAluno(){
+        if(filaAluno1.isEmpty() ){
+            throw new FilaVaziaException("Fila vazia");
+        }
         return filaAluno1.poll();
     }
 
