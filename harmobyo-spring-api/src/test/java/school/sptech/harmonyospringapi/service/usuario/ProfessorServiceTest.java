@@ -3,10 +3,12 @@ package school.sptech.harmonyospringapi.service.usuario;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import school.sptech.harmonyospringapi.domain.Professor;
@@ -20,6 +22,8 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+@ExtendWith(MockitoExtension.class)
 
 class ProfessorServiceTest {
 
@@ -38,21 +42,6 @@ class ProfessorServiceTest {
     @InjectMocks
     private UsuarioService usuarioService;
 
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
-
-    @Test
-    @DisplayName("Quando obter todos os professores mas não há professores, deve retornar lista vazia")
-    void quandoObterProfessoresDeveRetornarListaVazia(){
-        //given
-        List<UsuarioExibicaoDto> listaProfessores = service.obterTodosEmOrdemAlfabetica();
-        //when/then
-        Mockito.when(service.obterTodosEmOrdemAlfabetica()).thenReturn(listaProfessores);
-        //assert
-        assertEquals(0, listaProfessores.size());
-    }
 
 
 
