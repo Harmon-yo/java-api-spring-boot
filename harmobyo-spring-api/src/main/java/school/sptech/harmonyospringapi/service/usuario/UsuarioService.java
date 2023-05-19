@@ -33,16 +33,7 @@ public class UsuarioService {
     private UsuarioRepository usuarioRepository;
 
     @Autowired
-    private AlunoRepository alunoRepository;
-
-    @Autowired
-    private ProfessorRepository professorRepository;
-
-    @Autowired
     private EnderecoService enderecoService;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private GerenciadorTokenJwt gerenciadorTokenJwt;
@@ -82,8 +73,6 @@ public class UsuarioService {
 
     }
 
-
-
     public List<UsuarioExibicaoDto> exibeTodosOrdemAlfabetica(){
 
         List<Usuario> ltUsuarios = this.usuarioRepository.findAll();
@@ -103,6 +92,18 @@ public class UsuarioService {
         return ltUsuarios.stream().map(UsuarioMapper::ofUsuarioExibicao).toList();
     }
 
+    /* ================ PESQUISA ================ */
+
+    public boolean existeUsuarioPorEmail(String email){
+        return usuarioRepository.existsByEmail(email);
+    }
+
+    public boolean existeUsuarioPorCpf(String cpf){
+        return usuarioRepository.existsByCpf(cpf);
+    }
+
+    /* ================ XXXXXXXXX ================ */
+
     public UsuarioExibicaoDto inserirEndereco(Integer idUsuario, Endereco endereco ){
         Endereco enderecoInserido = enderecoService.cadastrarEndereco(endereco);
         Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(
@@ -112,6 +113,7 @@ public class UsuarioService {
         usuarioRepository.save(usuario);
         return UsuarioMapper.ofUsuarioExibicao(usuario);
     }
+
     public UsuarioExibicaoDto atualizarEndereco(Integer idUsuario, Endereco endereco ){
         Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(
                 () -> new EntitadeNaoEncontradaException("Usuario não encontrado")
@@ -125,6 +127,8 @@ public class UsuarioService {
         return UsuarioMapper.ofUsuarioExibicao(usuario);
 
     }
+
+
 
     public void deletarEndereco(Integer idUsuario ){
         Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(

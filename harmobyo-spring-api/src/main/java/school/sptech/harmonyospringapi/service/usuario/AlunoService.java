@@ -24,34 +24,23 @@ public class AlunoService {
     private AlunoRepository alunoRepository;
 
     @Autowired
-    private UsuarioRepository usuarioRepository;
+    private UsuarioService usuarioService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     public UsuarioExibicaoDto cadastrar(UsuarioCriacaoDto novoAlunoDto) {
-
-        if (this.usuarioRepository.existsByEmail(novoAlunoDto.getEmail())) {
-
-            throw new EntidadeConflitanteException("Erro ao cadastrar. Email já cadastrado !");
-
-        } else if (this.usuarioRepository.existsByCpf(novoAlunoDto.getCpf())) {
-
-            throw new EntidadeConflitanteException("Erro ao cadastrar. CPF já cadastrado !");
-
-        } else {
-
-            String senhaCriptofrada = passwordEncoder.encode(novoAlunoDto.getSenha());
-
-            novoAlunoDto.setSenha(senhaCriptofrada);
-
-            final Aluno novoAluno = UsuarioMapper.ofAlunoCriacao(novoAlunoDto);
-
-            Aluno alunoCadastrado = this.alunoRepository.save(novoAluno);
+        if (this.usuarioService.existeUsuarioPorEmail((novoAlunoDto.getEmail()))) throw new EntidadeConflitanteException("Erro ao cadastrar. Email já cadastrado !");
+        else if (this.usuarioService.existeUsuarioPorCpf(novoAlunoDto.getCpf())) throw new EntidadeConflitanteException("Erro ao cadastrar. CPF já cadastrado !");
 
 
-            return UsuarioMapper.ofUsuarioExibicao(alunoCadastrado);
-        }
+        String senhaCriptofrada = passwordEncoder.encode(novoAlunoDto.getSenha());
+        novoAlunoDto.setSenha(senhaCriptofrada);
+
+        final Aluno novoAluno = UsuarioMapper.ofAlunoCriacao(novoAlunoDto);
+        Aluno alunoCadastrado = this.alunoRepository.save(novoAluno);
+
+        return UsuarioMapper.ofUsuarioExibicao(alunoCadastrado);
     }
 
     public List<UsuarioExibicaoDto> obterTodos() {
@@ -100,6 +89,20 @@ public class AlunoService {
         return UsuarioMapper.ofUsuarioExibicao(ltAlunosGenerica.getElemento(indiceUsuarioEncontrado));
 
     }
+
+    public Aluno obterAlunoPorId(Integer id) {
+
+        Optional<Aluno> alunoOpt = this.alunoRepository.findById(id);
+
+        if (alunoOpt.isEmpty()) throw new EntitadeNaoEncontradaException(
+                String.format(
+                        "Aluno com o id %d não encontrado !",
+                        id
+                ));
+
+        return alunoOpt.get();
+    }
+
 
     public List<UsuarioExibicaoDto> obterTodosEmOrdemAlfabetica() {
 

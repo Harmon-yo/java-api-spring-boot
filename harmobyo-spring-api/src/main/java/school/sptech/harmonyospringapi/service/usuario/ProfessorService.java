@@ -24,36 +24,24 @@ public class ProfessorService {
     private ProfessorRepository professorRepository;
 
     @Autowired
-    private UsuarioRepository usuarioRepository;
+    private UsuarioService usuarioService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     public UsuarioExibicaoDto cadastrar(UsuarioCriacaoDto novoProfessorDto){
+        if (this.usuarioService.existeUsuarioPorEmail(novoProfessorDto.getEmail())) throw new EntidadeConflitanteException("Erro ao cadastrar. Email já cadastrado !");
+        else if (this.usuarioService.existeUsuarioPorCpf(novoProfessorDto.getCpf())) throw new EntidadeConflitanteException("Erro ao cadastrar. CPF já cadastrado !");
 
-        if (this.usuarioRepository.existsByEmail(novoProfessorDto.getEmail())) {
+        String senhaCriptofrada = passwordEncoder.encode(novoProfessorDto.getSenha());
 
-            throw new EntidadeConflitanteException("Erro ao cadastrar. Email já cadastrado !");
+        novoProfessorDto.setSenha(senhaCriptofrada);
 
-        } else if (this.usuarioRepository.existsByCpf(novoProfessorDto.getCpf())) {
+        final Professor novoProfessor = UsuarioMapper.ofProfessorCriacao(novoProfessorDto);
 
-            throw new EntidadeConflitanteException("Erro ao cadastrar. CPF já cadastrado !");
+        Professor professorCadastrado = this.professorRepository.save(novoProfessor);
 
-        }
-        else {
-
-            String senhaCriptofrada = passwordEncoder.encode(novoProfessorDto.getSenha());
-
-            novoProfessorDto.setSenha(senhaCriptofrada);
-
-            final Professor novoProfessor = UsuarioMapper.ofProfessorCriacao(novoProfessorDto);
-
-            Professor professorCadastrado = this.professorRepository.save(novoProfessor);
-
-
-            return UsuarioMapper.ofUsuarioExibicao(professorCadastrado);
-
-        }
+        return UsuarioMapper.ofUsuarioExibicao(professorCadastrado);
     }
 
     public List<UsuarioExibicaoDto> obterTodos(){
@@ -63,10 +51,10 @@ public class ProfessorService {
         return ltProfessores.stream().map(UsuarioMapper::ofUsuarioExibicao).toList();
     }
 
+    /* ================ PESQUISA ================ */
+
     public UsuarioExibicaoDto buscarPorId(Integer id){
-
         Optional<Professor> professorOpt = this.professorRepository.findById(id);
-
 
         if (professorOpt.isEmpty()){
             throw new EntitadeNaoEncontradaException(
@@ -78,7 +66,6 @@ public class ProfessorService {
 
         return UsuarioMapper.ofUsuarioExibicao(professorOpt.get());
     }
-
 
     public UsuarioExibicaoDto obterPorNome(String nome){
 
@@ -104,6 +91,20 @@ public class ProfessorService {
 
     }
 
+    public Professor obterProfessorPorId(Integer id){
+        Optional<Professor> professorOpt = this.professorRepository.findById(id);
+
+        if (professorOpt.isEmpty()){
+            throw new EntitadeNaoEncontradaException(
+                    String.format(
+                            "Professor com o id %d não encontrado !",
+                            id
+                    ));
+        }
+
+        return professorOpt.get();
+    }
+
 
     public List<UsuarioExibicaoDto> obterTodosEmOrdemAlfabetica(){
 
@@ -123,6 +124,12 @@ public class ProfessorService {
 
         return ltProfessores.stream().map(UsuarioMapper::ofUsuarioExibicao).toList();
     }
+
+    public boolean existeProfessorPorId(Integer id){
+        return this.professorRepository.existsById(id);
+    }
+
+    /* ================ REMOVER ================ */
 
     public void deletarPorId(Integer id){
 

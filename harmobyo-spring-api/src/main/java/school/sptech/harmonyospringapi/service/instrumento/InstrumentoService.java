@@ -11,6 +11,7 @@ import school.sptech.harmonyospringapi.service.exceptions.EntitadeNaoEncontradaE
 import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoCriacaoDto;
 import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoExibicaoDto;
 import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoMapper;
+import school.sptech.harmonyospringapi.service.naipe.NaipeService;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,16 +23,12 @@ public class InstrumentoService {
     private InstrumentoRepository instrumentoRepository;
 
     @Autowired
-    private NaipeRepository naipeRepository;
+    private NaipeService naipeService;
 
     /* Ver se da para criar o naipe depois de criar o instrumento */
     public InstrumentoExibicaoDto cadastrar(InstrumentoCriacaoDto instrumentoCriacaoDto) {
         if (this.instrumentoRepository.existsInstrumentoByNomeIgnoreCase(instrumentoCriacaoDto.getNome())) throw new EntidadeConflitanteException("Erro ao cadastrar. Instrumento já cadastrado!");
-        Optional<Naipe> optionalNaipe = this.naipeRepository.findById(instrumentoCriacaoDto.getNaipeId());
-
-        if (optionalNaipe.isEmpty()) throw new EntitadeNaoEncontradaException("Erro ao cadastrar. Naipe não cadastrado!");
-
-        Naipe naipe = optionalNaipe.get();
+        Naipe naipe = this.naipeService.obterNaipePorId(instrumentoCriacaoDto.getNaipeId());
 
         Instrumento novoInstrumento = InstrumentoMapper.of(instrumentoCriacaoDto, naipe);
 
@@ -40,5 +37,13 @@ public class InstrumentoService {
 
     public List<InstrumentoExibicaoDto> listar() {
         return this.instrumentoRepository.findAll().stream().map(InstrumentoMapper::ofInstrumentoExibicao).toList();
+    }
+
+    public Instrumento obterInstrumentoPorId(Integer id) {
+        Optional<Instrumento> optionalInstrumento = this.instrumentoRepository.findById(id);
+
+        if (optionalInstrumento.isEmpty()) throw new EntitadeNaoEncontradaException("Instrumento com id inexistente");
+
+        return optionalInstrumento.get();
     }
 }

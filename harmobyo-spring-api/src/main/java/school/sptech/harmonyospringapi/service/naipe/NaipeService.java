@@ -32,4 +32,8 @@ public class NaipeService {
                 .map(NaipeMapper::ofNaipeExibicao)
                 .toList();
     }
+
+    public Naipe obterNaipePorId(Integer id) {
+        return this.naipeRepository.findById(id).orElseThrow(() -> new EntidadeConflitanteException("Naipe com id inexistente"));
+    }
 }

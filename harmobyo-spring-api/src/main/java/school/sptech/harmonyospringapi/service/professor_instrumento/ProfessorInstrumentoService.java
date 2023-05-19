@@ -8,10 +8,12 @@ import school.sptech.harmonyospringapi.domain.ProfessorInstrumento;
 import school.sptech.harmonyospringapi.repository.InstrumentoRepository;
 import school.sptech.harmonyospringapi.repository.ProfessorInstrumentoRepository;
 import school.sptech.harmonyospringapi.repository.ProfessorRepository;
+import school.sptech.harmonyospringapi.service.instrumento.InstrumentoService;
 import school.sptech.harmonyospringapi.service.professor_instrumento.dto.ProfessorInstrumentoCriacaoDto;
 import school.sptech.harmonyospringapi.service.professor_instrumento.dto.ProfessorInstrumentoExibicaoDto;
 import school.sptech.harmonyospringapi.service.professor_instrumento.dto.ProfessorInstrumentoMapper;
 import school.sptech.harmonyospringapi.service.exceptions.EntitadeNaoEncontradaException;
+import school.sptech.harmonyospringapi.service.usuario.ProfessorService;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,10 +25,10 @@ public class ProfessorInstrumentoService {
     private ProfessorInstrumentoRepository professorInstrumentoRepository;
 
     @Autowired
-    private ProfessorRepository professorRepository;
+    private ProfessorService professorService;
 
     @Autowired
-    private InstrumentoRepository instrumentoRepository;
+    private InstrumentoService instrumentoService;
 
     public List<ProfessorInstrumentoExibicaoDto> obterTodos(int id) {
         return this.professorInstrumentoRepository.findByProfessor_id(id)
@@ -38,14 +40,8 @@ public class ProfessorInstrumentoService {
     public ProfessorInstrumentoExibicaoDto cadastrar(Integer professorId, ProfessorInstrumentoCriacaoDto professorInstrumentoCriacaoDto) {
         Integer instrumentoId = professorInstrumentoCriacaoDto.getInstrumentoId();
 
-        Optional<Professor> optionalProfessor = this.professorRepository.findById(professorId);
-        Optional<Instrumento> optionalInstrumento = this.instrumentoRepository.findById(instrumentoId);
-
-        if (optionalProfessor.isEmpty()) throw new EntitadeNaoEncontradaException("Professor com id inexistente");
-        if (optionalInstrumento.isEmpty()) throw new EntitadeNaoEncontradaException("Instrumento com id inexistente");
-
-        Professor professorCadastrado = optionalProfessor.get();
-        Instrumento instrumentoCadastrado = optionalInstrumento.get();
+        Professor professorCadastrado = this.professorService.obterProfessorPorId(professorId);
+        Instrumento instrumentoCadastrado = this.instrumentoService.obterInstrumentoPorId(instrumentoId);
 
         ProfessorInstrumento professorInstrumentoCadastrado = this.professorInstrumentoRepository
                 .save(ProfessorInstrumentoMapper.of(professorInstrumentoCriacaoDto, professorCadastrado, instrumentoCadastrado));

@@ -12,6 +12,8 @@ import school.sptech.harmonyospringapi.service.aluno_instrumento.dto.AlunoInstru
 import school.sptech.harmonyospringapi.service.aluno_instrumento.dto.AlunoInstrumentoExibicaoDto;
 import school.sptech.harmonyospringapi.service.aluno_instrumento.dto.AlunoInstrumentoMapper;
 import school.sptech.harmonyospringapi.service.exceptions.EntitadeNaoEncontradaException;
+import school.sptech.harmonyospringapi.service.instrumento.InstrumentoService;
+import school.sptech.harmonyospringapi.service.usuario.AlunoService;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,10 +25,10 @@ public class AlunoInstrumentoService {
     private AlunoInstrumentoRepository alunoInstrumentoRepository;
 
     @Autowired
-    private AlunoRepository alunoRepository;
+    private AlunoService alunoService;
 
     @Autowired
-    private InstrumentoRepository instrumentoRepository;
+    private InstrumentoService instrumentoService;
 
     public List<AlunoInstrumentoExibicaoDto> obterTodos(int id) {
         return this.alunoInstrumentoRepository.findByAluno_id(id)
@@ -38,14 +40,8 @@ public class AlunoInstrumentoService {
     public AlunoInstrumentoExibicaoDto cadastrar(Integer alunoId, AlunoInstrumentoCriacaoDto alunoInstrumentoCriacaoDto) {
         Integer instrumentoId = alunoInstrumentoCriacaoDto.getInstrumentoId();
 
-        Optional<Aluno> optionalAluno = this.alunoRepository.findById(alunoId);
-        Optional<Instrumento> optionalInstrumento = this.instrumentoRepository.findById(instrumentoId);
-
-        if (optionalAluno.isEmpty()) throw new EntitadeNaoEncontradaException("Aluno com id inexistente");
-        if (optionalInstrumento.isEmpty()) throw new EntitadeNaoEncontradaException("Instrumento com id inexistente");
-
-        Aluno aluno = optionalAluno.get();
-        Instrumento instrumento = optionalInstrumento.get();
+        Aluno aluno = this.alunoService.obterAlunoPorId(alunoId);
+        Instrumento instrumento = this.instrumentoService.obterInstrumentoPorId(instrumentoId);
 
         AlunoInstrumento alunoInstrumento = this.alunoInstrumentoRepository
                 .save(AlunoInstrumentoMapper.of(alunoInstrumentoCriacaoDto, aluno, instrumento));
