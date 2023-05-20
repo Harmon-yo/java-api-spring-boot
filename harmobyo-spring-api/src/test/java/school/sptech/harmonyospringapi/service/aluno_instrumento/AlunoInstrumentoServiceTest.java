@@ -7,10 +7,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import school.sptech.harmonyospringapi.domain.Aluno;
+import school.sptech.harmonyospringapi.domain.AlunoInstrumento;
 import school.sptech.harmonyospringapi.repository.AlunoInstrumentoRepository;
 import school.sptech.harmonyospringapi.repository.AlunoRepository;
+import school.sptech.harmonyospringapi.service.aluno_instrumento.dto.AlunoInstrumentoCriacaoDto;
 import school.sptech.harmonyospringapi.service.aluno_instrumento.dto.AlunoInstrumentoExibicaoDto;
 import school.sptech.harmonyospringapi.service.exceptions.EntitadeNaoEncontradaException;
+import school.sptech.harmonyospringapi.service.usuario.AlunoService;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +26,9 @@ class AlunoInstrumentoServiceTest {
 
     @InjectMocks
     private static AlunoInstrumentoService service;
+
+    @InjectMocks
+    private static AlunoService alunoService;
     @Mock
     private static AlunoRepository repository;
     @Mock
@@ -78,13 +86,21 @@ class AlunoInstrumentoServiceTest {
 
         //when
         Mockito.when(alunoInstrumentoRepository.findByAluno_id(id))
-                .thenReturn(null);
+                .thenReturn(List.of());
         //then
         EntitadeNaoEncontradaException exception = assertThrows(EntitadeNaoEncontradaException.class, () -> service.obterTodos(id));
 
         assertEquals("Aluno não encontrado", exception.getMessage());
 
     }
+
+    @Test
+    @DisplayName("Cadastrar AlunoInstrumento quando o id do aluno for válido e AlunoInstrumentoCriacaoDto for válido")
+    void cadastrarAlunoInstrumentoQuandoIdAlunoForValidoEAlunoInstrumentoCriacaoDtoForValido(){
+
+
+    }
+
 
 
 }

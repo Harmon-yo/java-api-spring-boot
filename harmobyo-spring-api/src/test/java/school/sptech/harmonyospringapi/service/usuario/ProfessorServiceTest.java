@@ -30,17 +30,11 @@ class ProfessorServiceTest {
     @Mock
     private UsuarioRepository usuarioRepository;
 
-    @Mock
-    private ProfessorRepository professorRepository;
-
-    @Mock
-    private PasswordEncoder passwordEncoder;
 
     @InjectMocks
     private ProfessorService service;
 
-    @InjectMocks
-    private UsuarioService usuarioService;
+
 
 
 

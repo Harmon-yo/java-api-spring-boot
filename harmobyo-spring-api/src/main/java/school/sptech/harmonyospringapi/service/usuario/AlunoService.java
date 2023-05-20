@@ -4,7 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import school.sptech.harmonyospringapi.domain.Aluno;
+import school.sptech.harmonyospringapi.domain.Aula;
 import school.sptech.harmonyospringapi.domain.Usuario;
+import school.sptech.harmonyospringapi.service.aula.AulaService;
+import school.sptech.harmonyospringapi.service.aula.dto.AulaExibicaoDto;
 import school.sptech.harmonyospringapi.utils.ListaGenericaObj;
 import school.sptech.harmonyospringapi.repository.AlunoRepository;
 import school.sptech.harmonyospringapi.repository.UsuarioRepository;
@@ -13,12 +16,14 @@ import school.sptech.harmonyospringapi.service.exceptions.EntitadeNaoEncontradaE
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioCriacaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioMapper;
+import school.sptech.harmonyospringapi.utils.PilhaObj;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class AlunoService {
+    public static final int MAX_AULAS = 10;
 
     @Autowired
     private AlunoRepository alunoRepository;
@@ -28,6 +33,9 @@ public class AlunoService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private AulaService aulaService;
 
     public UsuarioExibicaoDto cadastrar(UsuarioCriacaoDto novoAlunoDto) {
         if (this.usuarioService.existeUsuarioPorEmail((novoAlunoDto.getEmail()))) throw new EntidadeConflitanteException("Erro ao cadastrar. Email já cadastrado !");
@@ -134,4 +142,6 @@ public class AlunoService {
             );
         }
     }
+
+
 }
