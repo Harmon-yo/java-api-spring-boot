@@ -15,13 +15,17 @@ import school.sptech.harmonyospringapi.service.aula.dto.AulaCriacaoDto;
 import school.sptech.harmonyospringapi.service.aula.dto.AulaExibicaoDto;
 import school.sptech.harmonyospringapi.service.instrumento.InstrumentoService;
 import school.sptech.harmonyospringapi.service.usuario.UsuarioService;
+import school.sptech.harmonyospringapi.service.exceptions.EntitadeNaoEncontradaException;
 
 import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.hamcrest.Matchers.any;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AulaServiceTest {
@@ -45,7 +49,7 @@ class AulaServiceTest {
     @Test
     void devolverListaVaziaQuandoNaoExistirAulas() {
       //when
-        Mockito.when(repository.findAll())
+        when(repository.findAll())
                 .thenReturn(List.of());
 
         //then
@@ -76,7 +80,7 @@ class AulaServiceTest {
         aulas.add(aula);
 
         //when
-        Mockito.when(repository.findAll())
+        when(repository.findAll())
                 .thenReturn(aulas);
 
         //then
@@ -89,5 +93,37 @@ class AulaServiceTest {
     @Test
     void criarUmaAulaQuandoAulaCriacaoDtoForValido(){
 
-        }
+    }
+
+    @DisplayName("Deve lançar uma exceção quando AulaKeyId for inválido")
+    @Test
+    void lancarExcecaoQuandoAulaKeyIdForInvalido(){
+
+        AulaKey aulaKey = new AulaKey();
+        aulaKey.setUsuarioFk(-1);
+        aulaKey.setInstrumentoFk(-1);
+
+        Mockito.when(repository.findById(aulaKey)).thenReturn(Optional.empty());
+
+        assertThrows(EntitadeNaoEncontradaException.class, () -> service.obterAulaPorId(aulaKey));
+
+    }
+
+    @DisplayName("Retornar Aula quando AulaKeyId for válido")
+    @Test
+    void retornarAulaQuandoAulaKeyIdForValido(){
+
+        AulaKey aulaKey = new AulaKey();
+        aulaKey.setUsuarioFk(1);
+        aulaKey.setInstrumentoFk(1);
+
+        Aula aula = new Aula();
+
+        Mockito.when(repository.findById(aulaKey)).thenReturn(Optional.of(aula));
+
+        Aula aulaRetornada = service.obterAulaPorId(aulaKey);
+        assertEquals(aula, aulaRetornada);
+
+    }
+
 }
