@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface AulaRepository extends JpaRepository<Aula, AulaKey> {
 
-    List<Aula> findAllByIdAluno(int id);
+//    List<Aula> findAllByIdAluno(int id);
 
 }

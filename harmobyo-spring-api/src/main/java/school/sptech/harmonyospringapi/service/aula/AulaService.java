@@ -48,10 +48,10 @@ public class AulaService {
         return AulaMapper.ofAulaExibicaoDto(this.aulaRepository.save(aula));
     }
 
-    public List<Aula> listarPorIdAluno(int id){
-        return this.aulaRepository.findAllByIdAluno(id);
-
-    }
+//    public List<Aula> listarPorIdAluno(int id){
+//        return this.aulaRepository.findAllByIdAluno(id);
+//
+//    }
 
     public Aula obterAulaPorId(AulaKey id) {
         return aulaRepository.findById(id).orElseThrow(

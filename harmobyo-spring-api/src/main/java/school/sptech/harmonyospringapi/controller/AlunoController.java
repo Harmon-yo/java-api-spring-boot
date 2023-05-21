@@ -22,7 +22,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/alunos")
-@CrossOrigin("http://localhost:3000")
 @Tag(name = "Alunos")
 public class AlunoController{
 
