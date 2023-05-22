@@ -37,6 +37,8 @@ public class AlunoService {
     @Autowired
     private AulaService aulaService;
 
+
+
     public UsuarioExibicaoDto cadastrar(UsuarioCriacaoDto novoAlunoDto) {
         if (this.usuarioService.existeUsuarioPorEmail((novoAlunoDto.getEmail()))) throw new EntidadeConflitanteException("Erro ao cadastrar. Email já cadastrado !");
         else if (this.usuarioService.existeUsuarioPorCpf(novoAlunoDto.getCpf())) throw new EntidadeConflitanteException("Erro ao cadastrar. CPF já cadastrado !");

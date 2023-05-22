@@ -6,11 +6,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 import school.sptech.harmonyospringapi.domain.Aluno;
 import school.sptech.harmonyospringapi.domain.AlunoInstrumento;
+import school.sptech.harmonyospringapi.domain.Instrumento;
+import school.sptech.harmonyospringapi.domain.Naipe;
 import school.sptech.harmonyospringapi.repository.AlunoInstrumentoRepository;
 import school.sptech.harmonyospringapi.repository.AlunoRepository;
+import school.sptech.harmonyospringapi.repository.InstrumentoRepository;
 import school.sptech.harmonyospringapi.service.aluno_instrumento.dto.AlunoInstrumentoCriacaoDto;
 import school.sptech.harmonyospringapi.service.aluno_instrumento.dto.AlunoInstrumentoExibicaoDto;
 import school.sptech.harmonyospringapi.service.exceptions.EntitadeNaoEncontradaException;
@@ -31,6 +35,9 @@ class AlunoInstrumentoServiceTest {
     private static AlunoService alunoService;
     @Mock
     private static AlunoRepository repository;
+
+    @Mock
+    private static InstrumentoRepository instrumentoRepository;
     @Mock
     private static AlunoInstrumentoRepository alunoInstrumentoRepository;
 
@@ -98,6 +105,43 @@ class AlunoInstrumentoServiceTest {
     @DisplayName("Cadastrar AlunoInstrumento quando o id do aluno for válido e AlunoInstrumentoCriacaoDto for válido")
     void cadastrarAlunoInstrumentoQuandoIdAlunoForValidoEAlunoInstrumentoCriacaoDtoForValido(){
 
+
+        int id = 1;
+        AlunoInstrumentoCriacaoDto dto = new AlunoInstrumentoCriacaoDto();
+        dto.setInstrumentoId(id);
+        dto.setNivelConhecimento("dddddd");
+
+        Aluno aluno = new Aluno();
+        aluno.setId(id);
+
+        Instrumento instrumento = new Instrumento();
+        instrumento.setNome("hahahah");
+        Naipe naipe = new Naipe();
+        naipe.setDescricaoNaipe("asddasd");
+        instrumento.setNaipe(naipe);
+
+        AlunoInstrumento alunoInstrumento = new AlunoInstrumento();
+        alunoInstrumento.setAluno(aluno);
+        alunoInstrumento.setInstrumento(instrumento);
+
+        //when
+        Mockito.when(repository.findById(id))
+                .thenReturn(Optional.of(aluno));
+
+        Mockito.when(instrumentoRepository.findById(id))
+                .thenReturn(Optional.of(instrumento));
+
+        Mockito.when(alunoInstrumentoRepository.save(Mockito.any(AlunoInstrumento.class)))
+                .thenReturn(alunoInstrumento);
+
+
+
+
+        //then
+        AlunoInstrumentoExibicaoDto resultado = service.criar(aluno.getId(), dto);
+
+        assertEquals(id, resultado.getId().getAlunoFk());
+        assertDoesNotThrow(() -> service.criar(aluno.getId(), dto));
 
     }
 

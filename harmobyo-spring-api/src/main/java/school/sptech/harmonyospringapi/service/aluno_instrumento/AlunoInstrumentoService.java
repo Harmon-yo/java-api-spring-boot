@@ -30,6 +30,12 @@ public class AlunoInstrumentoService {
     @Autowired
     private InstrumentoService instrumentoService;
 
+    @Autowired
+    private InstrumentoRepository instrumentoRepository;
+
+    @Autowired
+    private AlunoRepository alunoRepository;
+
     public List<AlunoInstrumentoExibicaoDto> obterTodos(int id) {
         return this.alunoInstrumentoRepository.findByAluno_id(id)
                 .stream()
@@ -40,8 +46,14 @@ public class AlunoInstrumentoService {
     public AlunoInstrumentoExibicaoDto criar(Integer alunoId, AlunoInstrumentoCriacaoDto alunoInstrumentoCriacaoDto) {
         Integer instrumentoId = alunoInstrumentoCriacaoDto.getInstrumentoId();
 
-        Aluno aluno = this.alunoService.obterAlunoPorId(alunoId);
-        Instrumento instrumento = this.instrumentoService.obterInstrumentoPorId(instrumentoId);
+        Optional<Aluno> alunoOpt = this.alunoRepository.findById(alunoId);
+        if (alunoOpt.isEmpty()) throw new EntitadeNaoEncontradaException("Aluno com id inexistente");
+
+        Optional<Instrumento> instrumentoOpt = this.instrumentoRepository.findById(instrumentoId);
+
+        if (instrumentoOpt.isEmpty()) throw new EntitadeNaoEncontradaException("Instrumento com id inexistente");
+        Aluno aluno = alunoOpt.get();
+        Instrumento instrumento = instrumentoOpt.get();
 
         AlunoInstrumento alunoInstrumento = this.alunoInstrumentoRepository
                 .save(AlunoInstrumentoMapper.of(alunoInstrumentoCriacaoDto, aluno, instrumento));
