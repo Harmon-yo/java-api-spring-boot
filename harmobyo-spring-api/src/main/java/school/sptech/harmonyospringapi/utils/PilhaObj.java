@@ -23,7 +23,9 @@ public class PilhaObj<T> {
     public Boolean isFull() {
         return topo == pilha.length - 1;
     }
-
+    public T[] getPilha() {
+        return pilha;
+    }
     // Se a pilha estiver cheia, deve lançar IllegalStateException
     // Se a pilha não estiver cheia, empilha info
     public void push(T info) {

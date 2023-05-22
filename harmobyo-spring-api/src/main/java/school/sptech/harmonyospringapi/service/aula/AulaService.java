@@ -17,8 +17,6 @@ import school.sptech.harmonyospringapi.service.usuario.UsuarioService;
 
 import java.util.List;
 
-import java.util.List;
-
 @Service
 public class AulaService {
 

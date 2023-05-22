@@ -11,12 +11,15 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import school.sptech.harmonyospringapi.domain.Aluno;
 import school.sptech.harmonyospringapi.service.aluno_instrumento.AlunoInstrumentoService;
 import school.sptech.harmonyospringapi.service.aluno_instrumento.dto.AlunoInstrumentoCriacaoDto;
 import school.sptech.harmonyospringapi.service.aluno_instrumento.dto.AlunoInstrumentoExibicaoDto;
+import school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoPilhaDto;
 import school.sptech.harmonyospringapi.service.usuario.AlunoService;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioCriacaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioExibicaoDto;
+import school.sptech.harmonyospringapi.utils.PilhaObj;
 
 import java.util.List;
 
@@ -136,5 +139,12 @@ public class AlunoController{
         AlunoInstrumentoExibicaoDto alunoInstrumentoExibicaoDto = this.alunoInstrumentoService.criar(id, alunoInstrumentoCriacaoDto);
 
         return ResponseEntity.status(201).body(alunoInstrumentoExibicaoDto);
+    }
+
+    @SecurityRequirement(name = "Bearer")
+    @GetMapping("/getHistoricoPilha")
+    public ResponseEntity<PilhaObj<PedidoExibicaoPilhaDto>> getPilha(){
+        Aluno aluno = new Aluno();
+        return ResponseEntity.status(200).body(aluno.getHistorico());
     }
 }
