@@ -1,31 +1,36 @@
 package school.sptech.harmonyospringapi.domain;
 
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
 @Entity
 public class Avaliacao {
 
-    private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     private Double valor;
 
     private String comentario;
 
+    @ManyToOne
     private Usuario usuarioAvaliado;
 
     private LocalDate dataAvaliacao;
 
+    @ManyToOne
     private Usuario usuarioAvaliador;
 
+    @ManyToOne
     private Pedido pedidoAula;
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
