@@ -86,7 +86,7 @@ public class UsuarioMapper {
         UsuarioTokenDto usuarioTokenDto = new UsuarioTokenDto();
 
         usuarioTokenDto.setUserId(usuario.getId());
-
+    
         usuarioTokenDto.setEmail(usuario.getEmail());
 
         usuarioTokenDto.setNome(usuario.getNome());
@@ -94,7 +94,7 @@ public class UsuarioMapper {
         usuarioTokenDto.setCategoria(usuario.getCategoria());
 
         usuarioTokenDto.setToken(token);
-        
+
 
         return usuarioTokenDto;
     }
