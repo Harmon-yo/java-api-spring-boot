@@ -6,6 +6,7 @@ import school.sptech.harmonyospringapi.domain.Instrumento;
 import school.sptech.harmonyospringapi.domain.Naipe;
 import school.sptech.harmonyospringapi.repository.NaipeRepository;
 import school.sptech.harmonyospringapi.service.exceptions.EntidadeConflitanteException;
+import school.sptech.harmonyospringapi.service.exceptions.EntitadeNaoEncontradaException;
 import school.sptech.harmonyospringapi.service.naipe.dto.NaipeCriacaoDto;
 import school.sptech.harmonyospringapi.service.naipe.dto.NaipeExibicaoDto;
 import school.sptech.harmonyospringapi.service.naipe.dto.NaipeMapper;
@@ -34,6 +35,6 @@ public class NaipeService {
     }
 
     public Naipe obterNaipePorId(Integer id) {
-        return this.naipeRepository.findById(id).orElseThrow(() -> new EntidadeConflitanteException("Naipe com id inexistente"));
+        return this.naipeRepository.findById(id).orElseThrow(() -> new EntitadeNaoEncontradaException("Naipe com id inexistente"));
     }
 }
