@@ -2,6 +2,7 @@ package school.sptech.harmonyospringapi.service.professor_instrumento;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import school.sptech.harmonyospringapi.domain.Aluno;
 import school.sptech.harmonyospringapi.domain.Instrumento;
 import school.sptech.harmonyospringapi.domain.Professor;
 import school.sptech.harmonyospringapi.domain.ProfessorInstrumento;
@@ -28,6 +29,11 @@ public class ProfessorInstrumentoService {
     private ProfessorService professorService;
 
     @Autowired
+    private InstrumentoRepository instrumentoRepository;
+
+    @Autowired
+    private ProfessorRepository professorRepository;
+    @Autowired
     private InstrumentoService instrumentoService;
 
     public List<ProfessorInstrumentoExibicaoDto> obterTodos(int id) {
@@ -40,8 +46,16 @@ public class ProfessorInstrumentoService {
     public ProfessorInstrumentoExibicaoDto criar(Integer professorId, ProfessorInstrumentoCriacaoDto professorInstrumentoCriacaoDto) {
         Integer instrumentoId = professorInstrumentoCriacaoDto.getInstrumentoId();
 
-        Professor professorCadastrado = this.professorService.obterProfessorPorId(professorId);
-        Instrumento instrumentoCadastrado = this.instrumentoService.obterInstrumentoPorId(instrumentoId);
+
+        Optional<Professor> professorOpt = this.professorRepository.findById(professorId);
+        if (professorOpt.isEmpty()) throw new EntitadeNaoEncontradaException("Professor com id inexistente");
+
+        Optional<Instrumento> instrumentoOpt = this.instrumentoRepository.findById(instrumentoId);
+        if (instrumentoOpt.isEmpty()) throw new EntitadeNaoEncontradaException("Instrumento com id inexistente");
+
+
+        Professor professorCadastrado = professorOpt.get();
+        Instrumento instrumentoCadastrado = instrumentoOpt.get();
 
         ProfessorInstrumento professorInstrumentoCadastrado = this.professorInstrumentoRepository
                 .save(ProfessorInstrumentoMapper.of(professorInstrumentoCriacaoDto, professorCadastrado, instrumentoCadastrado));
