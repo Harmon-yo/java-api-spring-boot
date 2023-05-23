@@ -12,6 +12,8 @@ import school.sptech.harmonyospringapi.repository.NaipeRepository;
 import school.sptech.harmonyospringapi.service.exceptions.EntidadeConflitanteException;
 import school.sptech.harmonyospringapi.service.exceptions.EntitadeNaoEncontradaException;
 import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoCriacaoDto;
+import school.sptech.harmonyospringapi.service.naipe.dto.NaipeCriacaoDto;
+import school.sptech.harmonyospringapi.service.naipe.dto.NaipeMapper;
 
 import java.util.Optional;
 
@@ -41,15 +43,16 @@ class NaipeServiceTest {
     }
 
     @Test
-    public void quandoAcionadoComIdValidoDeveRetornarC() {
-        // Arrange
-        Optional<Naipe> naipeEncontrado = naipeRepository.findById(999);
+    public void quandoCadastradoCorretamenteDeveSalvarNaRepository() {
+        Naipe naipeCriado = new Naipe();
+        naipeCriado.setDescricaoNaipe("Naipe teste");
 
-        Mockito.when(naipeRepository.findById(999)).thenReturn(naipeEncontrado);
+        Mockito.when(naipeRepository.save(Mockito.any(Naipe.class))).thenReturn(naipeCriado);
 
-        // Act & Assert
-        assertThrows(EntitadeNaoEncontradaException.class, ()
-                -> naipeService.obterNaipePorId(999));
+        naipeService.cadastrar(NaipeMapper.of(naipeCriado));
+
+        Mockito.verify(naipeRepository, times(1)).save(Mockito.any(Naipe.class));
+
     }
 
 
