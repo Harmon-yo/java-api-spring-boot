@@ -11,9 +11,10 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import school.sptech.harmonyospringapi.service.professor_instrumento.ProfessorInstrumentoService;
-import school.sptech.harmonyospringapi.service.professor_instrumento.dto.ProfessorInstrumentoCriacaoDto;
-import school.sptech.harmonyospringapi.service.professor_instrumento.dto.ProfessorInstrumentoExibicaoDto;
+import school.sptech.harmonyospringapi.domain.Instrumento;
+import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoExibicaoDto;
+import school.sptech.harmonyospringapi.service.usuario.dto.professor_instrumento.ProfessorInstrumentoCriacaoDto;
+import school.sptech.harmonyospringapi.service.usuario.dto.professor_instrumento.ProfessorInstrumentoExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.ProfessorService;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioCriacaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioExibicaoDto;
@@ -27,9 +28,6 @@ public class ProfessorController {
 
     @Autowired
     private ProfessorService professorService;
-
-    @Autowired
-    private ProfessorInstrumentoService professorInstrumentoService;
 
     @Operation(summary = "Cadastra um professor", description = "")
     @ApiResponse(responseCode = "201", description = "Professor cadastrado.")
@@ -49,7 +47,7 @@ public class ProfessorController {
     @GetMapping
     public ResponseEntity<List<UsuarioExibicaoDto>> obterTodos() {
 
-        List<UsuarioExibicaoDto> ltUsuariosExibicao = this.professorService.obterTodos();
+        List<UsuarioExibicaoDto> ltUsuariosExibicao = this.professorService.listar();
 
         if (ltUsuariosExibicao.isEmpty()) {
 
@@ -69,7 +67,7 @@ public class ProfessorController {
     @GetMapping("/{id}")
     public ResponseEntity<UsuarioExibicaoDto> buscarPorId(@RequestParam Integer id) {
 
-        return ResponseEntity.status(200).body(this.professorService.buscarPorId(id));
+        return ResponseEntity.status(200).body(this.professorService.buscarPorIdParaExibicao(id));
     }
 
 
@@ -104,7 +102,7 @@ public class ProfessorController {
     @GetMapping("/nome")
     public ResponseEntity<UsuarioExibicaoDto> obterPorNome(@RequestParam String nome) {
 
-        UsuarioExibicaoDto professorEncontrado = this.professorService.obterPorNome(nome);
+        UsuarioExibicaoDto professorEncontrado = this.professorService.buscarPorNome(nome);
 
         return ResponseEntity.status(200).body(professorEncontrado);
     }
@@ -125,16 +123,16 @@ public class ProfessorController {
 
 
     @GetMapping("/{id}/instrumentos")
-    public ResponseEntity<List<ProfessorInstrumentoExibicaoDto>> obterTodosInstrumentos(@PathVariable int id) {
-        List<ProfessorInstrumentoExibicaoDto> professorInstrumentoExibicaoDtos = this.professorInstrumentoService.obterTodos(id);
-        return professorInstrumentoExibicaoDtos.isEmpty() ? ResponseEntity.status(204).build()
-                : ResponseEntity.status(200).body(professorInstrumentoExibicaoDtos);
+    public ResponseEntity<List<InstrumentoExibicaoDto>> listarInstrumentos(@PathVariable int id) {
+        List<InstrumentoExibicaoDto> instrumentos = this.professorService.listarInstrumentos(id);
+        return instrumentos.isEmpty() ? ResponseEntity.status(204).build()
+                : ResponseEntity.status(200).body(instrumentos);
     }
 
     @PostMapping("/{id}/instrumentos")
     public ResponseEntity<ProfessorInstrumentoExibicaoDto> adicionarInstrumentos(@PathVariable int id, @RequestBody @Valid ProfessorInstrumentoCriacaoDto professorInstrumentoCriacaoDto) {
 
-        ProfessorInstrumentoExibicaoDto professorInstrumentoExibicaoDto = this.professorInstrumentoService.criar(id, professorInstrumentoCriacaoDto);
+        ProfessorInstrumentoExibicaoDto professorInstrumentoExibicaoDto = this.professorService.criar(id, professorInstrumentoCriacaoDto);
 
         return ResponseEntity.status(201).body(professorInstrumentoExibicaoDto);
     }

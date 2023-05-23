@@ -28,7 +28,7 @@ public class Aluno extends Usuario{
 
         //setando valores para teste
         instrumento.setNome("Violão");
-        naipe.setDescricaoNaipe("corda");
+        naipe.setDescricao("corda");
         aluno.setNome("o tal do brabo");
 
         aula.setUsuario(aluno);

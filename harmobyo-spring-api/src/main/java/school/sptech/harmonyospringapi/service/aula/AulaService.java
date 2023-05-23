@@ -39,8 +39,8 @@ public class AulaService {
 
     public AulaExibicaoDto criar(AulaCriacaoDto aulaCriacaoDto) {
 
-        Usuario usuario = this.usuarioService.obterUsuarioPorId(aulaCriacaoDto.getUsuarioId());
-        Instrumento instrumento = this.instrumentoService.obterInstrumentoPorId(aulaCriacaoDto.getInstrumentoId());
+        Usuario usuario = this.usuarioService.buscarUsuarioPorId(aulaCriacaoDto.getUsuarioId());
+        Instrumento instrumento = this.instrumentoService.buscarPorId(aulaCriacaoDto.getInstrumentoId());
 
         Aula aula = AulaMapper.of(aulaCriacaoDto, usuario, instrumento);
         return AulaMapper.ofAulaExibicaoDto(this.aulaRepository.save(aula));

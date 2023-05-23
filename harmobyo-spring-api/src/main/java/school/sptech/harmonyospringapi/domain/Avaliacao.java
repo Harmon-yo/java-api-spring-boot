@@ -7,30 +7,38 @@ import java.time.LocalDate;
 @Entity
 public class Avaliacao {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @EmbeddedId
+    private AvaliacaoKey id;
 
     private Double valor;
 
     private String comentario;
 
     @ManyToOne
+    @MapsId("usuarioAvaliadoFk")
+    @JoinColumn(name = "usuario_avaliado_fk")
     private Usuario usuarioAvaliado;
 
     private LocalDate dataAvaliacao;
 
     @ManyToOne
+    @MapsId("usuarioAvaliadorFk")
+    @JoinColumn(name = "usuario_avaliador_fk")
     private Usuario usuarioAvaliador;
 
     @ManyToOne
-    private Pedido pedidoAula;
+    @MapsId("pedidoFk")
+    @JoinColumns({
+            @JoinColumn(name = "pedido_aluno_fk", referencedColumnName = "aluno_fk"),
+            @JoinColumn(name = "pedido_professor_fk", referencedColumnName = "professor_fk")
+    })
+    private Pedido pedido;
 
-    public Integer getId() {
+    public AvaliacaoKey getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(AvaliacaoKey id) {
         this.id = id;
     }
 
@@ -75,10 +83,10 @@ public class Avaliacao {
     }
 
     public Pedido getPedidoAula() {
-        return pedidoAula;
+        return pedido;
     }
 
-    public void setPedidoAula(Pedido pedidoAula) {
-        this.pedidoAula = pedidoAula;
+    public void setPedidoAula(Pedido pedido) {
+        this.pedido = pedido;
     }
 }

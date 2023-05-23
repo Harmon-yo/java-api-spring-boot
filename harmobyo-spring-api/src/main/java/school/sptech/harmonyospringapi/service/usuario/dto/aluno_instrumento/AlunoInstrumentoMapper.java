@@ -1,4 +1,4 @@
-package school.sptech.harmonyospringapi.service.aluno_instrumento.dto;
+package school.sptech.harmonyospringapi.service.usuario.dto.aluno_instrumento;
 
 import school.sptech.harmonyospringapi.domain.*;
 import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoMapper;

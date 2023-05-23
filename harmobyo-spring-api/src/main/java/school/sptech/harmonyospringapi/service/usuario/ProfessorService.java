@@ -5,11 +5,18 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import school.sptech.harmonyospringapi.domain.Instrumento;
 import school.sptech.harmonyospringapi.domain.Professor;
+import school.sptech.harmonyospringapi.domain.ProfessorInstrumento;
 import school.sptech.harmonyospringapi.domain.Usuario;
 import school.sptech.harmonyospringapi.repository.*;
+import school.sptech.harmonyospringapi.service.instrumento.InstrumentoService;
+import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoExibicaoDto;
+import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoMapper;
 import school.sptech.harmonyospringapi.service.usuario.dto.avaliacao.AvaliacaoCriacaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.avaliacao.AvaliacaoExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.professor.ProfessorExibicaoResumidoDto;
+import school.sptech.harmonyospringapi.service.usuario.dto.professor_instrumento.ProfessorInstrumentoCriacaoDto;
+import school.sptech.harmonyospringapi.service.usuario.dto.professor_instrumento.ProfessorInstrumentoExibicaoDto;
+import school.sptech.harmonyospringapi.service.usuario.dto.professor_instrumento.ProfessorInstrumentoMapper;
 import school.sptech.harmonyospringapi.utils.ListaGenericaObj;
 import school.sptech.harmonyospringapi.service.exceptions.EntidadeConflitanteException;
 import school.sptech.harmonyospringapi.service.exceptions.EntitadeNaoEncontradaException;
@@ -40,8 +47,12 @@ public class ProfessorService {
     private ProfessorInstrumentoRepository professorInstrumentoRepository;
 
     @Autowired
+    private InstrumentoService instrumentoService;
+
+    @Autowired
     private AvaliacaoRepository avaliacaoRepository;
 
+    /* ================ PROFESSOR ================ */
 
     public UsuarioExibicaoDto cadastrar(UsuarioCriacaoDto novoProfessorDto){
         if (this.usuarioService.existeUsuarioPorEmail(novoProfessorDto.getEmail())) throw new EntidadeConflitanteException("Erro ao cadastrar. Email já cadastrado !");
@@ -58,7 +69,7 @@ public class ProfessorService {
         return UsuarioMapper.ofUsuarioExibicao(professorCadastrado);
     }
 
-    public List<UsuarioExibicaoDto> obterTodos(){
+    public List<UsuarioExibicaoDto> listar(){
 
         List<Professor> ltProfessores = this.professorRepository.findAll();
 
@@ -72,7 +83,7 @@ public class ProfessorService {
 
         for (Professor professor: professores) {
             double mediaAvaliacao = this.avaliacaoRepository.getMediaAvaliacaoProfessor(professor.getId());
-            List<Instrumento> instrumentos = this.professorInstrumentoRepository.obterInstrumentosPeloIdDoProfessor(professor.getId());
+            List<Instrumento> instrumentos = this.professorInstrumentoRepository.listarInstrumentosPeloIdDoProfessor(professor.getId());
 
         }
 
@@ -86,7 +97,7 @@ public class ProfessorService {
 
     /* ================ PESQUISA ================ */
 
-    public UsuarioExibicaoDto buscarPorId(Integer id){
+    public UsuarioExibicaoDto buscarPorIdParaExibicao(Integer id){
         Optional<Professor> professorOpt = this.professorRepository.findById(id);
 
         if (professorOpt.isEmpty()){
@@ -100,7 +111,7 @@ public class ProfessorService {
         return UsuarioMapper.ofUsuarioExibicao(professorOpt.get());
     }
 
-    public UsuarioExibicaoDto obterPorNome(String nome){
+    public UsuarioExibicaoDto buscarPorNome(String nome){
 
         List<Professor> ltProfessores = this.professorRepository.findAll();
 
@@ -124,7 +135,7 @@ public class ProfessorService {
 
     }
 
-    public Professor obterProfessorPorId(Integer id){
+    public Professor buscarPorId(Integer id){
         Optional<Professor> professorOpt = this.professorRepository.findById(id);
 
         if (professorOpt.isEmpty()){
@@ -174,5 +185,25 @@ public class ProfessorService {
                     String.format("Professor com o id %d não encontrado !", id)
             );
         }
+    }
+
+    /* ================ INSTRUMENTOS ================ */
+
+    public List<InstrumentoExibicaoDto> listarInstrumentos(int professorId) {
+        List<Instrumento> instrumentos = this.professorInstrumentoRepository.listarInstrumentosPeloIdDoProfessor(professorId);
+
+        if (instrumentos.isEmpty()) throw new EntitadeNaoEncontradaException("Professor não possui instrumentos cadastrados !");
+
+        return instrumentos.stream().map(InstrumentoMapper::ofInstrumentoExibicao).toList();
+    }
+
+    public ProfessorInstrumentoExibicaoDto criar(Integer professorId, ProfessorInstrumentoCriacaoDto professorInstrumentoCriacaoDto) {
+        Professor professor = buscarPorId(professorId);
+        Instrumento instrumento = this.instrumentoService.buscarPorId(professorInstrumentoCriacaoDto.getInstrumentoId());
+
+        ProfessorInstrumento professorInstrumentoCadastrado = this.professorInstrumentoRepository
+                .save(ProfessorInstrumentoMapper.of(professorInstrumentoCriacaoDto, professor, instrumento));
+
+        return ProfessorInstrumentoMapper.ofProfessorInstrumentoExibicao(professorInstrumentoCadastrado);
     }
 }

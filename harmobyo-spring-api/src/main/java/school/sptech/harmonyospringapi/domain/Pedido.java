@@ -21,9 +21,16 @@ public class Pedido {
     private Professor professor;
 
     @ManyToOne
+    @MapsId("statusFk")
+    @JoinColumn(name = "status_fk")
     private Status status;
 
     @ManyToOne
+    @MapsId("aulaFk")
+    @JoinColumns({
+            @JoinColumn(name = "aula_usuario_fk", referencedColumnName = "usuario_fk"),
+            @JoinColumn(name = "aula_instrumento_fk", referencedColumnName = "instrumento_fk")
+    })
     private Aula aula;
 
     private LocalDateTime horaCriacao;

@@ -12,9 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import school.sptech.harmonyospringapi.domain.Aluno;
-import school.sptech.harmonyospringapi.service.aluno_instrumento.AlunoInstrumentoService;
-import school.sptech.harmonyospringapi.service.aluno_instrumento.dto.AlunoInstrumentoCriacaoDto;
-import school.sptech.harmonyospringapi.service.aluno_instrumento.dto.AlunoInstrumentoExibicaoDto;
+import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoExibicaoDto;
+import school.sptech.harmonyospringapi.service.usuario.dto.aluno_instrumento.AlunoInstrumentoCriacaoDto;
+import school.sptech.harmonyospringapi.service.usuario.dto.aluno_instrumento.AlunoInstrumentoExibicaoDto;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoPilhaDto;
 import school.sptech.harmonyospringapi.service.usuario.AlunoService;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioCriacaoDto;
@@ -30,9 +30,6 @@ public class AlunoController{
 
     @Autowired
     private AlunoService alunoService;
-
-    @Autowired
-    private AlunoInstrumentoService alunoInstrumentoService;
 
     @Operation(summary = "Cadastra um aluno", description = "")
     @ApiResponse(responseCode = "201", description = "Aluno cadastrado.")
@@ -50,9 +47,9 @@ public class AlunoController{
             @ApiResponse(responseCode = "204", description = "Não há alunos cadastrados.", content = @Content(schema = @Schema(hidden = true)))
     })
     @GetMapping
-    public ResponseEntity<List<UsuarioExibicaoDto>> obterTodos(){
+    public ResponseEntity<List<UsuarioExibicaoDto>> listarAluno(){
 
-        List<UsuarioExibicaoDto> ltUsuariosExibicao = this.alunoService.obterTodos();
+        List<UsuarioExibicaoDto> ltUsuariosExibicao = this.alunoService.listar();
 
         if (ltUsuariosExibicao.isEmpty()){
 
@@ -70,25 +67,18 @@ public class AlunoController{
     @SecurityRequirement(name = "Bearer")
     @GetMapping("/{id}")
     public ResponseEntity<UsuarioExibicaoDto> buscarPorId(@RequestParam Integer id){
-        return ResponseEntity.status(200).body(this.alunoService.buscarPorId(id));
+        return ResponseEntity.status(200).body(this.alunoService.buscarPorIdParaExibicao(id));
     }
 
-    /*
-        Recomendo adicionar mais status,
-        mesma coisa que o professor
-        Ass. João
-    */
     @Operation(summary = "Obtém um aluno pelo seu nome", description = "")
     @ApiResponse(responseCode = "200", description = "Aluno encontrado.")
     @SecurityRequirement(name = "Bearer")
     @GetMapping("/nome")
     public ResponseEntity<UsuarioExibicaoDto> buscarPorNome(@RequestParam String nome){
-
         UsuarioExibicaoDto alunoEncontrado = this.alunoService.buscarPorNome(nome);
 
         return ResponseEntity.status(200).body(alunoEncontrado);
     }
-
 
     @Operation(summary = "Obtém uma lista de alunos ordenada alfabéticamente", description = "")
     @ApiResponses(value = {
@@ -125,18 +115,18 @@ public class AlunoController{
 
     @SecurityRequirement(name = "Bearer")
     @GetMapping("/{id}/instrumentos")
-    public ResponseEntity<List<AlunoInstrumentoExibicaoDto>> obterTodosInstrumentos(@PathVariable int id) {
-        List<AlunoInstrumentoExibicaoDto> alunoInstrumentoExibicaoDtos = this.alunoInstrumentoService.obterTodos(id);
+    public ResponseEntity<List<InstrumentoExibicaoDto>> listarInstrumentosPorIdAluno(@PathVariable int id) {
+        List<InstrumentoExibicaoDto> instrumentos = this.alunoService.listarInstrumentos(id);
 
-        return alunoInstrumentoExibicaoDtos.isEmpty() ? ResponseEntity.status(204).build()
-                : ResponseEntity.status(200).body(alunoInstrumentoExibicaoDtos);
+        return instrumentos.isEmpty() ? ResponseEntity.status(204).build()
+                : ResponseEntity.status(200).body(instrumentos);
     }
 
     @SecurityRequirement(name = "Bearer")
     @PostMapping("/{id}/instrumentos")
 
     public ResponseEntity<AlunoInstrumentoExibicaoDto> cadastrarInstrumento(@PathVariable int id, @RequestBody @Valid AlunoInstrumentoCriacaoDto alunoInstrumentoCriacaoDto) {
-        AlunoInstrumentoExibicaoDto alunoInstrumentoExibicaoDto = this.alunoInstrumentoService.criar(id, alunoInstrumentoCriacaoDto);
+        AlunoInstrumentoExibicaoDto alunoInstrumentoExibicaoDto = this.alunoService.adicionarInstrumento(id, alunoInstrumentoCriacaoDto);
 
         return ResponseEntity.status(201).body(alunoInstrumentoExibicaoDto);
     }

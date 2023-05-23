@@ -20,7 +20,7 @@ public class NaipeService {
     private NaipeRepository naipeRepository;
 
     public NaipeExibicaoDto cadastrar(NaipeCriacaoDto naipeCriacaoDto) {
-        if (this.naipeRepository.existsNaipeByDescricaoNaipeIgnoreCase(naipeCriacaoDto.getDescricaoNaipe())) throw new EntidadeConflitanteException("Erro ao cadastrar. Naipe já cadastrado!");
+        if (this.naipeRepository.existsNaipeByDescricaoIgnoreCase(naipeCriacaoDto.getDescricaoNaipe())) throw new EntidadeConflitanteException("Erro ao cadastrar. Naipe já cadastrado!");
 
         Naipe naipe = this.naipeRepository.save(NaipeMapper.of(naipeCriacaoDto));
 
@@ -34,7 +34,7 @@ public class NaipeService {
                 .toList();
     }
 
-    public Naipe obterNaipePorId(Integer id) {
+    public Naipe buscarPorId(Integer id) {
         return this.naipeRepository.findById(id).orElseThrow(() -> new EntitadeNaoEncontradaException("Naipe com id inexistente"));
     }
 }

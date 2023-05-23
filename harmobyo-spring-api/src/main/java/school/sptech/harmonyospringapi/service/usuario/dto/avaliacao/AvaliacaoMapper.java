@@ -1,6 +1,7 @@
 package school.sptech.harmonyospringapi.service.usuario.dto.avaliacao;
 
 import school.sptech.harmonyospringapi.domain.Avaliacao;
+import school.sptech.harmonyospringapi.domain.AvaliacaoKey;
 import school.sptech.harmonyospringapi.domain.Pedido;
 import school.sptech.harmonyospringapi.domain.Usuario;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoMapper;
@@ -10,7 +11,14 @@ public class AvaliacaoMapper {
 
     public static Avaliacao of(AvaliacaoCriacaoDto avaliacaoCriacaoDto, Usuario usuarioAvaliado,
                                Usuario usuarioAvaliador, Pedido pedido) {
+
+        AvaliacaoKey avaliacaoKey = new AvaliacaoKey();
+        avaliacaoKey.setUsuarioAvaliadoFk(usuarioAvaliado.getId());
+        avaliacaoKey.setUsuarioAvaliadorFk(usuarioAvaliador.getId());
+        avaliacaoKey.setPedido(pedido.getId());
+
         Avaliacao avaliacao = new Avaliacao();
+        avaliacao.setId(avaliacaoKey);
         avaliacao.setValor(avaliacaoCriacaoDto.getValor());
         avaliacao.setComentario(avaliacaoCriacaoDto.getComentario());
         avaliacao.setUsuarioAvaliado(usuarioAvaliado);

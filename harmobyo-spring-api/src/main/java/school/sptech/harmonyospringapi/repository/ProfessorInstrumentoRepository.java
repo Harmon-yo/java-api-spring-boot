@@ -14,5 +14,5 @@ public interface ProfessorInstrumentoRepository extends JpaRepository<ProfessorI
     List<ProfessorInstrumento> findByProfessor_id(int id);
 
     @Query("SELECT i FROM Instrumento i INNER JOIN ProfessorInstrumento pi ON pi.instrumento.id = i.id WHERE pi.professor.id = :idProfessor")
-    List<Instrumento> obterInstrumentosPeloIdDoProfessor(int idProfessor);
+    List<Instrumento> listarInstrumentosPeloIdDoProfessor(int idProfessor);
 }

@@ -22,9 +22,6 @@ public class Aula {
     @JoinColumn(name = "instrumento_fk")
     private Instrumento instrumento;
 
-    @OneToMany(mappedBy = "aula")
-    private List<Pedido> pedido;
-
     public AulaKey getId() {
         return id;
     }

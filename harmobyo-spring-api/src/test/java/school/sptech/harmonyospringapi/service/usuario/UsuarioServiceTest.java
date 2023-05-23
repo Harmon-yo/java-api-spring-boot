@@ -44,7 +44,7 @@ class UsuarioServiceTest {
     @Mock
     private static ProfessorRepository professorRepository;
 
-    @InjectMocks
+    @Mock
     private  static EnderecoService enderecoService;
 
     @InjectMocks

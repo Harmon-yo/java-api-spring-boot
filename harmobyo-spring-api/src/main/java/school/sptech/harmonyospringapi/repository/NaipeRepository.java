@@ -5,5 +5,5 @@ import school.sptech.harmonyospringapi.domain.Naipe;
 
 public interface NaipeRepository extends JpaRepository<Naipe, Integer> {
 
-    boolean existsNaipeByDescricaoNaipeIgnoreCase(String descricaoNaipe);
+    boolean existsNaipeByDescricaoIgnoreCase(String descricaoNaipe);
 }

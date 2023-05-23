@@ -9,7 +9,6 @@ public class StatusMapper {
     public static Status of(StatusCriacaoDto statusCriacaoDto) {
         Status status = new Status();
 
-        status.setPedidos(new ArrayList<>());
         status.setDescricao(statusCriacaoDto.getDescricao());
 
         return status;
@@ -19,7 +18,6 @@ public class StatusMapper {
         StatusExibicaoDto statusExibicaoDto = new StatusExibicaoDto();
 
         statusExibicaoDto.setId(status.getId());
-        statusExibicaoDto.setPedidos(status.getPedidos());
         statusExibicaoDto.setDescricao(status.getDescricao());
 
         return statusExibicaoDto;

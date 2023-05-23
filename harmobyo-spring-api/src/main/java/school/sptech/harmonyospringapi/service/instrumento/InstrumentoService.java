@@ -25,10 +25,10 @@ public class InstrumentoService {
     @Autowired
     private NaipeService naipeService;
 
-    /* Ver se da para criar o naipe depois de criar o instrumento */
+
     public InstrumentoExibicaoDto cadastrar(InstrumentoCriacaoDto instrumentoCriacaoDto) {
         if (this.instrumentoRepository.existsInstrumentoByNomeIgnoreCase(instrumentoCriacaoDto.getNome())) throw new EntidadeConflitanteException("Erro ao cadastrar. Instrumento já cadastrado!");
-        Naipe naipe = this.naipeService.obterNaipePorId(instrumentoCriacaoDto.getNaipeId());
+        Naipe naipe = this.naipeService.buscarPorId(instrumentoCriacaoDto.getNaipeId());
 
         Instrumento novoInstrumento = InstrumentoMapper.of(instrumentoCriacaoDto, naipe);
 
@@ -39,7 +39,8 @@ public class InstrumentoService {
         return this.instrumentoRepository.findAll().stream().map(InstrumentoMapper::ofInstrumentoExibicao).toList();
     }
 
-    public Instrumento obterInstrumentoPorId(Integer id) {
+    /* ============= PESQUISA ================ */
+    public Instrumento buscarPorId(Integer id) {
         Optional<Instrumento> optionalInstrumento = this.instrumentoRepository.findById(id);
 
         if (optionalInstrumento.isEmpty()) throw new EntitadeNaoEncontradaException("Instrumento com id inexistente");

@@ -8,8 +8,6 @@ public class StatusExibicaoDto {
 
     private Integer id;
 
-    private List<Pedido> pedidos;
-
     private String descricao;
 
     public Integer getId() {
@@ -18,14 +16,6 @@ public class StatusExibicaoDto {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public List<Pedido> getPedidos() {
-        return pedidos;
-    }
-
-    public void setPedidos(List<Pedido> pedidos) {
-        this.pedidos = pedidos;
     }
 
     public String getDescricao() {

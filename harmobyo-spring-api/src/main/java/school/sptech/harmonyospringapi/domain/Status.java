@@ -11,9 +11,6 @@ public class Status {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @OneToMany(mappedBy = "status")
-    private List<Pedido> pedidos;
-
     private String descricao;
 
     public Integer getId() {
@@ -22,14 +19,6 @@ public class Status {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public List<Pedido> getPedidos() {
-        return pedidos;
-    }
-
-    public void setPedidos(List<Pedido> pedidos) {
-        this.pedidos = pedidos;
     }
 
     public String getDescricao() {

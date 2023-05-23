@@ -14,6 +14,7 @@ import school.sptech.harmonyospringapi.service.exceptions.EntidadeConflitanteExc
 import school.sptech.harmonyospringapi.service.exceptions.EntitadeNaoEncontradaException;
 import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoCriacaoDto;
 import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoExibicaoDto;
+import school.sptech.harmonyospringapi.service.naipe.NaipeService;
 
 import java.util.Optional;
 
@@ -30,7 +31,7 @@ class InstrumentoServiceTest {
     private InstrumentoRepository instrumentoRepository;
 
     @Mock
-    private NaipeRepository naipeRepository;
+    private NaipeService naipeService;
 
     @InjectMocks
     private InstrumentoService instrumentoService;
@@ -44,6 +45,7 @@ class InstrumentoServiceTest {
 
         Naipe naipe = new Naipe();
         naipe.setId(1);
+        naipe.setDescricao("Cordas");
 
         Instrumento novoInstrumento = new Instrumento();
         novoInstrumento.setId(1);
@@ -51,8 +53,9 @@ class InstrumentoServiceTest {
         novoInstrumento.setNaipe(naipe);
 
         Mockito.when(instrumentoRepository.existsInstrumentoByNomeIgnoreCase("Violão")).thenReturn(false);
-        Mockito.when(naipeRepository.findById(1)).thenReturn(Optional.of(naipe));
         Mockito.when(instrumentoRepository.save(Mockito.any(Instrumento.class))).thenReturn(novoInstrumento);
+        Mockito.when(naipeService.buscarPorId(anyInt())).thenReturn(naipe);
+
 
         // Act
         InstrumentoExibicaoDto resultado = instrumentoService.cadastrar(instrumentoCriacaoDto);
@@ -61,10 +64,10 @@ class InstrumentoServiceTest {
         assertNotNull(resultado);
         assertEquals(1, resultado.getId());
         assertEquals("Violão", resultado.getNome());
-        assertEquals(1L, resultado.getNaipe());
+        assertEquals(1, resultado.getNaipe().getId());
 
         Mockito.verify(instrumentoRepository, times(1)).existsInstrumentoByNomeIgnoreCase("Violão");
-        Mockito.verify(naipeRepository, times(1)).findById(1);
+        Mockito.verify(naipeService, times(1)).buscarPorId(Mockito.anyInt());
         Mockito.verify(instrumentoRepository, times(1)).save(Mockito.any(Instrumento.class));
     }
 
@@ -81,7 +84,7 @@ class InstrumentoServiceTest {
         assertThrows(EntidadeConflitanteException.class, () -> instrumentoService.cadastrar(instrumentoCriacaoDto));
 
         Mockito.verify(instrumentoRepository, times(1)).existsInstrumentoByNomeIgnoreCase("Violão");
-        Mockito.verify(naipeRepository, never()).findById(anyInt());
+        Mockito.verify(naipeService, never()).buscarPorId(anyInt());
         Mockito.verify(instrumentoRepository, never()).save(Mockito.any(Instrumento.class));
     }
 }

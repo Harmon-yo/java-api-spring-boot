@@ -37,7 +37,6 @@ public class Endereco {
     private String cep;
 
 
-
     public Integer getId() {
         return id;
     }

@@ -39,13 +39,13 @@ class NaipeServiceTest {
 
         // Act & Assert
         assertThrows(EntitadeNaoEncontradaException.class, ()
-                -> naipeService.obterNaipePorId(999));
+                -> naipeService.buscarPorId(999));
     }
 
     @Test
     public void quandoCadastradoCorretamenteDeveSalvarNaRepository() {
         Naipe naipeCriado = new Naipe();
-        naipeCriado.setDescricaoNaipe("Naipe teste");
+        naipeCriado.setDescricao("Naipe teste");
 
         Mockito.when(naipeRepository.save(Mockito.any(Naipe.class))).thenReturn(naipeCriado);
 

@@ -102,7 +102,7 @@ public class UsuarioService {
         return usuarioRepository.existsByCpf(cpf);
     }
 
-    public Usuario obterUsuarioPorId(Integer id){
+    public Usuario buscarUsuarioPorId(Integer id){
         return usuarioRepository.findById(id).orElseThrow(
                 () -> new EntitadeNaoEncontradaException("Aluno não encontrado")
         );

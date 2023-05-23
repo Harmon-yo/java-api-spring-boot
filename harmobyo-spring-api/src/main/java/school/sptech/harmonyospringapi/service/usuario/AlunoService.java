@@ -3,11 +3,17 @@ package school.sptech.harmonyospringapi.service.usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import school.sptech.harmonyospringapi.domain.Aluno;
-import school.sptech.harmonyospringapi.domain.Aula;
-import school.sptech.harmonyospringapi.domain.Usuario;
+import school.sptech.harmonyospringapi.domain.*;
+import school.sptech.harmonyospringapi.repository.AlunoInstrumentoRepository;
+import school.sptech.harmonyospringapi.repository.InstrumentoRepository;
 import school.sptech.harmonyospringapi.service.aula.AulaService;
 import school.sptech.harmonyospringapi.service.aula.dto.AulaExibicaoDto;
+import school.sptech.harmonyospringapi.service.instrumento.InstrumentoService;
+import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoExibicaoDto;
+import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoMapper;
+import school.sptech.harmonyospringapi.service.usuario.dto.aluno_instrumento.AlunoInstrumentoCriacaoDto;
+import school.sptech.harmonyospringapi.service.usuario.dto.aluno_instrumento.AlunoInstrumentoExibicaoDto;
+import school.sptech.harmonyospringapi.service.usuario.dto.aluno_instrumento.AlunoInstrumentoMapper;
 import school.sptech.harmonyospringapi.utils.ListaGenericaObj;
 import school.sptech.harmonyospringapi.repository.AlunoRepository;
 import school.sptech.harmonyospringapi.repository.UsuarioRepository;
@@ -37,7 +43,13 @@ public class AlunoService {
     @Autowired
     private AulaService aulaService;
 
+    @Autowired
+    private AlunoInstrumentoRepository alunoInstrumentoRepository;
 
+    @Autowired
+    private InstrumentoService instrumentoService;
+
+    /* ============= ALUNO ================ */
 
     public UsuarioExibicaoDto cadastrar(UsuarioCriacaoDto novoAlunoDto) {
         if (this.usuarioService.existeUsuarioPorEmail((novoAlunoDto.getEmail()))) throw new EntidadeConflitanteException("Erro ao cadastrar. Email já cadastrado !");
@@ -53,14 +65,16 @@ public class AlunoService {
         return UsuarioMapper.ofUsuarioExibicao(alunoCadastrado);
     }
 
-    public List<UsuarioExibicaoDto> obterTodos() {
+    public List<UsuarioExibicaoDto> listar() {
 
         List<Aluno> ltAlunos = this.alunoRepository.findAll();
 
         return ltAlunos.stream().map(UsuarioMapper::ofUsuarioExibicao).toList();
     }
 
-    public UsuarioExibicaoDto buscarPorId(Integer id) {
+    /* ============= PESQUISA ================ */
+
+    public UsuarioExibicaoDto buscarPorIdParaExibicao(Integer id) {
 
         Optional<Aluno> alunoOpt = this.alunoRepository.findById(id);
 
@@ -100,7 +114,7 @@ public class AlunoService {
 
     }
 
-    public Aluno obterAlunoPorId(Integer id) {
+    public Aluno buscarPorId(Integer id) {
 
         Optional<Aluno> alunoOpt = this.alunoRepository.findById(id);
 
@@ -112,7 +126,6 @@ public class AlunoService {
 
         return alunoOpt.get();
     }
-
 
     public List<UsuarioExibicaoDto> obterTodosEmOrdemAlfabetica() {
 
@@ -133,6 +146,8 @@ public class AlunoService {
         return ltAlunos.stream().map(UsuarioMapper::ofUsuarioExibicao).toList();
     }
 
+    /* ============= DELETAR ================ */
+
     public void deletarPorId(Integer id){
 
         if (this.alunoRepository.existsById(id)){
@@ -145,5 +160,26 @@ public class AlunoService {
         }
     }
 
+    /* ============= INSTRUMENTOS ================ */
 
+    public AlunoInstrumentoExibicaoDto adicionarInstrumento(Integer alunoId, AlunoInstrumentoCriacaoDto alunoInstrumentoCriacaoDto) {
+        Integer instrumentoId = alunoInstrumentoCriacaoDto.getInstrumentoId();
+
+        Aluno aluno = buscarPorId(alunoId);
+        Instrumento instrumento = this.instrumentoService.buscarPorId(instrumentoId);
+
+        AlunoInstrumento alunoInstrumento = this.alunoInstrumentoRepository
+                .save(AlunoInstrumentoMapper.of(alunoInstrumentoCriacaoDto, aluno, instrumento));
+
+        return AlunoInstrumentoMapper.ofAlunoInstrumentoExibicao(alunoInstrumento);
+    }
+
+    public List<InstrumentoExibicaoDto> listarInstrumentos(Integer alunoId) {
+
+        List<Instrumento> instrumentos = this.alunoInstrumentoRepository.listarInstrumentosPeloIdDoAluno(alunoId);
+
+        if (instrumentos.isEmpty()) throw new EntitadeNaoEncontradaException(String.format("Aluno com o id %d não encontrado !", alunoId));
+
+        return instrumentos.stream().map(InstrumentoMapper::ofInstrumentoExibicao).toList();
+    }
 }

@@ -14,9 +14,6 @@ public class PedidoKey implements Serializable {
     @Column(name = "professor_fk")
     private Integer professorFk;
 
-    @Column(name = "aula_fk")
-    private AulaKey aulaFk;
-
     public Integer getAlunoFk() {
         return alunoFk;
     }

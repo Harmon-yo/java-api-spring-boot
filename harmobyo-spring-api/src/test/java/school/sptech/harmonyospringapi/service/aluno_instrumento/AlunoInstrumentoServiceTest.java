@@ -6,7 +6,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 import school.sptech.harmonyospringapi.domain.Aluno;
 import school.sptech.harmonyospringapi.domain.AlunoInstrumento;
@@ -15,8 +14,8 @@ import school.sptech.harmonyospringapi.domain.Naipe;
 import school.sptech.harmonyospringapi.repository.AlunoInstrumentoRepository;
 import school.sptech.harmonyospringapi.repository.AlunoRepository;
 import school.sptech.harmonyospringapi.repository.InstrumentoRepository;
-import school.sptech.harmonyospringapi.service.aluno_instrumento.dto.AlunoInstrumentoCriacaoDto;
-import school.sptech.harmonyospringapi.service.aluno_instrumento.dto.AlunoInstrumentoExibicaoDto;
+import school.sptech.harmonyospringapi.service.usuario.dto.aluno_instrumento.AlunoInstrumentoCriacaoDto;
+import school.sptech.harmonyospringapi.service.usuario.dto.aluno_instrumento.AlunoInstrumentoExibicaoDto;
 import school.sptech.harmonyospringapi.service.exceptions.EntitadeNaoEncontradaException;
 import school.sptech.harmonyospringapi.service.usuario.AlunoService;
 
@@ -71,9 +70,9 @@ class AlunoInstrumentoServiceTest {
         Mockito.when(alunoInstrumentoRepository.findByAluno_id(Mockito.anyInt()))
                 .thenReturn(List.of());
         //then
-        EntitadeNaoEncontradaException exception1 = assertThrows(EntitadeNaoEncontradaException.class, () -> service.obterTodos(id1));
-        EntitadeNaoEncontradaException exception2 = assertThrows(EntitadeNaoEncontradaException.class, () -> service.obterTodos(id2));
-        EntitadeNaoEncontradaException exception3 = assertThrows(EntitadeNaoEncontradaException.class, () -> service.obterTodos(id3));
+        EntitadeNaoEncontradaException exception1 = assertThrows(EntitadeNaoEncontradaException.class, () -> service.listar(id1));
+        EntitadeNaoEncontradaException exception2 = assertThrows(EntitadeNaoEncontradaException.class, () -> service.listar(id2));
+        EntitadeNaoEncontradaException exception3 = assertThrows(EntitadeNaoEncontradaException.class, () -> service.listar(id3));
 
 
         assertEquals("Id inválido", exception1.getMessage());
@@ -117,7 +116,7 @@ class AlunoInstrumentoServiceTest {
         Instrumento instrumento = new Instrumento();
         instrumento.setNome("hahahah");
         Naipe naipe = new Naipe();
-        naipe.setDescricaoNaipe("asddasd");
+        naipe.setDescricao("asddasd");
         instrumento.setNaipe(naipe);
 
         AlunoInstrumento alunoInstrumento = new AlunoInstrumento();

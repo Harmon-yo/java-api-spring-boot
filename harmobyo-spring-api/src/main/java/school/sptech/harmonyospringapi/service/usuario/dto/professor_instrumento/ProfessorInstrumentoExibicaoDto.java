@@ -1,9 +1,5 @@
-package school.sptech.harmonyospringapi.service.professor_instrumento.dto;
+package school.sptech.harmonyospringapi.service.usuario.dto.professor_instrumento;
 
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MapsId;
-import school.sptech.harmonyospringapi.domain.Instrumento;
 import school.sptech.harmonyospringapi.domain.ProfessorInstrumentoKey;
 import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioExibicaoDto;

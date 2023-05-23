@@ -13,9 +13,6 @@ public class Instrumento {
 
     private String nome;
 
-    @OneToMany(mappedBy = "instrumento")
-    private List<Aula> aulas;
-
     @ManyToOne
     private Naipe naipe;
 

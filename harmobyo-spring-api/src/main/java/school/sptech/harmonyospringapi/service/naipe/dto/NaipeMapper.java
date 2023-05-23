@@ -11,16 +11,14 @@ public class NaipeMapper {
     public static Naipe of(NaipeCriacaoDto naipeCriacaoDto) {
         Naipe naipe = new Naipe();
 
-        naipe.setDescricaoNaipe(naipeCriacaoDto.getDescricaoNaipe());
-        naipe.setInstrumentos(new ArrayList<>());
+        naipe.setDescricao(naipeCriacaoDto.getDescricaoNaipe());
 
         return naipe;
     }
 
-    public static NaipeCriacaoDto of(Naipe dominio) {
+    public static NaipeCriacaoDto of(Naipe naipe) {
         NaipeCriacaoDto naipeCriado = new NaipeCriacaoDto();
-        dominio.setInstrumentos(new ArrayList<>());
-        naipeCriado.setDescricaoNaipe(dominio.getDescricaoNaipe());
+        naipeCriado.setDescricaoNaipe(naipe.getDescricao());
 
         return naipeCriado;
     }
@@ -29,23 +27,8 @@ public class NaipeMapper {
         NaipeExibicaoDto naipeExibicaoDto = new NaipeExibicaoDto();
 
         naipeExibicaoDto.setId(naipe.getId());
-        naipeExibicaoDto.setDescricaoNaipe(naipe.getDescricaoNaipe());
-        naipeExibicaoDto.setInstrumentos(
-                naipe.getInstrumentos()
-                        .stream()
-                        .map(InstrumentoMapper::ofInstrumentoExibicaoSemNaipe)
-                        .toList()
-        );
+        naipeExibicaoDto.setDescricaoNaipe(naipe.getDescricao());
 
         return naipeExibicaoDto;
-    }
-
-    public static NaipeExibicaoSemInstrumentosDto ofNaipeExibicaoSemInstrumentos(Naipe naipe) {
-        NaipeExibicaoSemInstrumentosDto naipeExibicaoSemInstrumentosDto = new NaipeExibicaoSemInstrumentosDto();
-
-        naipeExibicaoSemInstrumentosDto.setId(naipe.getId());
-        naipeExibicaoSemInstrumentosDto.setDescricaoNaipe(naipe.getDescricaoNaipe());
-
-        return naipeExibicaoSemInstrumentosDto;
     }
 }

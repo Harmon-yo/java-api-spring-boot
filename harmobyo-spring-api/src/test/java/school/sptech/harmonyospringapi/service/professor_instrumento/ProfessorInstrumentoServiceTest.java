@@ -1,24 +1,18 @@
 package school.sptech.harmonyospringapi.service.professor_instrumento;
 
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import school.sptech.harmonyospringapi.domain.*;
 import school.sptech.harmonyospringapi.repository.InstrumentoRepository;
 import school.sptech.harmonyospringapi.repository.ProfessorInstrumentoRepository;
 import school.sptech.harmonyospringapi.repository.ProfessorRepository;
-import school.sptech.harmonyospringapi.service.aluno_instrumento.dto.AlunoInstrumentoCriacaoDto;
-import school.sptech.harmonyospringapi.service.aluno_instrumento.dto.AlunoInstrumentoExibicaoDto;
 import school.sptech.harmonyospringapi.service.exceptions.EntitadeNaoEncontradaException;
-import school.sptech.harmonyospringapi.service.instrumento.InstrumentoService;
-import school.sptech.harmonyospringapi.service.professor_instrumento.dto.ProfessorInstrumentoCriacaoDto;
-import school.sptech.harmonyospringapi.service.professor_instrumento.dto.ProfessorInstrumentoExibicaoDto;
-import school.sptech.harmonyospringapi.service.usuario.ProfessorService;
+import school.sptech.harmonyospringapi.service.usuario.dto.professor_instrumento.ProfessorInstrumentoCriacaoDto;
+import school.sptech.harmonyospringapi.service.usuario.dto.professor_instrumento.ProfessorInstrumentoExibicaoDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -86,7 +80,7 @@ class ProfessorInstrumentoServiceTest {
         Instrumento instrumento = new Instrumento();
         instrumento.setNome("teclado");
         Naipe naipe = new Naipe();
-        naipe.setDescricaoNaipe("cordas");
+        naipe.setDescricao("cordas");
         instrumento.setNaipe(naipe);
 
         ProfessorInstrumento professorInstrumento = new ProfessorInstrumento();

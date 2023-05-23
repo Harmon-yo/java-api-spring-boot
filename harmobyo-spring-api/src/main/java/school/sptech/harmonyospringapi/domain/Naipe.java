@@ -11,10 +11,7 @@ public class Naipe {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String descricaoNaipe;
-
-    @OneToMany(mappedBy = "naipe")
-    private List<Instrumento> instrumentos;
+    private String descricao;
 
     public Integer getId() {
         return id;
@@ -24,19 +21,11 @@ public class Naipe {
         this.id = id;
     }
 
-    public String getDescricaoNaipe() {
-        return descricaoNaipe;
+    public String getDescricao() {
+        return descricao;
     }
 
-    public void setDescricaoNaipe(String descricaoNaipe) {
-        this.descricaoNaipe = descricaoNaipe;
-    }
-
-    public List<Instrumento> getInstrumentos() {
-        return instrumentos;
-    }
-
-    public void setInstrumentos(List<Instrumento> instrumentos) {
-        this.instrumentos = instrumentos;
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
     }
 }

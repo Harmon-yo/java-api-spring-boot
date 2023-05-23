@@ -19,16 +19,7 @@ public class InstrumentoMapper {
 
         instrumentoExibicaoDto.setId(instrumento.getId());
         instrumentoExibicaoDto.setNome(instrumento.getNome());
-        instrumentoExibicaoDto.setNaipe(NaipeMapper.ofNaipeExibicaoSemInstrumentos(instrumento.getNaipe()));
-
-        return instrumentoExibicaoDto;
-    }
-
-    public static InstrumentoExibicaoSemNaipeDto ofInstrumentoExibicaoSemNaipe(Instrumento instrumento) {
-        InstrumentoExibicaoSemNaipeDto instrumentoExibicaoDto = new InstrumentoExibicaoSemNaipeDto();
-
-        instrumentoExibicaoDto.setId(instrumento.getId());
-        instrumentoExibicaoDto.setNome(instrumento.getNome());
+        instrumentoExibicaoDto.setNaipe(NaipeMapper.ofNaipeExibicao(instrumento.getNaipe()));
 
         return instrumentoExibicaoDto;
     }

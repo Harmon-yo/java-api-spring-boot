@@ -1,6 +1,7 @@
 package school.sptech.harmonyospringapi.service.usuario.dto.avaliacao;
 
 import jakarta.persistence.ManyToOne;
+import school.sptech.harmonyospringapi.domain.AvaliacaoKey;
 import school.sptech.harmonyospringapi.domain.Pedido;
 import school.sptech.harmonyospringapi.domain.Usuario;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoDto;
@@ -9,7 +10,7 @@ import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioExibicaoDto;
 import java.time.LocalDate;
 
 public class AvaliacaoExibicaoDto {
-    private Integer id;
+    private AvaliacaoKey id;
 
     private Double valor;
 
@@ -23,11 +24,11 @@ public class AvaliacaoExibicaoDto {
 
     private PedidoExibicaoDto pedidoAula;
 
-    public Integer getId() {
+    public AvaliacaoKey getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(AvaliacaoKey id) {
         this.id = id;
     }
 

@@ -1,13 +1,6 @@
-package school.sptech.harmonyospringapi.service.aluno_instrumento.dto;
+package school.sptech.harmonyospringapi.service.usuario.dto.aluno_instrumento;
 
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MapsId;
-import jakarta.validation.constraints.NotNull;
-import school.sptech.harmonyospringapi.domain.Aluno;
 import school.sptech.harmonyospringapi.domain.AlunoInstrumentoKey;
-import school.sptech.harmonyospringapi.domain.Instrumento;
 import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioExibicaoDto;
 
