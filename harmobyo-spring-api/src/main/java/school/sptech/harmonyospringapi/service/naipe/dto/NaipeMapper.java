@@ -17,6 +17,14 @@ public class NaipeMapper {
         return naipe;
     }
 
+    public static NaipeCriacaoDto of(Naipe dominio) {
+        NaipeCriacaoDto naipeCriado = new NaipeCriacaoDto();
+        dominio.setInstrumentos(new ArrayList<>());
+        naipeCriado.setDescricaoNaipe(dominio.getDescricaoNaipe());
+
+        return naipeCriado;
+    }
+
     public static NaipeExibicaoDto ofNaipeExibicao(Naipe naipe) {
         NaipeExibicaoDto naipeExibicaoDto = new NaipeExibicaoDto();
 
