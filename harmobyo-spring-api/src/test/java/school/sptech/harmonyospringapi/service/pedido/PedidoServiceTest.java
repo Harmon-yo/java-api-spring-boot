@@ -7,13 +7,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import school.sptech.harmonyospringapi.domain.Aluno;
-import school.sptech.harmonyospringapi.domain.Pedido;
-import school.sptech.harmonyospringapi.domain.Professor;
-import school.sptech.harmonyospringapi.repository.AlunoRepository;
-import school.sptech.harmonyospringapi.repository.PedidoRepository;
-import school.sptech.harmonyospringapi.repository.ProfessorRepository;
-import school.sptech.harmonyospringapi.repository.StatusRepository;
+import school.sptech.harmonyospringapi.domain.*;
+import school.sptech.harmonyospringapi.repository.*;
+import school.sptech.harmonyospringapi.service.exceptions.EntitadeNaoEncontradaException;
+import school.sptech.harmonyospringapi.service.pedido.dto.PedidoCriacaoDto;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoDto;
 
 import java.util.List;
@@ -28,7 +25,8 @@ class PedidoServiceTest {
 
     @Mock
     private AlunoRepository alunoRepository;
-
+    @Mock
+    private AulaRepository aulaRepository;
     @Mock
     private ProfessorRepository professorRepository;
 
@@ -52,25 +50,117 @@ class PedidoServiceTest {
 
     }
 
-    @DisplayName("Deve retornar 3 quando houver 3 pedidos")
+   @DisplayName("Criar pedido quando PedidoCriacaoDto for válido")
     @Test
-    void retornaTresQuandoHouverTresPedidos(){
+    void criarPedidoQuandoPedidoCriacaoDtoForValido(){
 
-        Pedido pedido = new Pedido();
+            PedidoCriacaoDto pedidoCriacaoDto = new PedidoCriacaoDto();
+            pedidoCriacaoDto.setAlunoId(1);
+            pedidoCriacaoDto.setProfessorId(1);
+            pedidoCriacaoDto.setStatusId(1);
+
+            Aluno aluno = new Aluno();
+            aluno.setId(1);
+
+            Professor professor = new Professor();
+            professor.setId(1);
+
+            Status status = new Status();
+            status.setId(1);
+
+            Pedido novoPedido = new Pedido();
+            PedidoKey pedidoKey = new PedidoKey();
+            pedidoKey.setAlunoFk(1);
+            pedidoKey.setProfessorFk(1);
+            novoPedido.setId(pedidoKey);
+            novoPedido.setAluno(aluno);
+            novoPedido.setProfessor(professor);
+            novoPedido.setStatus(status);
+
+            Aula aula = new Aula();
+            Instrumento instrumento = new Instrumento();
+            Naipe naipe = new Naipe();
+            naipe.setId(1);
+            instrumento.setNaipe(naipe);
+            AulaKey aulaKey = new AulaKey();
+            aulaKey.setUsuarioFk(1);
+            aulaKey.setInstrumentoFk(2);
+            instrumento.setId(2);
+            aula.setId(aulaKey);
+            aula.setUsuario(aluno);
+            aula.setInstrumento(instrumento);
+            novoPedido.setAula(aula);
+
+
+            Mockito.when(alunoRepository.findById(1)).thenReturn(java.util.Optional.of(aluno));
+            Mockito.when(professorRepository.findById(1)).thenReturn(java.util.Optional.of(professor));
+            Mockito.when(statusRepository.findById(1)).thenReturn(java.util.Optional.of(status));
+            Mockito.when(aulaRepository.findById(Mockito.any())).thenReturn(java.util.Optional.of(aula));
+            Mockito.when(repository.save(Mockito.any(Pedido.class))).thenReturn(novoPedido);
+
+            PedidoExibicaoDto resultado = service.criar(pedidoCriacaoDto);
+
+            assertEquals(pedidoKey, resultado.getId());
+            assertEquals(1, resultado.getAluno().getId());
+            assertEquals(1, resultado.getProfessor().getId());
+            assertEquals(1, resultado.getStatus().getId());
+
+        }
+
+    @DisplayName("Deve lançar exceção quando aluno não existir")
+    @Test
+    void deveLancarExcecaoQuandoAlunoNaoExistir(){
+
+        PedidoCriacaoDto pedidoCriacaoDto = new PedidoCriacaoDto();
+        pedidoCriacaoDto.setAlunoId(1);
+        pedidoCriacaoDto.setProfessorId(1);
+        pedidoCriacaoDto.setStatusId(1);
+
+        Mockito.when(alunoRepository.findById(1)).thenReturn(java.util.Optional.empty());
+
+        assertThrows(EntitadeNaoEncontradaException.class, () -> service.criar(pedidoCriacaoDto));
+
+    }
+
+    @DisplayName("Deve lançar exceção quando professor não existir")
+    @Test
+    void deveLancarExcecaoQuandoProfessorNaoExistir(){
+
+        PedidoCriacaoDto pedidoCriacaoDto = new PedidoCriacaoDto();
+        pedidoCriacaoDto.setAlunoId(1);
+        pedidoCriacaoDto.setProfessorId(1);
+        pedidoCriacaoDto.setStatusId(1);
+
         Aluno aluno = new Aluno();
-        pedido.setAluno(aluno);
-        List<Pedido> pedidos = List.of(
-                pedido,
-                pedido,
-                pedido
-        );
+        aluno.setId(1);
 
-        Mockito.when(repository.findAll())
-                .thenReturn(pedidos);
+        Mockito.when(alunoRepository.findById(1)).thenReturn(java.util.Optional.of(aluno));
+        Mockito.when(professorRepository.findById(1)).thenReturn(java.util.Optional.empty());
 
-        List<PedidoExibicaoDto> pedidosRetorno = service.obterTodos();
+        assertThrows(EntitadeNaoEncontradaException.class, () -> service.criar(pedidoCriacaoDto));
 
-        assertEquals(pedidos.size(), pedidosRetorno.size());
+    }
+
+    @DisplayName("Deve lançar exceção quando status não existir")
+    @Test
+    void deveLancarExcecaoQuandoStatusNaoExistir(){
+
+        PedidoCriacaoDto pedidoCriacaoDto = new PedidoCriacaoDto();
+        pedidoCriacaoDto.setAlunoId(1);
+        pedidoCriacaoDto.setProfessorId(1);
+        pedidoCriacaoDto.setStatusId(1);
+
+        Aluno aluno = new Aluno();
+        aluno.setId(1);
+
+        Professor professor = new Professor();
+        professor.setId(1);
+
+        Mockito.when(alunoRepository.findById(1)).thenReturn(java.util.Optional.of(aluno));
+        Mockito.when(professorRepository.findById(1)).thenReturn(java.util.Optional.of(professor));
+        Mockito.when(statusRepository.findById(1)).thenReturn(java.util.Optional.empty());
+
+        assertThrows(EntitadeNaoEncontradaException.class, () -> service.criar(pedidoCriacaoDto));
 
     }
 }
