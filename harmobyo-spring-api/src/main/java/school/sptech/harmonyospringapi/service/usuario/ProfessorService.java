@@ -3,17 +3,21 @@ package school.sptech.harmonyospringapi.service.usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import school.sptech.harmonyospringapi.domain.Instrumento;
 import school.sptech.harmonyospringapi.domain.Professor;
 import school.sptech.harmonyospringapi.domain.Usuario;
+import school.sptech.harmonyospringapi.repository.*;
+import school.sptech.harmonyospringapi.service.usuario.dto.avaliacao.AvaliacaoCriacaoDto;
+import school.sptech.harmonyospringapi.service.usuario.dto.avaliacao.AvaliacaoExibicaoDto;
+import school.sptech.harmonyospringapi.service.usuario.dto.professor.ProfessorExibicaoResumidoDto;
 import school.sptech.harmonyospringapi.utils.ListaGenericaObj;
-import school.sptech.harmonyospringapi.repository.ProfessorRepository;
-import school.sptech.harmonyospringapi.repository.UsuarioRepository;
 import school.sptech.harmonyospringapi.service.exceptions.EntidadeConflitanteException;
 import school.sptech.harmonyospringapi.service.exceptions.EntitadeNaoEncontradaException;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioCriacaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioMapper;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +32,16 @@ public class ProfessorService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private AulaRepository aulaRepository;
+
+    @Autowired
+    private ProfessorInstrumentoRepository professorInstrumentoRepository;
+
+    @Autowired
+    private AvaliacaoRepository avaliacaoRepository;
+
 
     public UsuarioExibicaoDto cadastrar(UsuarioCriacaoDto novoProfessorDto){
         if (this.usuarioService.existeUsuarioPorEmail(novoProfessorDto.getEmail())) throw new EntidadeConflitanteException("Erro ao cadastrar. Email já cadastrado !");
@@ -49,6 +63,25 @@ public class ProfessorService {
         List<Professor> ltProfessores = this.professorRepository.findAll();
 
         return ltProfessores.stream().map(UsuarioMapper::ofUsuarioExibicao).toList();
+    }
+
+    public void encontrarProfessores(){
+
+        List<Professor> professores = this.professorRepository.findAll();
+        List<ProfessorExibicaoResumidoDto> professorExibicaoDto = new ArrayList<>();
+
+        for (Professor professor: professores) {
+            double mediaAvaliacao = this.avaliacaoRepository.getMediaAvaliacaoProfessor(professor.getId());
+            List<Instrumento> instrumentos = this.professorInstrumentoRepository.obterInstrumentosPeloIdDoProfessor(professor.getId());
+
+        }
+
+    }
+
+    /* ================ AVALIAÇÃO ================ */
+
+    public AvaliacaoExibicaoDto criarAvaliacao(AvaliacaoCriacaoDto avaliacaoCriacaoDto) {
+        return null;
     }
 
     /* ================ PESQUISA ================ */

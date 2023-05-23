@@ -40,16 +40,17 @@ public abstract class Usuario {
     )
     private String telefone;
 
-
-
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(referencedColumnName = "id", name = "endereco_id")
     private Endereco endereco;
 
     @Column(insertable=false, updatable=false)
     private String categoria;
+
     private boolean ativo;
+
     private boolean autenticado;
+
     private LocalDateTime ultimaVezOnline;
 
     public Endereco getEndereco() {

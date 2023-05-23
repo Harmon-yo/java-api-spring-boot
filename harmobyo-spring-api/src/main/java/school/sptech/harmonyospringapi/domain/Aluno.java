@@ -15,15 +15,6 @@ import java.util.List;
 @Entity
 @DiscriminatorValue("Aluno")
 public class Aluno extends Usuario{
-
-    @OneToMany(mappedBy = "aluno")
-    private List<AlunoInstrumento> alunoInstrumentos;
-
-
-    @OneToMany(mappedBy = "aluno")
-    private List<Pedido> pedidos;
-
-
     public PilhaObj<PedidoExibicaoPilhaDto> getHistorico() {
         PilhaObj<PedidoExibicaoPilhaDto> historico = new PilhaObj<>(AlunoService.MAX_AULAS);
         List<Pedido> listinha = new ArrayList<>();

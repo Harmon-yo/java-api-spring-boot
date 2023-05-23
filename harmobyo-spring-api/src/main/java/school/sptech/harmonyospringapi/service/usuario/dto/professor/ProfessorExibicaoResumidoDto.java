@@ -2,13 +2,14 @@ package school.sptech.harmonyospringapi.service.usuario.dto.professor;
 
 import jakarta.persistence.OneToMany;
 import school.sptech.harmonyospringapi.domain.Instrumento;
-import school.sptech.harmonyospringapi.domain.ProfessorInstrumento;
 
 import java.util.List;
 
-public class ProfessorExibicaoDto {
+public class ProfessorExibicaoResumidoDto {
 
     private Long id;
+
+    private String nome;
 
     @OneToMany(mappedBy = "professor")
     private List<Instrumento> ltInstrumentos;
@@ -25,6 +26,14 @@ public class ProfessorExibicaoDto {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
     public List<Instrumento> getLtInstrumentos() {

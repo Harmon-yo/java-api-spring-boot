@@ -9,12 +9,5 @@ import java.util.List;
 
 @Entity
 @DiscriminatorValue("Professor")
-public class Professor extends Usuario{
-
-    @OneToMany(mappedBy = "professor")
-    private List<ProfessorInstrumento> professorInstrumentos;
-
-    @OneToMany(mappedBy = "professor")
-    private List<Pedido> pedidos;
-
+public class Professor extends Usuario {
 }

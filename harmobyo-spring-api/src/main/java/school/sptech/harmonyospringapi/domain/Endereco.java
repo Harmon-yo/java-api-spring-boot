@@ -14,25 +14,15 @@ public class Endereco {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotBlank
-    @Size(min = 5, message = "O logradouro deve ter no mínimo 5 caracteres")
     private String logradouro;
-
 
     private String numero;
 
     private String complemento;
 
-    @NotBlank
-    @Size(min = 3, message = "A cidade deve ter no mínimo 3 caracteres")
     private String cidade;
 
-    @NotBlank
-    @Size(min = 3, message = "O bairro deve ter no mínimo 3 caracteres")
     private String bairro;
-
-    @OneToOne(mappedBy = "endereco")
-    private Usuario usuario;
 
     public String getBairro() {
         return bairro;
@@ -42,13 +32,8 @@ public class Endereco {
         this.bairro = bairro;
     }
 
-    @NotBlank
-    @Size(min = 2, message = "O estado deve ter no mínimo 2 caracteres")
     private String estado;
 
-    @NotBlank
-    @Size(min = 8, message = "O CEP deve ter no mínimo 8 caracteres")
-    @Pattern(regexp = "\\d{5}-\\d{3}", message = "O CEP deve estar no formato 99999-999")
     private String cep;
 
 
