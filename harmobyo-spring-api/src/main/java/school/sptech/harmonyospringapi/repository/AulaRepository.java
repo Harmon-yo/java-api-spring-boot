@@ -9,6 +9,9 @@ import java.util.Optional;
 
 public interface AulaRepository extends JpaRepository<Aula, AulaKey> {
 
+
+    Optional<Aula> findFirstByUsuarioIdOrderByValorAulaAsc(Integer professorId);
+
 //    List<Aula> findAllByIdAluno(int id);
 
     List<Aula> findAllByIdProfessorFk(int fkProfessor);

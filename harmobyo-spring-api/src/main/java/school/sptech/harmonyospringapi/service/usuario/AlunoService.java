@@ -4,8 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import school.sptech.harmonyospringapi.domain.*;
-import school.sptech.harmonyospringapi.repository.AlunoInstrumentoRepository;
-import school.sptech.harmonyospringapi.repository.InstrumentoRepository;
+import school.sptech.harmonyospringapi.repository.*;
 import school.sptech.harmonyospringapi.service.aula.AulaService;
 import school.sptech.harmonyospringapi.service.aula.dto.AulaExibicaoDto;
 import school.sptech.harmonyospringapi.service.instrumento.InstrumentoService;
@@ -14,9 +13,9 @@ import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoMapper
 import school.sptech.harmonyospringapi.service.usuario.dto.aluno_instrumento.AlunoInstrumentoCriacaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.aluno_instrumento.AlunoInstrumentoExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.aluno_instrumento.AlunoInstrumentoMapper;
+import school.sptech.harmonyospringapi.service.usuario.dto.professor.ProfessorExibicaoResumidoDto;
+import school.sptech.harmonyospringapi.service.usuario.dto.professor.ProfessorMapper;
 import school.sptech.harmonyospringapi.utils.ListaGenericaObj;
-import school.sptech.harmonyospringapi.repository.AlunoRepository;
-import school.sptech.harmonyospringapi.repository.UsuarioRepository;
 import school.sptech.harmonyospringapi.service.exceptions.EntidadeConflitanteException;
 import school.sptech.harmonyospringapi.service.exceptions.EntitadeNaoEncontradaException;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioCriacaoDto;
@@ -34,6 +33,8 @@ public class AlunoService {
     @Autowired
     private AlunoRepository alunoRepository;
 
+    @Autowired
+    private ProfessorRepository professorRepository;
     @Autowired
     private UsuarioService usuarioService;
 
@@ -181,5 +182,14 @@ public class AlunoService {
         if (instrumentos.isEmpty()) throw new EntitadeNaoEncontradaException(String.format("Aluno com o id %d não encontrado !", alunoId));
 
         return instrumentos.stream().map(InstrumentoMapper::ofInstrumentoExibicao).toList();
+    }
+
+    /* ============= ENCONTRAR PROFESSORES ================ */
+   public List<ProfessorExibicaoResumidoDto> listarProfessores(){
+        List<Professor> professores = this.professorRepository.findTop50ByOrderByAvaliacaoDesc();
+
+        if (professores.isEmpty()) throw new EntitadeNaoEncontradaException("Nenhum professor encontrado !");
+
+        return professores.stream().map(p -> ProfessorMapper.of(p)).toList();
     }
 }
