@@ -1,6 +1,7 @@
 package school.sptech.harmonyospringapi.service.pedido.dto;
 
 import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import school.sptech.harmonyospringapi.domain.*;
 
@@ -10,15 +11,19 @@ import java.time.LocalDateTime;
 public class PedidoCriacaoDto {
 
     @NotNull
+    @Min(1)
     private Integer alunoId;
 
     @NotNull
+    @Min(1)
     private Integer professorId;
 
     @NotNull
+    @Min(1)
     private Integer statusId;
 
     @NotNull
+    @Min(1)
     private Integer aulaId;
 
     @FutureOrPresent

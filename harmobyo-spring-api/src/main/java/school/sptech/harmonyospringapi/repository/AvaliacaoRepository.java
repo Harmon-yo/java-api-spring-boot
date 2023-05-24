@@ -16,4 +16,6 @@ public interface AvaliacaoRepository extends JpaRepository<Avaliacao, Integer> {
     @Query("SELECT COUNT(a.valor) FROM Avaliacao AS a WHERE a.usuarioAvaliado.id = :id")
     Integer getQuantidadeAvaliacoes(Integer id);
 
+    boolean existsAvaliacaoByIdPedido(Integer idPedido);
+
 }

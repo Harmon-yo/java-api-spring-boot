@@ -14,5 +14,5 @@ public interface ProfessorRepository extends JpaRepository<Professor, Integer> {
     List<Professor> findTop50ByOrderByAvaliacaoDesc();
 
     @Query("SELECT pi.emprestaInstrumento FROM ProfessorInstrumento pi WHERE pi.professor.id = :idProfessor AND pi.emprestaInstrumento = TRUE ORDER BY pi.emprestaInstrumento LIMIT 1")
-    Optional<Boolean> emprestaInstrumento(Integer idProfessor);
+    boolean emprestaInstrumento(Integer idProfessor);
 }

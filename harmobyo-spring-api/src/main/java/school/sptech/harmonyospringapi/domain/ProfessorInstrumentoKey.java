@@ -14,6 +14,14 @@ public class ProfessorInstrumentoKey implements Serializable {
     @Column(name="instrumento_fk")
     private Integer instrumentoFk;
 
+    public ProfessorInstrumentoKey() {
+    }
+
+    public ProfessorInstrumentoKey(Integer professorFk, Integer instrumentoFk) {
+        this.professorFk = professorFk;
+        this.instrumentoFk = instrumentoFk;
+    }
+
     public Integer getProfessorFk() {
         return professorFk;
     }

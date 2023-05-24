@@ -201,6 +201,16 @@ public class ProfessorService {
         Professor professor = buscarPorId(professorId);
         Instrumento instrumento = this.instrumentoService.buscarPorId(professorInstrumentoCriacaoDto.getInstrumentoId());
 
+        if (this.professorInstrumentoRepository.existsById(
+                new ProfessorInstrumentoKey(professorId, professorInstrumentoCriacaoDto.getInstrumentoId()))){
+                    throw new EntidadeConflitanteException(
+                        String.format(
+                                "Professor com o id %d já possui o instrumento com o id %d cadastrado !",
+                                professorId,
+                                professorInstrumentoCriacaoDto.getInstrumentoId()
+                        ));
+        }
+
         ProfessorInstrumento professorInstrumentoCadastrado = this.professorInstrumentoRepository
                 .save(ProfessorInstrumentoMapper.of(professorInstrumentoCriacaoDto, professor, instrumento));
 
@@ -208,9 +218,8 @@ public class ProfessorService {
     }
 
     public Boolean emprestaInstrumento(Integer idProfessor){
-        Optional<Boolean> emprestimo = this.professorRepository.emprestaInstrumento(idProfessor);
-        if(emprestimo.isEmpty()) return false;
-        return emprestimo.get();
+        boolean emprestimo = this.professorRepository.emprestaInstrumento(idProfessor);
+        return emprestimo;
     }
 
     /* =============== AULAS ================== */

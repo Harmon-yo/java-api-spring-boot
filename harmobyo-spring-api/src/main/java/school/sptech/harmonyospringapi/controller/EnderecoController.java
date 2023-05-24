@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import school.sptech.harmonyospringapi.domain.Endereco;
 import school.sptech.harmonyospringapi.domain.Usuario;
 import school.sptech.harmonyospringapi.service.endereco.EnderecoService;
+import school.sptech.harmonyospringapi.service.endereco.dto.EnderecoAtualizacaoDto;
 import school.sptech.harmonyospringapi.service.usuario.UsuarioService;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioExibicaoDto;
 
@@ -54,7 +55,7 @@ public class EnderecoController {
     })
     @SecurityRequirement(name = "Bearer")
     @PatchMapping("/{idUsuario}")
-    public ResponseEntity<UsuarioExibicaoDto> atualizarEndereco(@Valid @RequestBody Endereco endereco, @PathVariable Integer idUsuario){
+    public ResponseEntity<UsuarioExibicaoDto> atualizarEndereco(@RequestBody @Valid EnderecoAtualizacaoDto endereco, @PathVariable Integer idUsuario){
 
         UsuarioExibicaoDto enderecoAtualizado = this.usuarioService.atualizarEndereco( idUsuario, endereco);
 
