@@ -75,7 +75,10 @@ VALUES
 
 
 INSERT INTO aula (professor_fk, valor_aula, instrumento_fk )
-VALUES (4,'50.00', 1);
+VALUES
+    (4,'50.00', 1),
+    (5, '60.00', 2),
+    (6, '70.00', 3);
 
 INSERT INTO Pedido (aluno_fk, professor_fk, status_fk, aula_instrumento_fk, aula_usuario_fk, hora_criacao, hora_resposta, data_aula)
 VALUES (1, 4, 4, 1, 4, '2023-05-10 10:00:00', '2023-05-10 15:00:00', '2023-05-20 10:00:00');

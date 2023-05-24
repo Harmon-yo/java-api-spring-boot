@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Repository
 public interface ProfessorRepository extends JpaRepository<Professor, Integer> {
-    @Query("SELECT p FROM Professor p JOIN Avaliacao a ON a.usuarioAvaliado.id = p.id ORDER BY p.id DESC LIMIT 50")
+    @Query("SELECT p FROM Professor p LEFT JOIN Avaliacao a ON a.usuarioAvaliado.id = p.id  GROUP BY p.id ORDER BY AVG(a.valor) DESC LIMIT 50")
     List<Professor> findTop50ByOrderByAvaliacaoDesc();
 
     @Query("SELECT pi.emprestaInstrumento FROM ProfessorInstrumento pi WHERE pi.professor.id = :idProfessor AND pi.emprestaInstrumento = TRUE ORDER BY pi.emprestaInstrumento LIMIT 1")

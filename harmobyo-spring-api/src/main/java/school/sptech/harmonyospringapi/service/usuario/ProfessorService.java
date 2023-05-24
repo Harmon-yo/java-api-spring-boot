@@ -81,8 +81,8 @@ public class ProfessorService {
         List<ProfessorExibicaoResumidoDto> professorExibicaoDto = new ArrayList<>();
 
         for (Professor professor: professores) {
-            double mediaAvaliacao = this.avaliacaoRepository.getMediaAvaliacaoProfessor(professor.getId());
-            List<Instrumento> instrumentos = this.professorInstrumentoRepository.listarInstrumentosPeloIdDoProfessor(professor.getId());
+           // double mediaAvaliacao = this.avaliacaoRepository.getMediaAvaliacaoProfessor(professor.getId());
+          //  List<Instrumento> instrumentos = this.professorInstrumentoRepository.listarInstrumentosPeloIdDoProfessor(professor.getId());
 
         }
 
@@ -224,12 +224,15 @@ public class ProfessorService {
     /* =============== AVALIAÇÃO ================== */
 
     public Double getMediaAvaliacao(Integer professorId){
-        Double mediaAvaliacao = this.avaliacaoRepository.getMediaAvaliacaoProfessor(professorId);
-        return mediaAvaliacao;
+        Optional<Double> mediaAvaliacao = this.avaliacaoRepository.getMediaAvaliacaoProfessor(professorId);
+        if(mediaAvaliacao.isEmpty()) return 0.0;
+
+        return mediaAvaliacao.get();
     }
 
     public Integer getQuantidadeAvaliacoes(Integer id) {
-        Integer quantidadeAvaliacoes = this.avaliacaoRepository.getQuantidadeAvaliacoes(id);
-        return quantidadeAvaliacoes;
+        Optional<Integer> quantidadeAvaliacoes = this.avaliacaoRepository.getQuantidadeAvaliacoes(id);
+        if(quantidadeAvaliacoes.isEmpty()) return 0;
+        return quantidadeAvaliacoes.get();
     }
 }
