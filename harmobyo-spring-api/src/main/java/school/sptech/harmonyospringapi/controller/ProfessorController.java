@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import school.sptech.harmonyospringapi.domain.Instrumento;
 import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoExibicaoDto;
+import school.sptech.harmonyospringapi.service.usuario.dto.professor.ProfessorExibicaoResumidoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.professor_instrumento.ProfessorInstrumentoCriacaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.professor_instrumento.ProfessorInstrumentoExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.ProfessorService;
@@ -135,5 +136,43 @@ public class ProfessorController {
         ProfessorInstrumentoExibicaoDto professorInstrumentoExibicaoDto = this.professorService.criar(id, professorInstrumentoCriacaoDto);
 
         return ResponseEntity.status(201).body(professorInstrumentoExibicaoDto);
+    }
+
+    @SecurityRequirement(name = "Bearer")
+    @GetMapping("/melhores-avaliados")
+    public ResponseEntity<List<ProfessorExibicaoResumidoDto>> getProfessoresMelhoresAvaliados(){
+        List<ProfessorExibicaoResumidoDto> professores = this.professorService.getProfessoresMelhoresAvaliados();
+
+        return professores.isEmpty() ? ResponseEntity.status(204).build()
+                : ResponseEntity.status(200).body(professores);
+    }
+
+    @SecurityRequirement(name = "Bearer")
+    @GetMapping("/menores-valor-aula")
+    public ResponseEntity<List<ProfessorExibicaoResumidoDto>> getProfessoresMenorValorAula(){
+        List<ProfessorExibicaoResumidoDto> professores = this.professorService.getProfessoresComMenorValorAula();
+
+        return professores.isEmpty() ? ResponseEntity.status(204).build()
+                : ResponseEntity.status(200).body(professores);
+    }
+
+    @SecurityRequirement(name = "Bearer")
+    @GetMapping("/maiores-valor-aula")
+    public ResponseEntity<List<ProfessorExibicaoResumidoDto>> getProfessoreMaiorValorAula(){
+        List<ProfessorExibicaoResumidoDto> professores = this.professorService.getProfessoresComMaiorValorAula();
+
+        return professores.isEmpty() ? ResponseEntity.status(204).build()
+                : ResponseEntity.status(200).body(professores);
+    }
+
+    @SecurityRequirement(name = "Bearer")
+    @GetMapping("/por-instrumento/{id}")
+    public ResponseEntity<List<ProfessorExibicaoResumidoDto>> getProfessorPorInstrumento(
+            @PathVariable int id
+    ){
+        List<ProfessorExibicaoResumidoDto> professores = this.professorService.getProfessorByInstrumento(id);
+
+        return professores.isEmpty() ? ResponseEntity.status(204).build()
+                : ResponseEntity.status(200).body(professores);
     }
 }
