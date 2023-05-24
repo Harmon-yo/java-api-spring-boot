@@ -13,9 +13,9 @@ public class Aula {
     private Double valorAula;
 
     @ManyToOne
-    @MapsId("usuarioFk")
-    @JoinColumn(name = "usuario_fk")
-    private Usuario usuario;
+    @MapsId("professorFk")
+    @JoinColumn(name = "professor_fk")
+    private Professor professor;
 
     @ManyToOne
     @MapsId("instrumentoFk")
@@ -38,12 +38,12 @@ public class Aula {
         this.valorAula = valorAula;
     }
 
-    public Usuario getUsuario() {
-        return usuario;
+    public Professor getProfessor() {
+        return professor;
     }
 
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
+    public void setProfessor(Professor professor) {
+        this.professor = professor;
     }
 
     public Instrumento getInstrumento() {

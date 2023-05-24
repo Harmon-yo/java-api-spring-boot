@@ -9,18 +9,18 @@ import java.io.Serializable;
 public class AulaKey implements Serializable {
 
 
-    @Column(name = "usuario_fk")
-    private Integer usuarioFk;
+    @Column(name = "professor_fk")
+    private Integer professorFk;
 
     @Column(name = "instrumento_fk")
     private Integer instrumentoFk;
 
-    public Integer getUsuarioFk() {
-        return usuarioFk;
+    public Integer getProfessorFk() {
+        return professorFk;
     }
 
-    public void setUsuarioFk(Integer usuarioFk) {
-        this.usuarioFk = usuarioFk;
+    public void setProfessorFk(Integer professorFk) {
+        this.professorFk = professorFk;
     }
 
     public Integer getInstrumentoFk() {

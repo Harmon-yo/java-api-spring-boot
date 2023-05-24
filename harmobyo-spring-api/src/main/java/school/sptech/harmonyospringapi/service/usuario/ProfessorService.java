@@ -3,10 +3,7 @@ package school.sptech.harmonyospringapi.service.usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import school.sptech.harmonyospringapi.domain.Instrumento;
-import school.sptech.harmonyospringapi.domain.Professor;
-import school.sptech.harmonyospringapi.domain.ProfessorInstrumento;
-import school.sptech.harmonyospringapi.domain.Usuario;
+import school.sptech.harmonyospringapi.domain.*;
 import school.sptech.harmonyospringapi.repository.*;
 import school.sptech.harmonyospringapi.service.instrumento.InstrumentoService;
 import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoExibicaoDto;
@@ -52,6 +49,8 @@ public class ProfessorService {
     @Autowired
     private AvaliacaoRepository avaliacaoRepository;
 
+
+
     /* ================ PROFESSOR ================ */
 
     public UsuarioExibicaoDto cadastrar(UsuarioCriacaoDto novoProfessorDto){
@@ -82,8 +81,8 @@ public class ProfessorService {
         List<ProfessorExibicaoResumidoDto> professorExibicaoDto = new ArrayList<>();
 
         for (Professor professor: professores) {
-            double mediaAvaliacao = this.avaliacaoRepository.getMediaAvaliacaoProfessor(professor.getId());
-            List<Instrumento> instrumentos = this.professorInstrumentoRepository.listarInstrumentosPeloIdDoProfessor(professor.getId());
+           // double mediaAvaliacao = this.avaliacaoRepository.getMediaAvaliacaoProfessor(professor.getId());
+          //  List<Instrumento> instrumentos = this.professorInstrumentoRepository.listarInstrumentosPeloIdDoProfessor(professor.getId());
 
         }
 
@@ -205,5 +204,30 @@ public class ProfessorService {
                 .save(ProfessorInstrumentoMapper.of(professorInstrumentoCriacaoDto, professor, instrumento));
 
         return ProfessorInstrumentoMapper.ofProfessorInstrumentoExibicao(professorInstrumentoCadastrado);
+    }
+
+    public Boolean emprestaInstrumento(Integer idProfessor){
+        Optional<Boolean> emprestimo = this.professorRepository.emprestaInstrumento(idProfessor);
+        if(emprestimo.isEmpty()) return false;
+        return emprestimo.get();
+    }
+
+    /* =============== AULAS ================== */
+    public Double getMenorValorAula (Integer professorId){
+        Optional<Aula> aula = this.aulaRepository.findFirstByIdProfessorFkOrderByValorAulaAsc(professorId);
+
+        if (aula.isEmpty()) throw new EntitadeNaoEncontradaException("Professor não possui aulas cadastradas !");
+
+        return aula.get().getValorAula();
+    }
+
+    /* =============== AVALIAÇÃO ================== */
+
+    public Double getMediaAvaliacao(Integer professorId){
+        return this.avaliacaoRepository.getMediaAvaliacaoProfessor(professorId);
+    }
+
+    public Integer getQuantidadeAvaliacoes(Integer id) {
+        return this.avaliacaoRepository.getQuantidadeAvaliacoes(id);
     }
 }

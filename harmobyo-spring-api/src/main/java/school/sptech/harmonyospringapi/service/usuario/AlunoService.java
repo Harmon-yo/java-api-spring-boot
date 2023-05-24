@@ -4,8 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import school.sptech.harmonyospringapi.domain.*;
-import school.sptech.harmonyospringapi.repository.AlunoInstrumentoRepository;
-import school.sptech.harmonyospringapi.repository.InstrumentoRepository;
+import school.sptech.harmonyospringapi.repository.*;
 import school.sptech.harmonyospringapi.service.aula.AulaService;
 import school.sptech.harmonyospringapi.service.aula.dto.AulaExibicaoDto;
 import school.sptech.harmonyospringapi.service.instrumento.InstrumentoService;
@@ -14,9 +13,9 @@ import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoMapper
 import school.sptech.harmonyospringapi.service.usuario.dto.aluno_instrumento.AlunoInstrumentoCriacaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.aluno_instrumento.AlunoInstrumentoExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.aluno_instrumento.AlunoInstrumentoMapper;
+import school.sptech.harmonyospringapi.service.usuario.dto.professor.ProfessorExibicaoResumidoDto;
+import school.sptech.harmonyospringapi.service.usuario.dto.professor.ProfessorMapper;
 import school.sptech.harmonyospringapi.utils.ListaGenericaObj;
-import school.sptech.harmonyospringapi.repository.AlunoRepository;
-import school.sptech.harmonyospringapi.repository.UsuarioRepository;
 import school.sptech.harmonyospringapi.service.exceptions.EntidadeConflitanteException;
 import school.sptech.harmonyospringapi.service.exceptions.EntitadeNaoEncontradaException;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioCriacaoDto;
@@ -24,6 +23,7 @@ import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioMapper;
 import school.sptech.harmonyospringapi.utils.PilhaObj;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,7 +35,11 @@ public class AlunoService {
     private AlunoRepository alunoRepository;
 
     @Autowired
+    private ProfessorRepository professorRepository;
+    @Autowired
     private UsuarioService usuarioService;
+    @Autowired
+    private ProfessorService professorService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -181,5 +185,28 @@ public class AlunoService {
         if (instrumentos.isEmpty()) throw new EntitadeNaoEncontradaException(String.format("Aluno com o id %d não encontrado !", alunoId));
 
         return instrumentos.stream().map(InstrumentoMapper::ofInstrumentoExibicao).toList();
+    }
+
+    /* ============= ENCONTRAR PROFESSORES ================ */
+   public List<ProfessorExibicaoResumidoDto> listarProfessores(){
+        List<Professor> professores = this.professorRepository.findTop50ByOrderByAvaliacaoDesc();
+
+        if (professores.isEmpty()) throw new EntitadeNaoEncontradaException("Nenhum professor encontrado !");
+        List<ProfessorExibicaoResumidoDto> professoresExibicao = new ArrayList<>();
+        for(Professor p : professores){
+           List<InstrumentoExibicaoDto> instrumentos = professorService.listarInstrumentos(p.getId());
+           Double valorMinimo = professorService.getMenorValorAula(p.getId());
+           Boolean emprestaInstrumento = professorService.emprestaInstrumento(p.getId());
+           Double mediaAvaliacao = professorService.getMediaAvaliacao(p.getId());
+           Integer quantidadeAvaliacao = professorService.getQuantidadeAvaliacoes(p.getId());
+           ProfessorExibicaoResumidoDto professorExibicao = ProfessorMapper.of(p,
+                   instrumentos,
+                   valorMinimo,
+                   emprestaInstrumento,
+                   mediaAvaliacao,
+                   quantidadeAvaliacao);
+            professoresExibicao.add(professorExibicao);
+        }
+        return professoresExibicao;
     }
 }

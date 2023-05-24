@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoPilhaDto;
 import school.sptech.harmonyospringapi.service.usuario.AlunoService;
+import school.sptech.harmonyospringapi.service.usuario.ProfessorService;
 import school.sptech.harmonyospringapi.utils.PilhaObj;
 
 import java.time.LocalDate;
@@ -24,14 +25,14 @@ public class Aluno extends Usuario{
         Aula aula = new Aula();
         Instrumento instrumento = new Instrumento();
         Naipe naipe = new Naipe();
-        Aluno aluno = new Aluno();
+        Professor professor = new Professor();
 
         //setando valores para teste
         instrumento.setNome("Violão");
         naipe.setDescricao("corda");
-        aluno.setNome("o tal do brabo");
+        professor.setNome("o tal do brabo");
 
-        aula.setUsuario(aluno);
+        aula.setProfessor(professor);
         instrumento.setNaipe(naipe);
         aula.setInstrumento(instrumento);
 

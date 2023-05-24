@@ -19,7 +19,7 @@ public class PedidoExibicaoPilhaDto {
         this.id = p.getId();
         this.dataAula = p.getDataAula();
         this.instrumentoAula = p.getAula().getInstrumento().getNome();
-        this.professorAula = p.getAula().getUsuario().getNome();
+        this.professorAula = p.getAula().getProfessor().getNome();
     }
 
     public PedidoKey getId() {

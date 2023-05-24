@@ -28,7 +28,7 @@ public class Pedido {
     @ManyToOne
     @MapsId("aulaFk")
     @JoinColumns({
-            @JoinColumn(name = "aula_usuario_fk", referencedColumnName = "usuario_fk"),
+            @JoinColumn(name = "aula_usuario_fk", referencedColumnName = "professor_fk"),
             @JoinColumn(name = "aula_instrumento_fk", referencedColumnName = "instrumento_fk")
     })
     private Aula aula;
