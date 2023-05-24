@@ -26,3 +26,8 @@ VALUES ('Carlos Silva', 'carlos.silva@hotmail.com', '260.973.558-82', 'Masculino
 
 INSERT INTO usuario (nome, email, cpf, sexo, senha, data_nasc, telefone, endereco_id, categoria, ativo, autenticado, ultima_vez_online)
 VALUES ('Patrícia Almeida', 'patricia.almeida@yahoo.com.br', '999.888.777-66', 'Feminino', '$2a$10$/5q27KS5Pq3BsrEFoxwPbuVE2v0PZJg.c6MCi2yKu8j574oR63YqG', '1980-07-05', '(11) 99999-9999', 6, 'Professor', true, true, CURRENT_TIMESTAMP);
+
+
+INSERT INTO Naipe (descricao) VALUES ('Cordas');
+
+INSERT INTO Instrumento (nome, naipe_id) VALUES ('Guitarra', 1);

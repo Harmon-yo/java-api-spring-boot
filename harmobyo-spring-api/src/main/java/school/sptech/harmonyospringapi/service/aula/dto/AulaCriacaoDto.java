@@ -11,7 +11,7 @@ public class AulaCriacaoDto {
 
     @Min(1)
     @NotNull
-    private Integer usuarioId;
+    private Integer professorId;
 
     @Min(1)
     @NotNull
@@ -25,12 +25,12 @@ public class AulaCriacaoDto {
         this.valorAula = valorAula;
     }
 
-    public Integer getUsuarioId() {
-        return usuarioId;
+    public Integer getProfessorId() {
+        return professorId;
     }
 
-    public void setUsuarioId(Integer usuarioId) {
-        this.usuarioId = usuarioId;
+    public void setProfessorId(Integer professorId) {
+        this.professorId = professorId;
     }
 
     public Integer getInstrumentoId() {
