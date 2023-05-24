@@ -53,11 +53,8 @@ public class PedidoService {
         ));
     }
 
-<<<<<<< HEAD
     public Pedido buscarPorId(PedidoKey pedidoKey) {
         return this.pedidoRepository.findById(pedidoKey).orElseThrow(() -> new EntitadeNaoEncontradaException("Pedido não encontrado"));
     }
-=======
 
->>>>>>> 0ddd63ab7e94c323789cff727c4e2126d2629e56
 }
