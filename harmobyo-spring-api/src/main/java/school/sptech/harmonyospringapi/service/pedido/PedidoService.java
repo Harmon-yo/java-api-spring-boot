@@ -2,10 +2,7 @@ package school.sptech.harmonyospringapi.service.pedido;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import school.sptech.harmonyospringapi.domain.Aluno;
-import school.sptech.harmonyospringapi.domain.Aula;
-import school.sptech.harmonyospringapi.domain.Professor;
-import school.sptech.harmonyospringapi.domain.Status;
+import school.sptech.harmonyospringapi.domain.*;
 import school.sptech.harmonyospringapi.repository.*;
 import school.sptech.harmonyospringapi.service.aula.AulaService;
 import school.sptech.harmonyospringapi.service.exceptions.EntitadeNaoEncontradaException;
@@ -74,5 +71,6 @@ public class PedidoService {
                 PedidoMapper.of(pedidoCriacaoDto, aluno, professor, status, aula)
         ));
     }
+
 
 }

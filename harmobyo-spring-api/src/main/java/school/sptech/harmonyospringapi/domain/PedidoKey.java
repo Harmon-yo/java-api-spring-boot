@@ -2,11 +2,15 @@ package school.sptech.harmonyospringapi.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 
 import java.io.Serializable;
 
 @Embeddable
 public class PedidoKey implements Serializable {
+
+
 
     @Column(name = "aluno_fk")
     private Integer alunoFk;
@@ -29,4 +33,6 @@ public class PedidoKey implements Serializable {
     public void setProfessorFk(Integer professorFk) {
         this.professorFk = professorFk;
     }
+
+
 }
