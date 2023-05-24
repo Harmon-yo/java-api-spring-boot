@@ -11,12 +11,7 @@ public class PedidoMapper {
 
     public static Pedido of(PedidoCriacaoDto pedidoCriacaoDto, Aluno aluno, Professor professor, Status status, Aula aula) {
 
-        Integer integer = new Integer();
-        integer.setAlunoFk(pedidoCriacaoDto.getAlunoId());
-        integer.setProfessorFk(pedidoCriacaoDto.getProfessorId());
-
         Pedido pedido = new Pedido();
-        pedido.setId(integer);
         pedido.setAluno(aluno);
         pedido.setProfessor(professor);
         pedido.setStatus(status);

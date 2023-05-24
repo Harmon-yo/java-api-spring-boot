@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,8 @@ import school.sptech.harmonyospringapi.service.usuario.UsuarioService;
 import school.sptech.harmonyospringapi.service.usuario.autenticacao.dto.UsuarioLoginDto;
 import school.sptech.harmonyospringapi.service.usuario.autenticacao.dto.UsuarioTokenDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioExibicaoDto;
+import school.sptech.harmonyospringapi.service.usuario.dto.avaliacao.AvaliacaoCriacaoDto;
+import school.sptech.harmonyospringapi.service.usuario.dto.avaliacao.AvaliacaoExibicaoDto;
 
 import java.util.List;
 
@@ -78,5 +81,24 @@ public class UsuarioController {
         }
 
         return ResponseEntity.status(200).body(ltUsuariosExibicao);
+    }
+
+    @PostMapping("/{id}/avaliacoes")
+    public ResponseEntity<AvaliacaoExibicaoDto> adicionarAvaliacao(@PathVariable int id, @RequestBody @Valid AvaliacaoCriacaoDto avaliacaoCriacaoDto) {
+
+        AvaliacaoExibicaoDto avaliacaoExibicaoDto = this.usuarioService.criarAvaliacao(id, avaliacaoCriacaoDto);
+
+        return ResponseEntity.created(null).body(avaliacaoExibicaoDto);
+    }
+
+    @GetMapping("/{id}/avaliacoes")
+    public ResponseEntity<List<AvaliacaoExibicaoDto>> listarAvaliacao(@PathVariable int id) {
+
+        List<AvaliacaoExibicaoDto> ltAvaliacaoExibicaoDto = this.usuarioService.listarAvaliacoesPorUsuario(id);
+
+        if (ltAvaliacaoExibicaoDto.isEmpty()) return ResponseEntity.noContent().build();
+
+
+        return ResponseEntity.ok(ltAvaliacaoExibicaoDto);
     }
 }

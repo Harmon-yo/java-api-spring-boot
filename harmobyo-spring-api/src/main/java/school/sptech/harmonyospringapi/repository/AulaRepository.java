@@ -9,10 +9,10 @@ import java.util.Optional;
 public interface AulaRepository extends JpaRepository<Aula, Integer> {
 
 
-    Optional<Aula> findFirstByIdProfessorFkOrderByValorAulaAsc(Integer professorId);
+    Optional<Aula> findFirstByProfessorIdOrderByValorAulaAsc(Integer professorId);
 
 //    List<Aula> findAllByIdAluno(int id);
 
-    List<Aula> findAllByIdProfessorFk(int fkProfessor);
+    List<Aula> findAllByProfessorId(int fkProfessor);
 
 }

@@ -80,13 +80,13 @@ VALUES
     (5, '60.00', 2),
     (6, '70.00', 3);
 
-INSERT INTO Pedido (aluno_fk, professor_fk, status_fk, aula_instrumento_fk, aula_usuario_fk, hora_criacao, hora_resposta, data_aula)
-VALUES (1, 4, 4, 1, 4, '2023-05-10 10:00:00', '2023-05-10 15:00:00', '2023-05-20 10:00:00');
+INSERT INTO Pedido (aluno_fk, professor_fk, status_fk, aula_fk, hora_criacao, hora_resposta, data_aula)
+VALUES (1, 4, 4, 1, '2023-05-10 10:00:00', '2023-05-10 15:00:00', '2023-05-20 10:00:00');
 
 INSERT
 INTO
-    Avaliacao(valor, comentario, usuario_avaliado_fk, usuario_avaliador_fk, data_avaliacao, aluno_fk, professor_fk)
+    Avaliacao(valor, comentario, usuario_avaliado_fk, usuario_avaliador_fk, data_avaliacao, pedido_fk)
 VALUES
     (5,
-     'Ótimo professor!', 4, 1, '2023-05-20', 1, 1);
+     'Ótimo professor!', 4, 1, '2023-05-20', 1);
 

@@ -28,12 +28,7 @@ public class Avaliacao {
 
     @ManyToOne
     @MapsId("pedidoFk")
-    @JoinColumns({
-            @JoinColumn(name = "pedido_aluno_fk", referencedColumnName = "aluno_fk"),
-            @JoinColumn(name = "pedido_professor_fk", referencedColumnName = "professor_fk"),
-            @JoinColumn(name = "pedido_fk", referencedColumnName = "pedido_id")
-
-    })
+    @JoinColumn(name = "pedido_fk")
     private Pedido pedido;
 
     public AvaliacaoKey getId() {

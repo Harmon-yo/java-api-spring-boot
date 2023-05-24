@@ -9,16 +9,12 @@ import java.io.Serializable;
 @Embeddable
 public class AvaliacaoKey implements Serializable {
     @Column(name = "usuario_avaliador_fk")
-    private java.lang.Integer usuarioAvaliadorFk;
+    private Integer usuarioAvaliadorFk;
 
     @Column(name = "usuario_avaliado_fk")
-    private java.lang.Integer usuarioAvaliadoFk;
+    private Integer usuarioAvaliadoFk;
 
-    @Columns(columns = {
-            @Column(name = "aluno_fk"),
-            @Column(name = "professor_fk"),
-            @Column(name = "pedido_id")
-    })
+    @Column(name = "pedido_fk")
     private Integer pedido;
 
     public java.lang.Integer getUsuarioAvaliadorFk() {

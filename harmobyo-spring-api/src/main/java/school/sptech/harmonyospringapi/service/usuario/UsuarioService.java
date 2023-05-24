@@ -167,8 +167,8 @@ public class UsuarioService {
 
     /* ================ AVALIAÇÃO ================ */
 
-    public AvaliacaoExibicaoDto criarAvaliacao(AvaliacaoCriacaoDto avaliacaoCriacaoDto) {
-        Usuario avaliado = buscarPorId(avaliacaoCriacaoDto.getUsuarioAvaliadoId());
+    public AvaliacaoExibicaoDto criarAvaliacao(Integer idAvaliado, AvaliacaoCriacaoDto avaliacaoCriacaoDto) {
+        Usuario avaliado = buscarPorId(idAvaliado);
         Usuario avaliador = buscarPorId(avaliacaoCriacaoDto.getUsuarioAvaliadorId());
         Pedido pedido = pedidoService.buscarPorId(avaliacaoCriacaoDto.getPedidoId());
 

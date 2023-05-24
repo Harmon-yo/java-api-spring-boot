@@ -15,9 +15,6 @@ public class AvaliacaoCriacaoDto {
     @Size(min=3, max = 255)
     private String comentario;
 
-    @NotNull
-    private java.lang.Integer usuarioAvaliadoId;
-
     @PastOrPresent
     private LocalDate dataAvaliacao;
 
@@ -41,14 +38,6 @@ public class AvaliacaoCriacaoDto {
 
     public void setComentario(String comentario) {
         this.comentario = comentario;
-    }
-
-    public java.lang.Integer getUsuarioAvaliadoId() {
-        return usuarioAvaliadoId;
-    }
-
-    public void setUsuarioAvaliadoId(java.lang.Integer usuarioAvaliadoId) {
-        this.usuarioAvaliadoId = usuarioAvaliadoId;
     }
 
     public LocalDate getDataAvaliacao() {

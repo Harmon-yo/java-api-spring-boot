@@ -214,7 +214,7 @@ public class ProfessorService {
 
     /* =============== AULAS ================== */
     public Double getMenorValorAula (Integer professorId){
-        Optional<Aula> aula = this.aulaRepository.findFirstByIdProfessorFkOrderByValorAulaAsc(professorId);
+        Optional<Aula> aula = this.aulaRepository.findFirstByProfessorIdOrderByValorAulaAsc(professorId);
 
         if (aula.isEmpty()) throw new EntitadeNaoEncontradaException("Professor não possui aulas cadastradas !");
 
