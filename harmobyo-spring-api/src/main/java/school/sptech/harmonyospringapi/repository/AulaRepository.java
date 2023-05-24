@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface AulaRepository extends JpaRepository<Aula, AulaKey> {
 
 
-    Optional<Aula> findFirstByUsuarioIdOrderByValorAulaAsc(Integer professorId);
+    Optional<Aula> findFirstByIdProfessorFkOrderByValorAulaAsc(Integer professorId);
 
 //    List<Aula> findAllByIdAluno(int id);
 

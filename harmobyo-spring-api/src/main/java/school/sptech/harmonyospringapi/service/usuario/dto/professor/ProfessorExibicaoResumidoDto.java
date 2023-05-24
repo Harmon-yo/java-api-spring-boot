@@ -1,7 +1,6 @@
 package school.sptech.harmonyospringapi.service.usuario.dto.professor;
 
 import jakarta.persistence.OneToMany;
-import school.sptech.harmonyospringapi.domain.Instrumento;
 import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoExibicaoDto;
 
 import java.util.List;
@@ -19,7 +18,11 @@ public class ProfessorExibicaoResumidoDto {
 
     private Double valorMinimo;
 
-    private boolean empresaInstrumento;
+    private boolean emprestaInstrumento;
+
+    private Double mediaAvaliacao;
+
+    private Integer qtdeAvaliacoes;
 
     public Integer getId() {
         return id;
@@ -61,11 +64,27 @@ public class ProfessorExibicaoResumidoDto {
         this.valorMinimo = valorMinimo;
     }
 
-    public boolean isEmpresaInstrumento() {
-        return empresaInstrumento;
+    public boolean isEmprestaInstrumento() {
+        return emprestaInstrumento;
     }
 
-    public void setEmpresaInstrumento(boolean empresaInstrumento) {
-        this.empresaInstrumento = empresaInstrumento;
+    public void setEmprestaInstrumento(boolean emprestaInstrumento) {
+        this.emprestaInstrumento = emprestaInstrumento;
+    }
+
+    public Double getMediaAvaliacao() {
+        return mediaAvaliacao;
+    }
+
+    public void setMediaAvaliacao(Double mediaAvaliacao) {
+        this.mediaAvaliacao = mediaAvaliacao;
+    }
+
+    public Integer getQtdeAvaliacoes() {
+        return qtdeAvaliacoes;
+    }
+
+    public void setQtdeAvaliacoes(Integer qtdeAvaliacoes) {
+        this.qtdeAvaliacoes = qtdeAvaliacoes;
     }
 }

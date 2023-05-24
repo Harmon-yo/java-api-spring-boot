@@ -10,6 +10,7 @@ public class InstrumentoExibicaoDto {
 
     private NaipeExibicaoDto naipe;
 
+
     public InstrumentoExibicaoDto() {
     }
 

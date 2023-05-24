@@ -16,6 +16,10 @@ public class ProfessorInstrumentoExibicaoDto {
 
     private boolean emprestaInstrumento;
 
+    private Double mediaAvaliacao;
+
+    private Integer qtdeAvaliacoes;
+
     public ProfessorInstrumentoKey getId() {
         return id;
     }
@@ -54,5 +58,21 @@ public class ProfessorInstrumentoExibicaoDto {
 
     public void setEmprestaInstrumento(boolean emprestaInstrumento) {
         this.emprestaInstrumento = emprestaInstrumento;
+    }
+
+    public Double getMediaAvaliacao() {
+        return mediaAvaliacao;
+    }
+
+    public void setMediaAvaliacao(Double mediaAvaliacao) {
+        this.mediaAvaliacao = mediaAvaliacao;
+    }
+
+    public Integer getQtdeAvaliacoes() {
+        return qtdeAvaliacoes;
+    }
+
+    public void setQtdeAvaliacoes(Integer qtdeAvaliacoes) {
+        this.qtdeAvaliacoes = qtdeAvaliacoes;
     }
 }

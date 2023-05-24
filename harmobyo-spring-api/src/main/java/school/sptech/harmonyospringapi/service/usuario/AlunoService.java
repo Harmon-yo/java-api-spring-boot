@@ -23,6 +23,7 @@ import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioMapper;
 import school.sptech.harmonyospringapi.utils.PilhaObj;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,6 +38,8 @@ public class AlunoService {
     private ProfessorRepository professorRepository;
     @Autowired
     private UsuarioService usuarioService;
+    @Autowired
+    private ProfessorService professorService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -189,7 +192,21 @@ public class AlunoService {
         List<Professor> professores = this.professorRepository.findTop50ByOrderByAvaliacaoDesc();
 
         if (professores.isEmpty()) throw new EntitadeNaoEncontradaException("Nenhum professor encontrado !");
-
-        return professores.stream().map(p -> ProfessorMapper.of(p)).toList();
+        List<ProfessorExibicaoResumidoDto> professoresExibicao = new ArrayList<>();
+        for(Professor p : professores){
+           List<InstrumentoExibicaoDto> instrumentos = professorService.listarInstrumentos(p.getId());
+           Double valorMinimo = professorService.getMenorValorAula(p.getId());
+           Boolean emprestaInstrumento = professorService.emprestaInstrumento(p.getId());
+           Double mediaAvaliacao = professorService.getMediaAvaliacao(p.getId());
+           Integer quantidadeAvaliacao = professorService.getQuantidadeAvaliacoes(p.getId());
+           ProfessorExibicaoResumidoDto professorExibicao = ProfessorMapper.of(p,
+                   instrumentos,
+                   valorMinimo,
+                   emprestaInstrumento,
+                   mediaAvaliacao,
+                   quantidadeAvaliacao);
+            professoresExibicao.add(professorExibicao);
+        }
+        return professoresExibicao;
     }
 }

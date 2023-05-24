@@ -27,13 +27,15 @@ VALUES ('Corda'),
        ('Madeira');
 
 -- Inserts para intrumento --
-INSERT INTO instrumento (nome, naipe)
+INSERT
+INTO
+    instrumento (nome, naipe_id)
 VALUES ('Violino', 1),
        ('Violão', 1),
        ('Guitarra', 1),
        ('Trompete', 2),
        ('Tuba', 2),
-       ('Trombone', 2)
+       ('Trombone', 2),
        ('Bateria', 3),
        ('Pandeiro', 3),
        ('Tambor', 3),
@@ -43,14 +45,16 @@ VALUES ('Violino', 1),
 
 -- Insert para os intrumentos do professor --
 INSERT INTO professor_instrumento (professor_fk, instrumento_fk, nivel_conhecimento, empresta_instrumento)
-VALUES (1, 2, 'Avançado', false),
-       (1, 3, 'Intermediário', false),
-       (1, 7, 'Intermediário', true),
-       (2, 4, 'Intermediário', true),
-       (2, 1, 'Avançado', true),
-       (3, 12, 'Avançado', false),
-       (3, 11, 'Avançado', true),
-       (3, 10, 'Intermediário', false);
+VALUES
+    (4,
+     2, 'Avançado', false),
+       (4, 3, 'Intermediário', false),
+       (4, 7, 'Intermediário', true),
+       (5, 4, 'Intermediário', true),
+       (5, 1, 'Avançado', true),
+       (5, 12, 'Avançado', false),
+       (6, 11, 'Avançado', true),
+       (6, 10, 'Intermediário', false);
 
 -- Insert para os intrumentos do aluno --
 INSERT INTO aluno_instrumento (aluno_fk, instrumento_fk, nivel_conhecimento)
@@ -60,3 +64,26 @@ VALUES (1, 2, 'Basico'),
        (2, 11, 'Intermediário'),
        (2, 10, 'Intermediário'),
        (3, 4, 'Basico');
+
+
+INSERT INTO status (descricao)
+VALUES
+    ('Pendente'),
+    ('Confirmado'),
+    ('Cancelado'),
+    ('Concluído');
+
+
+INSERT INTO aula (professor_fk, valor_aula, instrumento_fk )
+VALUES (4,'50.00', 1);
+
+INSERT INTO Pedido (aluno_fk, professor_fk, status_fk, aula_instrumento_fk, aula_usuario_fk, hora_criacao, hora_resposta, data_aula)
+VALUES (1, 4, 4, 1, 4, '2023-05-10 10:00:00', '2023-05-10 15:00:00', '2023-05-20 10:00:00');
+
+INSERT
+INTO
+    Avaliacao(valor, comentario, usuario_avaliado_fk, usuario_avaliador_fk, data_avaliacao, aluno_fk, professor_fk)
+VALUES
+    (5,
+     'Ótimo professor!', 4, 1, '2023-05-20', 1, 1);
+

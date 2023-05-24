@@ -1,9 +1,7 @@
 package school.sptech.harmonyospringapi.service.usuario.dto.professor;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import school.sptech.harmonyospringapi.domain.Instrumento;
 import school.sptech.harmonyospringapi.domain.Professor;
-import school.sptech.harmonyospringapi.domain.ProfessorInstrumento;
 import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.ProfessorService;
 
@@ -13,14 +11,22 @@ public class ProfessorMapper {
 
     @Autowired
     private static ProfessorService professorService;
-    public static ProfessorExibicaoResumidoDto of(Professor p){
+
+    public static ProfessorExibicaoResumidoDto of(Professor p,
+                                                  List<InstrumentoExibicaoDto> instrumentos,
+                                                  double valorMinimo,
+                                                  boolean empresaInstrumento,
+                                                  double mediaAvaliacao,
+                                                  int qtdeAvaliacoes){
         ProfessorExibicaoResumidoDto dto = new ProfessorExibicaoResumidoDto();
-        List<InstrumentoExibicaoDto> instrumentos = professorService.listarInstrumentos(p.getId());
+        List<InstrumentoExibicaoDto> instrumentosLista = instrumentos;
         dto.setId(p.getId());
         dto.setNome(p.getNome());
-        dto.setLtInstrumentos(instrumentos);
-        dto.setValorMinimo(professorService.getMenorValorAula(p.getId()));
-        dto.setEmpresaInstrumento(professorService.emprestaInstrumento(p.getId()));
+        dto.setLtInstrumentos(instrumentosLista);
+        dto.setValorMinimo(valorMinimo);
+        dto.setEmprestaInstrumento(empresaInstrumento);
+        dto.setMediaAvaliacao(mediaAvaliacao);
+        dto.setQtdeAvaliacoes(qtdeAvaliacoes);
 
         /*dto.setDistancia(p.getDi());*/
         return dto;

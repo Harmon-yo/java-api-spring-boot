@@ -19,6 +19,7 @@ import school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoPilhaDto
 import school.sptech.harmonyospringapi.service.usuario.AlunoService;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioCriacaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioExibicaoDto;
+import school.sptech.harmonyospringapi.service.usuario.dto.professor.ProfessorExibicaoResumidoDto;
 import school.sptech.harmonyospringapi.utils.PilhaObj;
 
 import java.util.List;
@@ -136,5 +137,14 @@ public class AlunoController{
     public ResponseEntity<PilhaObj<PedidoExibicaoPilhaDto>> getPilha(){
         Aluno aluno = new Aluno();
         return ResponseEntity.status(200).body(aluno.getHistorico());
+    }
+
+    @SecurityRequirement(name = "Bearer")
+    @GetMapping("/encontrar-professores")
+    public ResponseEntity<List<ProfessorExibicaoResumidoDto>> encontrarProfessores(){
+        List<ProfessorExibicaoResumidoDto> professores = this.alunoService.listarProfessores();
+
+        return professores.isEmpty() ? ResponseEntity.status(204).build()
+                : ResponseEntity.status(200).body(professores);
     }
 }

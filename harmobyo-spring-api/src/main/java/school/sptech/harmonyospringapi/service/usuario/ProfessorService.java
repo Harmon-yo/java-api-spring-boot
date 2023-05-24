@@ -49,6 +49,8 @@ public class ProfessorService {
     @Autowired
     private AvaliacaoRepository avaliacaoRepository;
 
+
+
     /* ================ PROFESSOR ================ */
 
     public UsuarioExibicaoDto cadastrar(UsuarioCriacaoDto novoProfessorDto){
@@ -206,16 +208,28 @@ public class ProfessorService {
 
     public Boolean emprestaInstrumento(Integer idProfessor){
         Optional<Boolean> emprestimo = this.professorRepository.emprestaInstrumento(idProfessor);
-        if(emprestimo.isEmpty()) throw new EntitadeNaoEncontradaException("Professor não encontrado !");
+        if(emprestimo.isEmpty()) return false;
         return emprestimo.get();
     }
 
     /* =============== AULAS ================== */
     public Double getMenorValorAula (Integer professorId){
-        Optional<Aula> aula = this.aulaRepository.findFirstByUsuarioIdOrderByValorAulaAsc(professorId);
+        Optional<Aula> aula = this.aulaRepository.findFirstByIdProfessorFkOrderByValorAulaAsc(professorId);
 
         if (aula.isEmpty()) throw new EntitadeNaoEncontradaException("Professor não possui aulas cadastradas !");
 
         return aula.get().getValorAula();
+    }
+
+    /* =============== AVALIAÇÃO ================== */
+
+    public Double getMediaAvaliacao(Integer professorId){
+        Double mediaAvaliacao = this.avaliacaoRepository.getMediaAvaliacaoProfessor(professorId);
+        return mediaAvaliacao;
+    }
+
+    public Integer getQuantidadeAvaliacoes(Integer id) {
+        Integer quantidadeAvaliacoes = this.avaliacaoRepository.getQuantidadeAvaliacoes(id);
+        return quantidadeAvaliacoes;
     }
 }
