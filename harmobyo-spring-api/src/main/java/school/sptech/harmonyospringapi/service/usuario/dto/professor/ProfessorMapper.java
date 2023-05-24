@@ -9,9 +9,6 @@ import java.util.List;
 
 public class ProfessorMapper {
 
-    @Autowired
-    private static ProfessorService professorService;
-
     public static ProfessorExibicaoResumidoDto of(Professor p,
                                                   List<InstrumentoExibicaoDto> instrumentos,
                                                   double valorMinimo,
