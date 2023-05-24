@@ -10,4 +10,7 @@ import java.util.List;
 @Entity
 @DiscriminatorValue("Professor")
 public class Professor extends Usuario {
+
+
+
 }
