@@ -1,19 +1,26 @@
 package school.sptech.harmonyospringapi.service.usuario;
 
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import school.sptech.harmonyospringapi.configuration.security.jwt.GerenciadorTokenJwt;
+import school.sptech.harmonyospringapi.domain.Avaliacao;
 import school.sptech.harmonyospringapi.domain.Endereco;
+import school.sptech.harmonyospringapi.domain.Pedido;
 import school.sptech.harmonyospringapi.domain.Usuario;
+import school.sptech.harmonyospringapi.repository.AvaliacaoRepository;
+import school.sptech.harmonyospringapi.repository.PedidoRepository;
+import school.sptech.harmonyospringapi.service.pedido.PedidoService;
+import school.sptech.harmonyospringapi.service.usuario.dto.avaliacao.AvaliacaoCriacaoDto;
+import school.sptech.harmonyospringapi.service.usuario.dto.avaliacao.AvaliacaoExibicaoDto;
+import school.sptech.harmonyospringapi.service.usuario.dto.avaliacao.AvaliacaoMapper;
 import school.sptech.harmonyospringapi.utils.ListaGenericaObj;
-import school.sptech.harmonyospringapi.repository.AlunoRepository;
-import school.sptech.harmonyospringapi.repository.ProfessorRepository;
 import school.sptech.harmonyospringapi.repository.UsuarioRepository;
 import school.sptech.harmonyospringapi.service.exceptions.EntitadeNaoEncontradaException;
 import school.sptech.harmonyospringapi.service.endereco.EnderecoService;
@@ -34,6 +41,13 @@ public class UsuarioService {
 
     @Autowired
     private EnderecoService enderecoService;
+
+    @Autowired
+    private AvaliacaoRepository avaliacaoRepository;
+
+    @Autowired
+    @Lazy
+    private PedidoService pedidoService;
 
     @Autowired
     private GerenciadorTokenJwt gerenciadorTokenJwt;
@@ -102,13 +116,13 @@ public class UsuarioService {
         return usuarioRepository.existsByCpf(cpf);
     }
 
-    public Usuario buscarUsuarioPorId(Integer id){
+    public Usuario buscarPorId(Integer id){
         return usuarioRepository.findById(id).orElseThrow(
                 () -> new EntitadeNaoEncontradaException("Aluno não encontrado")
         );
     }
 
-    /* ================ XXXXXXXXX ================ */
+    /* ================ ENDEREÇO ================ */
 
     public UsuarioExibicaoDto inserirEndereco(Integer idUsuario, Endereco endereco ){
         Endereco enderecoInserido = enderecoService.cadastrarEndereco(endereco);
@@ -134,8 +148,6 @@ public class UsuarioService {
 
     }
 
-
-
     public void deletarEndereco(Integer idUsuario ){
         Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(
                 () -> new EntitadeNaoEncontradaException("Usuario não encontrado")
@@ -153,5 +165,23 @@ public class UsuarioService {
         return EnderecoMapper.of(usuario.getEndereco());
     }
 
+    /* ================ AVALIAÇÃO ================ */
 
+    public AvaliacaoExibicaoDto criarAvaliacao(AvaliacaoCriacaoDto avaliacaoCriacaoDto) {
+        Usuario avaliado = buscarPorId(avaliacaoCriacaoDto.getUsuarioAvaliadoId());
+        Usuario avaliador = buscarPorId(avaliacaoCriacaoDto.getUsuarioAvaliadorId());
+        Pedido pedido = pedidoService.buscarPorId(avaliacaoCriacaoDto.getPedidoId());
+
+        Avaliacao avaliacao = AvaliacaoMapper.of(avaliacaoCriacaoDto, avaliado, avaliador, pedido);
+
+        Avaliacao avaliacaoCadastrada = this.avaliacaoRepository.save(avaliacao);
+
+        return AvaliacaoMapper.ofAvaliacaoExibicao(avaliacaoCadastrada);
+    }
+
+    public List<AvaliacaoExibicaoDto> listarAvaliacoesPorUsuario(Integer idUsuario) {
+        List<Avaliacao> avaliacoes = this.avaliacaoRepository.findAllById_UsuarioAvaliadoFk(idUsuario);
+
+        return avaliacoes.stream().map(AvaliacaoMapper::ofAvaliacaoExibicao).toList();
+    }
 }

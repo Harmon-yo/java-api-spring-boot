@@ -39,19 +39,14 @@ public class AulaService {
 
     public AulaExibicaoDto criar(AulaCriacaoDto aulaCriacaoDto) {
 
-        Usuario usuario = this.usuarioService.buscarUsuarioPorId(aulaCriacaoDto.getUsuarioId());
+        Usuario usuario = this.usuarioService.buscarPorId(aulaCriacaoDto.getUsuarioId());
         Instrumento instrumento = this.instrumentoService.buscarPorId(aulaCriacaoDto.getInstrumentoId());
 
         Aula aula = AulaMapper.of(aulaCriacaoDto, usuario, instrumento);
         return AulaMapper.ofAulaExibicaoDto(this.aulaRepository.save(aula));
     }
 
-//    public List<Aula> listarPorIdAluno(int id){
-//        return this.aulaRepository.findAllByIdAluno(id);
-//
-//    }
-
-    public Aula obterAulaPorId(AulaKey id) {
+    public Aula buscarPorId(AulaKey id) {
         return aulaRepository.findById(id).orElseThrow(
                 () -> new EntitadeNaoEncontradaException("Aula não encontrada")
         );

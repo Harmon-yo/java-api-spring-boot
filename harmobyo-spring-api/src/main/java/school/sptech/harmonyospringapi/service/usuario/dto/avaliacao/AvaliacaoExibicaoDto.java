@@ -1,9 +1,6 @@
 package school.sptech.harmonyospringapi.service.usuario.dto.avaliacao;
 
-import jakarta.persistence.ManyToOne;
 import school.sptech.harmonyospringapi.domain.AvaliacaoKey;
-import school.sptech.harmonyospringapi.domain.Pedido;
-import school.sptech.harmonyospringapi.domain.Usuario;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioExibicaoDto;
 

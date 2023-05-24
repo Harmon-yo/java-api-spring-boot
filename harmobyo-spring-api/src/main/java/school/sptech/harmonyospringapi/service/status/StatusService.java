@@ -30,7 +30,7 @@ public class StatusService {
         return StatusMapper.ofStatusExibicaoDto(this.statusRepository.save(status));
     }
 
-    public Status obterPorId(Integer id) {
+    public Status buscarPorId(Integer id) {
         return statusRepository.findById(id).orElseThrow(
                 () -> new EntitadeNaoEncontradaException("Status da Aula não encontrado")
         );

@@ -30,7 +30,9 @@ public class Avaliacao {
     @MapsId("pedidoFk")
     @JoinColumns({
             @JoinColumn(name = "pedido_aluno_fk", referencedColumnName = "aluno_fk"),
-            @JoinColumn(name = "pedido_professor_fk", referencedColumnName = "professor_fk")
+            @JoinColumn(name = "pedido_professor_fk", referencedColumnName = "professor_fk"),
+            @JoinColumn(name = "pedido_fk", referencedColumnName = "pedido_id")
+
     })
     private Pedido pedido;
 

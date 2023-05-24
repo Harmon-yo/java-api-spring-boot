@@ -15,7 +15,11 @@ public class AvaliacaoKey implements Serializable {
     @Column(name = "usuario_avaliado_fk")
     private Integer usuarioAvaliadoFk;
 
-    @Columns(columns = {@Column(name = "aluno_fk"), @Column(name = "professor_fk")})
+    @Columns(columns = {
+            @Column(name = "aluno_fk"),
+            @Column(name = "professor_fk"),
+            @Column(name = "pedido_id")
+    })
     private PedidoKey pedido;
 
     public Integer getUsuarioAvaliadorFk() {

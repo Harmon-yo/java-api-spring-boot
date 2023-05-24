@@ -2,10 +2,7 @@ package school.sptech.harmonyospringapi.service.pedido;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import school.sptech.harmonyospringapi.domain.Aluno;
-import school.sptech.harmonyospringapi.domain.Aula;
-import school.sptech.harmonyospringapi.domain.Professor;
-import school.sptech.harmonyospringapi.domain.Status;
+import school.sptech.harmonyospringapi.domain.*;
 import school.sptech.harmonyospringapi.repository.*;
 import school.sptech.harmonyospringapi.service.aula.AulaService;
 import school.sptech.harmonyospringapi.service.exceptions.EntitadeNaoEncontradaException;
@@ -25,14 +22,6 @@ public class PedidoService {
     @Autowired
     private PedidoRepository pedidoRepository;
 
-    @Autowired
-    private AlunoRepository alunoRepository;
-    @Autowired
-    private AulaRepository aulaRepository;
-    @Autowired
-    private StatusRepository statusRepository;
-    @Autowired
-    private ProfessorRepository professorRepository;
     @Autowired
     private AlunoService alunoService;
 
@@ -54,25 +43,17 @@ public class PedidoService {
 
     public PedidoExibicaoDto criar(PedidoCriacaoDto pedidoCriacaoDto) {
 
-        Optional<Aluno> alunoOpt = this.alunoRepository.findById(pedidoCriacaoDto.getAlunoId());
-        Optional<Professor> professorOpt = this.professorRepository.findById(pedidoCriacaoDto.getProfessorId());
-        Optional<Aula> aulaOpt = this.aulaRepository.findById(pedidoCriacaoDto.getAulaId());
-        Optional<Status> statusOpt = this.statusRepository.findById(pedidoCriacaoDto.getStatusId());
-
-        if(alunoOpt.isEmpty()) throw new EntitadeNaoEncontradaException("Aluno não encontrado");
-        if(professorOpt.isEmpty()) throw new EntitadeNaoEncontradaException("Professor não encontrado");
-        if(aulaOpt.isEmpty()) throw new EntitadeNaoEncontradaException("Aula não encontrada");
-        if(statusOpt.isEmpty()) throw new EntitadeNaoEncontradaException("Status não encontrado");
-
-
-        Aluno aluno = alunoOpt.get();
-        Professor professor = professorOpt.get();
-        Aula aula = aulaOpt.get();
-        Status status = statusOpt.get();
+        Aluno aluno = this.alunoService.buscarPorId(pedidoCriacaoDto.getAlunoId());
+        Professor professor = this.professorService.buscarPorId(pedidoCriacaoDto.getProfessorId());
+        Aula aula = this.aulaService.buscarPorId(pedidoCriacaoDto.getAulaId());
+        Status status = this.statusService.buscarPorId(pedidoCriacaoDto.getStatusId());
 
         return PedidoMapper.ofPedidoExibicaoDto(this.pedidoRepository.save(
                 PedidoMapper.of(pedidoCriacaoDto, aluno, professor, status, aula)
         ));
     }
 
+    public Pedido buscarPorId(PedidoKey pedidoKey) {
+        return this.pedidoRepository.findById(pedidoKey).orElseThrow(() -> new EntitadeNaoEncontradaException("Pedido não encontrado"));
+    }
 }

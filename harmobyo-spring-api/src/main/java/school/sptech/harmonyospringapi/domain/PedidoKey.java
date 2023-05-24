@@ -14,6 +14,17 @@ public class PedidoKey implements Serializable {
     @Column(name = "professor_fk")
     private Integer professorFk;
 
+    @Column(name = "pedido_id")
+    private Integer pedidoId;
+
+    public Integer getPedidoId() {
+        return pedidoId;
+    }
+
+    public void setPedidoId(Integer pedidoId) {
+        this.pedidoId = pedidoId;
+    }
+
     public Integer getAlunoFk() {
         return alunoFk;
     }
