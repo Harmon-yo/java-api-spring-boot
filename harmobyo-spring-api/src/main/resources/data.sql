@@ -71,6 +71,7 @@ VALUES
     ('Pendente'),
     ('Confirmado'),
     ('Cancelado'),
+    ('Recusado'),
     ('Concluído');
 
 
