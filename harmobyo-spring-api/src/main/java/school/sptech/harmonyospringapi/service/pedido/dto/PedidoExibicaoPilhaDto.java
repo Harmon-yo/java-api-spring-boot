@@ -1,14 +1,12 @@
 package school.sptech.harmonyospringapi.service.pedido.dto;
 
 import school.sptech.harmonyospringapi.domain.Pedido;
-import school.sptech.harmonyospringapi.domain.PedidoKey;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class PedidoExibicaoPilhaDto {
 
-    private PedidoKey id;
+    private Integer id;
     private LocalDateTime dataAula;
 
     private String instrumentoAula;
@@ -22,11 +20,11 @@ public class PedidoExibicaoPilhaDto {
         this.professorAula = p.getAula().getProfessor().getNome();
     }
 
-    public PedidoKey getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(PedidoKey id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

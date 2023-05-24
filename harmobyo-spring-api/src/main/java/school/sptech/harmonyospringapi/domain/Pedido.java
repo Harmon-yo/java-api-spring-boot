@@ -7,8 +7,9 @@ import java.time.LocalDateTime;
 @Entity
 public class Pedido {
 
-    @EmbeddedId
-    private PedidoKey id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     @ManyToOne
     @MapsId("alunoFk")
@@ -39,11 +40,11 @@ public class Pedido {
 
     private LocalDateTime dataAula;
 
-    public PedidoKey getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(PedidoKey id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

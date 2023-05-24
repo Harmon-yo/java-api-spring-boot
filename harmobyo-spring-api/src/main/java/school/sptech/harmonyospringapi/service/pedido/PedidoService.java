@@ -14,7 +14,6 @@ import school.sptech.harmonyospringapi.service.usuario.AlunoService;
 import school.sptech.harmonyospringapi.service.usuario.ProfessorService;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class PedidoService {
@@ -53,8 +52,8 @@ public class PedidoService {
         ));
     }
 
-    public Pedido buscarPorId(PedidoKey pedidoKey) {
-        return this.pedidoRepository.findById(pedidoKey).orElseThrow(() -> new EntitadeNaoEncontradaException("Pedido não encontrado"));
+    public Pedido buscarPorId(Integer integer) {
+        return this.pedidoRepository.findById(integer).orElseThrow(() -> new EntitadeNaoEncontradaException("Pedido não encontrado"));
     }
 
 }

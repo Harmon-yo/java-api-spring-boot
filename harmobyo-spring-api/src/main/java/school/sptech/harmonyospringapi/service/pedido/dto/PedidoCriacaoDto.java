@@ -4,6 +4,7 @@ import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
 import school.sptech.harmonyospringapi.domain.*;
 
+import java.lang.Integer;
 import java.time.LocalDateTime;
 
 public class PedidoCriacaoDto {

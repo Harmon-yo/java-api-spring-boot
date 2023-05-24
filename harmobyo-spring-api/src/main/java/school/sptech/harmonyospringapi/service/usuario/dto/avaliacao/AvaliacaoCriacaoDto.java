@@ -1,7 +1,6 @@
 package school.sptech.harmonyospringapi.service.usuario.dto.avaliacao;
 
 import jakarta.validation.constraints.*;
-import school.sptech.harmonyospringapi.domain.PedidoKey;
 
 import java.time.LocalDate;
 
@@ -17,16 +16,16 @@ public class AvaliacaoCriacaoDto {
     private String comentario;
 
     @NotNull
-    private Integer usuarioAvaliadoId;
+    private java.lang.Integer usuarioAvaliadoId;
 
     @PastOrPresent
     private LocalDate dataAvaliacao;
 
     @NotNull
-    private Integer usuarioAvaliadorId;
+    private java.lang.Integer usuarioAvaliadorId;
 
     @NotNull
-    private PedidoKey pedidoId;
+    private Integer pedidoId;
 
     public Double getValor() {
         return valor;
@@ -44,11 +43,11 @@ public class AvaliacaoCriacaoDto {
         this.comentario = comentario;
     }
 
-    public Integer getUsuarioAvaliadoId() {
+    public java.lang.Integer getUsuarioAvaliadoId() {
         return usuarioAvaliadoId;
     }
 
-    public void setUsuarioAvaliadoId(Integer usuarioAvaliadoId) {
+    public void setUsuarioAvaliadoId(java.lang.Integer usuarioAvaliadoId) {
         this.usuarioAvaliadoId = usuarioAvaliadoId;
     }
 
@@ -60,19 +59,19 @@ public class AvaliacaoCriacaoDto {
         this.dataAvaliacao = dataAvaliacao;
     }
 
-    public Integer getUsuarioAvaliadorId() {
+    public java.lang.Integer getUsuarioAvaliadorId() {
         return usuarioAvaliadorId;
     }
 
-    public void setUsuarioAvaliadorId(Integer usuarioAvaliadorId) {
+    public void setUsuarioAvaliadorId(java.lang.Integer usuarioAvaliadorId) {
         this.usuarioAvaliadorId = usuarioAvaliadorId;
     }
 
-    public PedidoKey getPedidoId() {
+    public Integer getPedidoId() {
         return pedidoId;
     }
 
-    public void setPedidoId(PedidoKey pedidoId) {
+    public void setPedidoId(Integer pedidoId) {
         this.pedidoId = pedidoId;
     }
 }
