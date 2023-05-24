@@ -13,7 +13,9 @@ import school.sptech.harmonyospringapi.service.status.StatusService;
 import school.sptech.harmonyospringapi.service.usuario.AlunoService;
 import school.sptech.harmonyospringapi.service.usuario.ProfessorService;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PedidoService {
@@ -55,5 +57,38 @@ public class PedidoService {
     public Pedido buscarPorId(Integer integer) {
         return this.pedidoRepository.findById(integer).orElseThrow(() -> new EntitadeNaoEncontradaException("Pedido não encontrado"));
     }
+
+    public PedidoExibicaoDto aceitarPedido(Pedido pedidoPendente){
+        Integer idPedidoPendente = pedidoPendente.getId();
+
+        Optional<Pedido> pedidoEncontradoNoBancoOpt = pedidoRepository.findById(idPedidoPendente);
+        if(pedidoEncontradoNoBancoOpt.isEmpty()){
+            throw new EntitadeNaoEncontradaException("Pedido não encontrado");
+        }
+
+        Pedido pedidoEncontradoNoBanco = pedidoEncontradoNoBancoOpt.get();
+
+        pedidoEncontradoNoBanco.setStatus(statusService.buscarPorId(2)); //Status - Confirmado é de ID 2
+        pedidoEncontradoNoBanco.setHoraResposta(LocalDateTime.now());
+
+        return PedidoMapper.ofPedidoExibicaoDto(pedidoRepository.save(pedidoEncontradoNoBanco));
+    }
+
+    public PedidoExibicaoDto recusarPedido(Pedido pedidoPendente){
+        Integer idPedidoPendente = pedidoPendente.getId();
+
+        Optional<Pedido> pedidoEncontradoNoBancoOpt = pedidoRepository.findById(idPedidoPendente);
+        if(pedidoEncontradoNoBancoOpt.isEmpty()){
+            throw new EntitadeNaoEncontradaException("Pedido não encontrado");
+        }
+
+        Pedido pedidoEncontradoNoBanco = pedidoEncontradoNoBancoOpt.get();
+
+        pedidoEncontradoNoBanco.setStatus(statusService.buscarPorId(4)); //Status - Recusado é de ID 4
+        pedidoEncontradoNoBanco.setHoraResposta(LocalDateTime.now());
+
+        return PedidoMapper.ofPedidoExibicaoDto(pedidoRepository.save(pedidoEncontradoNoBanco));
+    }
+
 
 }
