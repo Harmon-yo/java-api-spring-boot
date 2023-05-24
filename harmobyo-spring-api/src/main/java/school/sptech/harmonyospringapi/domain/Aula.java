@@ -7,8 +7,9 @@ import java.util.List;
 @Entity
 public class Aula {
 
-    @EmbeddedId
-    private AulaKey id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     private Double valorAula;
 
@@ -22,11 +23,11 @@ public class Aula {
     @JoinColumn(name = "instrumento_fk")
     private Instrumento instrumento;
 
-    public AulaKey getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(AulaKey id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

@@ -8,12 +8,9 @@ public class AulaMapper {
 
     public static Aula of(AulaCriacaoDto aulaCriacaoDto, Professor professor, Instrumento instrumento) {
 
-        AulaKey aulaKey = new AulaKey();
-        aulaKey.setProfessorFk(professor.getId());
-        aulaKey.setInstrumentoFk(instrumento.getId());
+
 
         Aula aula = new Aula();
-        aula.setId(aulaKey);
         aula.setValorAula(aulaCriacaoDto.getValorAula());
         aula.setProfessor(professor);
         aula.setInstrumento(instrumento);

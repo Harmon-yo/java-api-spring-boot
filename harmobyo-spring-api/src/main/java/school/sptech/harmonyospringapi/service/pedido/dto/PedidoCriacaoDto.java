@@ -19,7 +19,7 @@ public class PedidoCriacaoDto {
     private Integer statusId;
 
     @NotNull
-    private AulaKey aulaId;
+    private Integer aulaId;
 
     @FutureOrPresent
     private LocalDateTime dataAula;
@@ -56,11 +56,11 @@ public class PedidoCriacaoDto {
         this.dataAula = dataAula;
     }
 
-    public AulaKey getAulaId() {
+    public Integer getAulaId() {
         return aulaId;
     }
 
-    public void setAulaId(AulaKey aulaId) {
+    public void setAulaId(Integer aulaId) {
         this.aulaId = aulaId;
     }
 }

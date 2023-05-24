@@ -43,7 +43,7 @@ public class AulaService {
         return AulaMapper.ofAulaExibicaoDto(this.aulaRepository.save(aula));
     }
 
-    public Aula buscarPorId(AulaKey id) {
+    public Aula buscarPorId(Integer id) {
         return aulaRepository.findById(id).orElseThrow(
                 () -> new EntitadeNaoEncontradaException("Aula não encontrada")
         );
