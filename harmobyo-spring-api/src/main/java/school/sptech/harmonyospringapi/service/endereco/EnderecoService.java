@@ -13,14 +13,11 @@ public class EnderecoService {
     @Autowired
     private EnderecoRepository enderecoRepository;
 
-
-
     public Endereco cadastrarEndereco(Endereco endereco){
         return  enderecoRepository.save(endereco);
     }
 
     public Endereco atualizarEndereco(Endereco endereco){
-
         return enderecoRepository.save(endereco);
     }
 
@@ -29,8 +26,11 @@ public class EnderecoService {
     }
 
     public List<Endereco> listarEnderecos(){
-        List<Endereco> ltEnderecos = this.enderecoRepository.findAll();
-        return ltEnderecos;
+        return this.enderecoRepository.findAll();
+    }
+
+    public Endereco buscarPorId(Integer id){
+        return enderecoRepository.findById(id).orElseThrow(() -> new RuntimeException("Endereço não encontrado"));
     }
 
 

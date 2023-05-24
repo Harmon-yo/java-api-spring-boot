@@ -7,6 +7,8 @@ import school.sptech.harmonyospringapi.domain.Usuario;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoMapper;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioMapper;
 
+import java.time.LocalDate;
+
 public class AvaliacaoMapper {
 
     public static Avaliacao of(AvaliacaoCriacaoDto avaliacaoCriacaoDto, Usuario usuarioAvaliado,
@@ -22,7 +24,7 @@ public class AvaliacaoMapper {
         avaliacao.setValor(avaliacaoCriacaoDto.getValor());
         avaliacao.setComentario(avaliacaoCriacaoDto.getComentario());
         avaliacao.setUsuarioAvaliado(usuarioAvaliado);
-        avaliacao.setDataAvaliacao(avaliacaoCriacaoDto.getDataAvaliacao());
+        avaliacao.setDataAvaliacao(LocalDate.now());
         avaliacao.setUsuarioAvaliador(usuarioAvaliador);
         avaliacao.setPedidoAula(pedido);
 
@@ -35,7 +37,6 @@ public class AvaliacaoMapper {
         avaliacaoExibicaoDto.setId(avaliacao.getId());
         avaliacaoExibicaoDto.setValor(avaliacao.getValor());
         avaliacaoExibicaoDto.setComentario(avaliacao.getComentario());
-        avaliacaoExibicaoDto.setUsuarioAvaliado(UsuarioMapper.ofUsuarioExibicao(avaliacao.getUsuarioAvaliado()));
         avaliacaoExibicaoDto.setDataAvaliacao(avaliacao.getDataAvaliacao());
         avaliacaoExibicaoDto.setUsuarioAvaliador(UsuarioMapper.ofUsuarioExibicao(avaliacao.getUsuarioAvaliador()));
         avaliacaoExibicaoDto.setPedidoAula(PedidoMapper.ofPedidoExibicaoDto(avaliacao.getPedidoAula()));

@@ -13,8 +13,6 @@ public class AvaliacaoExibicaoDto {
 
     private String comentario;
 
-    private UsuarioExibicaoDto usuarioAvaliado;
-
     private LocalDate dataAvaliacao;
 
     private UsuarioExibicaoDto usuarioAvaliador;
@@ -43,14 +41,6 @@ public class AvaliacaoExibicaoDto {
 
     public void setComentario(String comentario) {
         this.comentario = comentario;
-    }
-
-    public UsuarioExibicaoDto getUsuarioAvaliado() {
-        return usuarioAvaliado;
-    }
-
-    public void setUsuarioAvaliado(UsuarioExibicaoDto usuarioAvaliado) {
-        this.usuarioAvaliado = usuarioAvaliado;
     }
 
     public LocalDate getDataAvaliacao() {

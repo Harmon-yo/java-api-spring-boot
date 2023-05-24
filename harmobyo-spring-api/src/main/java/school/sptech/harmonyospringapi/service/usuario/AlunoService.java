@@ -79,19 +79,9 @@ public class AlunoService {
     /* ============= PESQUISA ================ */
 
     public UsuarioExibicaoDto buscarPorIdParaExibicao(Integer id) {
+        Aluno aluno = this.buscarPorId(id);
 
-        Optional<Aluno> alunoOpt = this.alunoRepository.findById(id);
-
-
-        if (alunoOpt.isEmpty()) {
-            throw new EntitadeNaoEncontradaException(
-                    String.format(
-                            "Aluno com o id %d não encontrado !",
-                            id
-                    ));
-        }
-
-        return UsuarioMapper.ofUsuarioExibicao(alunoOpt.get());
+        return UsuarioMapper.ofUsuarioExibicao(aluno);
     }
 
     public UsuarioExibicaoDto buscarPorNome(String nome) {
@@ -171,6 +161,16 @@ public class AlunoService {
 
         Aluno aluno = buscarPorId(alunoId);
         Instrumento instrumento = this.instrumentoService.buscarPorId(instrumentoId);
+
+        if (this.alunoInstrumentoRepository.existsById(
+                new AlunoInstrumentoKey(alunoId, alunoInstrumentoCriacaoDto.getInstrumentoId()))){
+            throw new EntidadeConflitanteException(
+                    String.format(
+                            "Professor com o id %d já possui o instrumento com o id %d cadastrado !",
+                            alunoId,
+                            alunoInstrumentoCriacaoDto.getInstrumentoId()
+                    ));
+        }
 
         AlunoInstrumento alunoInstrumento = this.alunoInstrumentoRepository
                 .save(AlunoInstrumentoMapper.of(alunoInstrumentoCriacaoDto, aluno, instrumento));

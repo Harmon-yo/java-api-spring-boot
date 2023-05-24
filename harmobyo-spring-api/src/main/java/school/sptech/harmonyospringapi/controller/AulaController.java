@@ -19,7 +19,7 @@ public class AulaController {
     private AulaService aulaService;
 
 
-    @PostMapping("/cadastro")
+    @PostMapping
     public ResponseEntity<AulaExibicaoDto> cadastrar(@RequestBody @Valid AulaCriacaoDto aulaCriacaoDto) {
         AulaExibicaoDto aulaCriada = this.aulaService.criar(aulaCriacaoDto);
 

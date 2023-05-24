@@ -3,6 +3,7 @@ package school.sptech.harmonyospringapi.service.usuario;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -10,12 +11,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import school.sptech.harmonyospringapi.configuration.security.jwt.GerenciadorTokenJwt;
-import school.sptech.harmonyospringapi.domain.Avaliacao;
-import school.sptech.harmonyospringapi.domain.Endereco;
-import school.sptech.harmonyospringapi.domain.Pedido;
-import school.sptech.harmonyospringapi.domain.Usuario;
+import school.sptech.harmonyospringapi.domain.*;
 import school.sptech.harmonyospringapi.repository.AvaliacaoRepository;
 import school.sptech.harmonyospringapi.repository.PedidoRepository;
+import school.sptech.harmonyospringapi.service.endereco.dto.EnderecoAtualizacaoDto;
 import school.sptech.harmonyospringapi.service.pedido.PedidoService;
 import school.sptech.harmonyospringapi.service.usuario.dto.avaliacao.AvaliacaoCriacaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.avaliacao.AvaliacaoExibicaoDto;
@@ -134,16 +133,16 @@ public class UsuarioService {
         return UsuarioMapper.ofUsuarioExibicao(usuario);
     }
 
-    public UsuarioExibicaoDto atualizarEndereco(Integer idUsuario, Endereco endereco ){
-        Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(
-                () -> new EntitadeNaoEncontradaException("Usuario não encontrado")
-        );
+    public UsuarioExibicaoDto atualizarEndereco(Integer idUsuario, EnderecoAtualizacaoDto enderecoAtualizacaoDto ){
+        Usuario usuario = buscarPorId(idUsuario);
 
+        Endereco endereco = EnderecoMapper.of(enderecoAtualizacaoDto);
         endereco.setId(usuario.getEndereco().getId());
-        Endereco enderecoInserido = enderecoService.atualizarEndereco(endereco);
+
+        Endereco enderecoInserido = this.enderecoService.atualizarEndereco(endereco);
         usuario.setEndereco(enderecoInserido);
 
-        usuarioRepository.save(usuario);
+        this.usuarioRepository.save(usuario);
         return UsuarioMapper.ofUsuarioExibicao(usuario);
 
     }
@@ -159,10 +158,9 @@ public class UsuarioService {
     }
 
     public EnderecoExibicaoDto buscarEndereco(Integer idUsuario){
-        Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(
-                () -> new EntitadeNaoEncontradaException("Usuario não encontrado")
-        );
-        return EnderecoMapper.of(usuario.getEndereco());
+        Usuario usuario = buscarPorId(idUsuario);
+
+        return EnderecoMapper.ofExibicaoDto(usuario.getEndereco());
     }
 
     /* ================ AVALIAÇÃO ================ */
@@ -171,6 +169,13 @@ public class UsuarioService {
         Usuario avaliado = buscarPorId(idAvaliado);
         Usuario avaliador = buscarPorId(avaliacaoCriacaoDto.getUsuarioAvaliadorId());
         Pedido pedido = pedidoService.buscarPorId(avaliacaoCriacaoDto.getPedidoId());
+
+        if (avaliado.getId().equals(avaliador.getId())) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Não é possível avaliar a si mesmo");
+        else if ((!pedido.getAluno().getId().equals(avaliado.getId())) || (!pedido.getProfessor().getId().equals(avaliado.getId()))) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pedido não pertence ao usuário avaliado");
+        else if (pedido.getStatus().getId() != 2) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pedido não foi concluído");
+        else if (avaliacaoRepository.existsAvaliacaoByIdPedido(pedido.getId())) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pedido já foi avaliado");
+        else if (avaliado instanceof Aluno && avaliador instanceof Aluno) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Aluno não pode avaliar outro aluno");
+        else if (avaliado instanceof Professor && avaliador instanceof Professor) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Professor não pode avaliar outro professor");
 
         Avaliacao avaliacao = AvaliacaoMapper.of(avaliacaoCriacaoDto, avaliado, avaliador, pedido);
 

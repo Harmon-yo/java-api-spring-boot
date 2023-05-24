@@ -22,17 +22,18 @@ public class PedidoController {
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<List<PedidoExibicaoDto>> listarPedidos(){
         List<PedidoExibicaoDto> ltPedidosExibicao = this.pedidoService.obterTodos();
-        if(ltPedidosExibicao.isEmpty())
-            return ResponseEntity.status(204).build();
-        return ResponseEntity.status(200).body(ltPedidosExibicao);
+
+        if(ltPedidosExibicao.isEmpty()) return ResponseEntity.notFound().build();
+
+        return ResponseEntity.ok(ltPedidosExibicao);
     }
 
     @PostMapping
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<PedidoExibicaoDto> adicionarPedido(@RequestBody @Valid
                                                              PedidoCriacaoDto pedidoCriacaoDto){
-        PedidoExibicaoDto pedidoExibicaoDto1 = this.pedidoService.criar(pedidoCriacaoDto);
-        return ResponseEntity.status(201).body(pedidoExibicaoDto1);
+        PedidoExibicaoDto pedidoExibicaoDto = this.pedidoService.criar(pedidoCriacaoDto);
+        return ResponseEntity.created(null).body(pedidoExibicaoDto);
     }
 
 
