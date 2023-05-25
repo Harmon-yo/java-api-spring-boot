@@ -13,6 +13,16 @@ public class Status {
 
     private String descricao;
 
+    /*
+        Status Possíveis:
+        Pendente,
+        Confirmado,
+        Cancelado,
+        Recusado,
+        Concluído,
+        Aguardando Pagamento;
+    * */
+
     public Integer getId() {
         return id;
     }

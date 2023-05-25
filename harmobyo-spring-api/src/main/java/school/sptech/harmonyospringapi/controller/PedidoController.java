@@ -37,10 +37,23 @@ public class PedidoController {
         return ResponseEntity.created(null).body(pedidoExibicaoDto);
     }
 
+    @PostMapping("/aceita-pedido/{id}")
+    public ResponseEntity<PedidoExibicaoDto> aceitarPropostaDoAluno(@PathVariable Integer id){
+        PedidoExibicaoDto pedido = this.pedidoService.aceitarPropostaDoAluno(id);
+
+        return ResponseEntity.ok(pedido);
+    }
+
+    @PostMapping("/recusa-pedido/{id}")
+    public ResponseEntity<PedidoExibicaoDto> recusarPropostaDoAluno(@PathVariable Integer id){
+        PedidoExibicaoDto pedido = this.pedidoService.recusarPropostaDoAluno(id);
+
+        return ResponseEntity.ok(pedido);
+    }
+
     @PatchMapping("/cancela-pedido/{id}")
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<PedidoExibicaoDto> cancelarPedidoPorId(@PathVariable Integer id){
-
         PedidoExibicaoDto pedido = pedidoService.cancelarPedido(id);
 
         return ResponseEntity.ok(pedido);

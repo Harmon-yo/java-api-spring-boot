@@ -12,22 +12,18 @@ public class Pedido {
     private Integer id;
 
     @ManyToOne
-    @MapsId("alunoFk")
     @JoinColumn(name = "aluno_fk")
     private Aluno aluno;
 
     @ManyToOne
-    @MapsId("professorFk")
     @JoinColumn(name = "professor_fk")
     private Professor professor;
 
     @ManyToOne
-    @MapsId("statusFk")
     @JoinColumn(name = "status_fk")
     private Status status;
 
     @ManyToOne
-    @MapsId("aulaFk")
     @JoinColumn(name = "aula_fk")
     private Aula aula;
 

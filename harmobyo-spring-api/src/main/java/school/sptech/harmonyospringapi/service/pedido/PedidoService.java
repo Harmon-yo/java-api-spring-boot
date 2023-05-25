@@ -55,52 +55,10 @@ public class PedidoService {
 
     }
 
+    /* ============= PESQUISA ============== */
+
     public Pedido buscarPorId(Integer integer) {
         return this.pedidoRepository.findById(integer).orElseThrow(() -> new EntitadeNaoEncontradaException("Pedido não encontrado"));
-    }
-
-    public PedidoExibicaoDto cancelarPedido(Integer idPedido){
-        Optional<Pedido> pedidoOpt = pedidoRepository.findById(idPedido);
-        if(pedidoOpt.isEmpty()) throw new EntitadeNaoEncontradaException("Pedido não encontrado");
-
-        Pedido pedido = pedidoOpt.get();
-        Status status = statusService.buscarPorId(3);
-        pedido.setStatus(status);
-
-        return PedidoMapper.ofPedidoExibicaoDto(pedidoRepository.save(pedido));
-
-    }
-    public PedidoExibicaoDto aceitarPedido(Pedido pedidoPendente){
-        Integer idPedidoPendente = pedidoPendente.getId();
-
-        Optional<Pedido> pedidoEncontradoNoBancoOpt = pedidoRepository.findById(idPedidoPendente);
-        if(pedidoEncontradoNoBancoOpt.isEmpty()){
-            throw new EntitadeNaoEncontradaException("Pedido não encontrado");
-        }
-
-
-        Pedido pedidoEncontradoNoBanco = pedidoEncontradoNoBancoOpt.get();
-
-        pedidoEncontradoNoBanco.setStatus(statusService.buscarPorId(2)); //Status - Confirmado é de ID 2
-        pedidoEncontradoNoBanco.setHoraResposta(LocalDateTime.now());
-
-        return PedidoMapper.ofPedidoExibicaoDto(pedidoRepository.save(pedidoEncontradoNoBanco));
-    }
-
-    public PedidoExibicaoDto recusarPedido(Pedido pedidoPendente){
-        Integer idPedidoPendente = pedidoPendente.getId();
-
-        Optional<Pedido> pedidoEncontradoNoBancoOpt = pedidoRepository.findById(idPedidoPendente);
-        if(pedidoEncontradoNoBancoOpt.isEmpty()){
-            throw new EntitadeNaoEncontradaException("Pedido não encontrado");
-        }
-
-        Pedido pedidoEncontradoNoBanco = pedidoEncontradoNoBancoOpt.get();
-
-        pedidoEncontradoNoBanco.setStatus(statusService.buscarPorId(4)); //Status - Recusado é de ID 4
-        pedidoEncontradoNoBanco.setHoraResposta(LocalDateTime.now());
-
-        return PedidoMapper.ofPedidoExibicaoDto(pedidoRepository.save(pedidoEncontradoNoBanco));
     }
 
     public List<PedidoExibicaoDto> buscarPorUsuarioId(Integer id) {
@@ -114,7 +72,33 @@ public class PedidoService {
         return PedidoMapper.ofPedidoExibicaoDto(pedido);
     }
 
+    /* ============= MUDAR STATUS ============== */
+    public PedidoExibicaoDto aceitarPropostaDoAluno(Integer id) {
+        Pedido pedido = this.buscarPorId(id);
 
+        pedido.setStatus(this.statusService.buscarPorDescricao("Aguardando Pagamento"));
+        pedido.setHoraResposta(LocalDateTime.now());
 
+        return PedidoMapper.ofPedidoExibicaoDto(this.pedidoRepository.save(pedido));
+    }
+
+    public PedidoExibicaoDto recusarPropostaDoAluno(Integer id) {
+        Pedido pedido = this.buscarPorId(id);
+
+        pedido.setStatus(this.statusService.buscarPorDescricao("Recusado"));
+        pedido.setHoraResposta(LocalDateTime.now());
+
+        return PedidoMapper.ofPedidoExibicaoDto(this.pedidoRepository.save(pedido));
+    }
+
+    public PedidoExibicaoDto cancelarPedido(Integer idPedido){
+        Pedido pedido = buscarPorId(idPedido);
+
+        Status status = statusService.buscarPorDescricao("Cancelado");
+        pedido.setStatus(status);
+        pedido.setHoraResposta(LocalDateTime.now());
+
+        return PedidoMapper.ofPedidoExibicaoDto(pedidoRepository.save(pedido));
+    }
 
 }

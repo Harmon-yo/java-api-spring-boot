@@ -72,7 +72,8 @@ VALUES
     ('Confirmado'),
     ('Cancelado'),
     ('Recusado'),
-    ('Concluído');
+    ('Concluído'),
+    ('Aguardando Pagamento');
 
 
 INSERT INTO aula (professor_fk, valor_aula, instrumento_fk )
