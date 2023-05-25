@@ -54,4 +54,12 @@ public class AulaController {
 
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping
+    public ResponseEntity<List<AulaExibicaoDto>> listar() {
+        List<AulaExibicaoDto> ltAulas = this.aulaService.obterTodos();
+
+        if (ltAulas.isEmpty()) return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(ltAulas);
+    }
 }

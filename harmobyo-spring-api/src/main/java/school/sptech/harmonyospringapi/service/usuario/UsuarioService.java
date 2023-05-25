@@ -31,6 +31,7 @@ import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioMapper;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class UsuarioService {
@@ -172,7 +173,7 @@ public class UsuarioService {
 
         if (avaliado.getId().equals(avaliador.getId())) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Não é possível avaliar a si mesmo");
         else if ((!pedido.getAluno().getId().equals(avaliado.getId())) || (!pedido.getProfessor().getId().equals(avaliado.getId()))) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pedido não pertence ao usuário avaliado");
-        else if (pedido.getStatus().getId() != 2) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pedido não foi concluído");
+        else if (!Objects.equals(pedido.getStatus().getDescricao(), "Concluído")) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pedido não foi concluído");
         else if (avaliacaoRepository.existsAvaliacaoByIdPedido(pedido.getId())) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pedido já foi avaliado");
         else if (avaliado instanceof Aluno && avaliador instanceof Aluno) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Aluno não pode avaliar outro aluno");
         else if (avaliado instanceof Professor && avaliador instanceof Professor) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Professor não pode avaliar outro professor");

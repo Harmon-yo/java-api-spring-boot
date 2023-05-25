@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import school.sptech.harmonyospringapi.service.pedido.PedidoService;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoCriacaoDto;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoDto;
+import school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoPilhaDto;
 
 import java.util.List;
 
@@ -35,6 +36,23 @@ public class PedidoController {
         PedidoExibicaoDto pedidoExibicaoDto = this.pedidoService.criar(pedidoCriacaoDto);
         return ResponseEntity.created(null).body(pedidoExibicaoDto);
     }
+
+    @GetMapping("/usuario/{id}")
+    public ResponseEntity<List<PedidoExibicaoDto>> buscarPorUsuarioId(@PathVariable Integer id){
+        List<PedidoExibicaoDto> pedidoExibicaoDto = this.pedidoService.buscarPorUsuarioId(id);
+
+        if(pedidoExibicaoDto.isEmpty()) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(pedidoExibicaoDto);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<PedidoExibicaoDto> buscarPorId(@PathVariable Integer id){
+        PedidoExibicaoDto pedidoExibicaoDto = this.pedidoService.buscarPorIdParaExibicao(id);
+
+        if(pedidoExibicaoDto == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(pedidoExibicaoDto);
+    }
+
 
 
 
