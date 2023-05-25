@@ -15,4 +15,6 @@ public interface AulaRepository extends JpaRepository<Aula, Integer> {
 
     List<Aula> findAllByProfessorId(int fkProfessor);
 
+    boolean existsByProfessorIdAndInstrumentoId(int idProfessor, int idInstrumento);
+
 }

@@ -14,12 +14,10 @@ public class Aula {
     private Double valorAula;
 
     @ManyToOne
-    @MapsId("professorFk")
     @JoinColumn(name = "professor_fk")
     private Professor professor;
 
     @ManyToOne
-    @MapsId("instrumentoFk")
     @JoinColumn(name = "instrumento_fk")
     private Instrumento instrumento;
 

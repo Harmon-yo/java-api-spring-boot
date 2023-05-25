@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import school.sptech.harmonyospringapi.domain.Aula;
 import school.sptech.harmonyospringapi.service.aula.AulaService;
+import school.sptech.harmonyospringapi.service.aula.dto.AulaAtualizacaoDto;
 import school.sptech.harmonyospringapi.service.aula.dto.AulaCriacaoDto;
 import school.sptech.harmonyospringapi.service.aula.dto.AulaExibicaoDto;
 
@@ -36,5 +37,21 @@ public class AulaController {
         }
 
         return ResponseEntity.ok(ltAulas);
+    }
+
+    @PutMapping("/{idAula}")
+    public ResponseEntity<AulaExibicaoDto> atualizarAulaPorId(@PathVariable int idAula, @RequestBody @Valid AulaAtualizacaoDto aulaAtualizacaoDto){
+
+        AulaExibicaoDto aulaAtualizada = this.aulaService.atualizarAulaPorId(idAula, aulaAtualizacaoDto);
+
+        return ResponseEntity.ok(aulaAtualizada);
+    }
+
+    @DeleteMapping("/{idAula}")
+    public ResponseEntity<Void> deletarAulaPorId(@PathVariable int idAula){
+
+        this.aulaService.deletarAulaPorId(idAula);
+
+        return ResponseEntity.noContent().build();
     }
 }

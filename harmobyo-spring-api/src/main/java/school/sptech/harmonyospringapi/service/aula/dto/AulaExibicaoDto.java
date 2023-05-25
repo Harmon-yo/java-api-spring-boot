@@ -9,8 +9,6 @@ public class AulaExibicaoDto {
 
     private Double valorAula;
 
-    private UsuarioExibicaoDto usuario;
-
     private InstrumentoExibicaoDto instrumento;
 
     public Integer getId() {
@@ -27,14 +25,6 @@ public class AulaExibicaoDto {
 
     public void setValorAula(Double valorAula) {
         this.valorAula = valorAula;
-    }
-
-    public UsuarioExibicaoDto getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(UsuarioExibicaoDto usuario) {
-        this.usuario = usuario;
     }
 
     public InstrumentoExibicaoDto getInstrumento() {

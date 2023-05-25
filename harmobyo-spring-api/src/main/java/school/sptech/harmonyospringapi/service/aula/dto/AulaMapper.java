@@ -8,8 +8,6 @@ public class AulaMapper {
 
     public static Aula of(AulaCriacaoDto aulaCriacaoDto, Professor professor, Instrumento instrumento) {
 
-
-
         Aula aula = new Aula();
         aula.setValorAula(aulaCriacaoDto.getValorAula());
         aula.setProfessor(professor);
@@ -19,13 +17,13 @@ public class AulaMapper {
     }
 
     public static AulaExibicaoDto ofAulaExibicaoDto(Aula aula) {
-       AulaExibicaoDto aulaExibicaoDto = new AulaExibicaoDto();
+        AulaExibicaoDto aulaExibicaoDto = new AulaExibicaoDto();
 
-       aulaExibicaoDto.setId(aula.getId());
-       aulaExibicaoDto.setValorAula(aula.getValorAula());
-       aulaExibicaoDto.setUsuario(UsuarioMapper.ofUsuarioExibicao(aula.getProfessor()));
-       aulaExibicaoDto.setInstrumento(InstrumentoMapper.ofInstrumentoExibicao(aula.getInstrumento()));
+        aulaExibicaoDto.setId(aula.getId());
+        aulaExibicaoDto.setValorAula(aula.getValorAula());
+        aulaExibicaoDto.setInstrumento(InstrumentoMapper.ofInstrumentoExibicao(aula.getInstrumento()));
 
-       return aulaExibicaoDto;
+        return aulaExibicaoDto;
     }
+
 }
