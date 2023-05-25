@@ -14,6 +14,7 @@ import school.sptech.harmonyospringapi.service.usuario.AlunoService;
 import school.sptech.harmonyospringapi.service.usuario.ProfessorService;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PedidoService {
@@ -46,14 +47,24 @@ public class PedidoService {
         Professor professor = this.professorService.buscarPorId(pedidoCriacaoDto.getProfessorId());
         Aula aula = this.aulaService.buscarPorId(pedidoCriacaoDto.getAulaId());
         Status status = this.statusService.buscarPorId(pedidoCriacaoDto.getStatusId());
-
-        return PedidoMapper.ofPedidoExibicaoDto(this.pedidoRepository.save(
-                PedidoMapper.of(pedidoCriacaoDto, aluno, professor, status, aula)
-        ));
+        Pedido pedido = PedidoMapper.of(pedidoCriacaoDto, aluno, professor, status, aula);
+        Pedido pedidoSalvo = pedidoRepository.save(pedido);
+        return PedidoMapper.ofPedidoExibicaoDto(pedidoSalvo);
     }
 
     public Pedido buscarPorId(Integer integer) {
         return this.pedidoRepository.findById(integer).orElseThrow(() -> new EntitadeNaoEncontradaException("Pedido não encontrado"));
     }
 
+    public PedidoExibicaoDto cancelarPedido(Integer idPedido){
+        Optional<Pedido> pedidoOpt = pedidoRepository.findById(idPedido);
+        if(pedidoOpt.isEmpty()) throw new EntitadeNaoEncontradaException("Pedido não encontrado");
+
+        Pedido pedido = pedidoOpt.get();
+        Status status = statusService.buscarPorId(3);
+        pedido.setStatus(status);
+
+        return PedidoMapper.ofPedidoExibicaoDto(pedidoRepository.save(pedido));
+
+    }
 }

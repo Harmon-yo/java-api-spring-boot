@@ -18,9 +18,8 @@ public class PedidoCriacaoDto {
     @Min(1)
     private Integer professorId;
 
-    @NotNull
-    @Min(1)
-    private Integer statusId;
+
+    private Integer statusId = 1;
 
     @NotNull
     @Min(1)
@@ -28,6 +27,7 @@ public class PedidoCriacaoDto {
 
     @FutureOrPresent
     private LocalDateTime dataAula;
+
 
     public Integer getAlunoId() {
         return alunoId;

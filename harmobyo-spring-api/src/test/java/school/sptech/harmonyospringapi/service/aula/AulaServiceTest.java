@@ -37,7 +37,7 @@ class AulaServiceTest {
     private static UsuarioService usuarioService;
 
    @Mock
-   private static InstrumentoRepository instrumentoRepository;
+    private static InstrumentoRepository instrumentoRepository;
 
     @Mock
     private static AulaRepository repository;
