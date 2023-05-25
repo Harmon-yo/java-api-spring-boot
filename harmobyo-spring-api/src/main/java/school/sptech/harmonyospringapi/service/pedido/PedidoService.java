@@ -47,7 +47,7 @@ public class PedidoService {
         Aluno aluno = this.alunoService.buscarPorId(pedidoCriacaoDto.getAlunoId());
         Professor professor = this.professorService.buscarPorId(pedidoCriacaoDto.getProfessorId());
         Aula aula = this.aulaService.buscarPorId(pedidoCriacaoDto.getAulaId());
-        Status status = this.statusService.buscarPorId(pedidoCriacaoDto.getStatusId());
+        Status status = this.statusService.buscarPorDescricao("Pendente");
 
         return PedidoMapper.ofPedidoExibicaoDto(this.pedidoRepository.save(
                 PedidoMapper.of(pedidoCriacaoDto, aluno, professor, status, aula)
@@ -89,6 +89,18 @@ public class PedidoService {
 
         return PedidoMapper.ofPedidoExibicaoDto(pedidoRepository.save(pedidoEncontradoNoBanco));
     }
+
+    public List<PedidoExibicaoDto> buscarPorUsuarioId(Integer id) {
+        List<Pedido> pedidos = this.pedidoRepository.buscarPorUsuarioId(id);
+        if (pedidos.isEmpty()) throw new EntitadeNaoEncontradaException("Pedido não encontrado");
+        return pedidos.stream().map(PedidoMapper::ofPedidoExibicaoDto).toList();
+    }
+
+    public PedidoExibicaoDto buscarPorIdParaExibicao(Integer id) {
+        Pedido pedido = this.pedidoRepository.findById(id).orElseThrow(() -> new EntitadeNaoEncontradaException("Pedido não encontrado"));
+        return PedidoMapper.ofPedidoExibicaoDto(pedido);
+    }
+
 
 
 }

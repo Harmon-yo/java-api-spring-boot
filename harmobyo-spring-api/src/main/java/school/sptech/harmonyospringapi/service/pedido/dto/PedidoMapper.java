@@ -18,7 +18,6 @@ public class PedidoMapper {
         pedido.setAula(aula);
         pedido.setDataAula(pedidoCriacaoDto.getDataAula());
         pedido.setHoraCriacao(LocalDateTime.now());
-        pedido.setHoraCriacao(null);
 
         return pedido;
     }

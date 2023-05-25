@@ -35,4 +35,10 @@ public class StatusService {
                 () -> new EntitadeNaoEncontradaException("Status da Aula não encontrado")
         );
     }
+
+    public Status buscarPorDescricao(String status) {
+        return statusRepository.findByDescricao(status).orElseThrow(
+                () -> new EntitadeNaoEncontradaException("Status da Aula não encontrado")
+        );
+    }
 }
