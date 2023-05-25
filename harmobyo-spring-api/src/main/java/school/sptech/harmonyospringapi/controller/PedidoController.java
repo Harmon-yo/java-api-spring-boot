@@ -37,6 +37,15 @@ public class PedidoController {
         return ResponseEntity.created(null).body(pedidoExibicaoDto);
     }
 
+    @PatchMapping("/cancela-pedido/{id}")
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<PedidoExibicaoDto> cancelarPedidoPorId(@PathVariable Integer id){
+
+        PedidoExibicaoDto pedido = pedidoService.cancelarPedido(id);
+
+        return ResponseEntity.ok(pedido);
+
+    }
     @GetMapping("/usuario/{id}")
     public ResponseEntity<List<PedidoExibicaoDto>> buscarPorUsuarioId(@PathVariable Integer id){
         List<PedidoExibicaoDto> pedidoExibicaoDto = this.pedidoService.buscarPorUsuarioId(id);

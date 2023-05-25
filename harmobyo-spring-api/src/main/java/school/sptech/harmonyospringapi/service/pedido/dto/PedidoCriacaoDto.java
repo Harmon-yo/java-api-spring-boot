@@ -28,6 +28,7 @@ public class PedidoCriacaoDto {
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dataAula;
 
+
     public Integer getAlunoId() {
         return alunoId;
     }

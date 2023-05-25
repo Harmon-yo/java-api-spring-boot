@@ -52,12 +52,24 @@ public class PedidoService {
         return PedidoMapper.ofPedidoExibicaoDto(this.pedidoRepository.save(
                 PedidoMapper.of(pedidoCriacaoDto, aluno, professor, status, aula)
         ));
+
     }
 
     public Pedido buscarPorId(Integer integer) {
         return this.pedidoRepository.findById(integer).orElseThrow(() -> new EntitadeNaoEncontradaException("Pedido não encontrado"));
     }
 
+    public PedidoExibicaoDto cancelarPedido(Integer idPedido){
+        Optional<Pedido> pedidoOpt = pedidoRepository.findById(idPedido);
+        if(pedidoOpt.isEmpty()) throw new EntitadeNaoEncontradaException("Pedido não encontrado");
+
+        Pedido pedido = pedidoOpt.get();
+        Status status = statusService.buscarPorId(3);
+        pedido.setStatus(status);
+
+        return PedidoMapper.ofPedidoExibicaoDto(pedidoRepository.save(pedido));
+
+    }
     public PedidoExibicaoDto aceitarPedido(Pedido pedidoPendente){
         Integer idPedidoPendente = pedidoPendente.getId();
 
@@ -65,6 +77,7 @@ public class PedidoService {
         if(pedidoEncontradoNoBancoOpt.isEmpty()){
             throw new EntitadeNaoEncontradaException("Pedido não encontrado");
         }
+
 
         Pedido pedidoEncontradoNoBanco = pedidoEncontradoNoBancoOpt.get();
 
@@ -100,6 +113,7 @@ public class PedidoService {
         Pedido pedido = this.pedidoRepository.findById(id).orElseThrow(() -> new EntitadeNaoEncontradaException("Pedido não encontrado"));
         return PedidoMapper.ofPedidoExibicaoDto(pedido);
     }
+
 
 
 

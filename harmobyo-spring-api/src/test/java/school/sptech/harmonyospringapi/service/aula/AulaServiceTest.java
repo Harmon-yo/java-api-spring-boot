@@ -38,6 +38,12 @@ class AulaServiceTest {
     @InjectMocks
     private static UsuarioService usuarioService;
 
+<<<<<<< HEAD
+=======
+   @Mock
+    private static InstrumentoRepository instrumentoRepository;
+
+>>>>>>> a3a0d73915961618ff4c628568ed0fe0a2140994
     @Mock
     private static AulaRepository repository;
     @Mock
