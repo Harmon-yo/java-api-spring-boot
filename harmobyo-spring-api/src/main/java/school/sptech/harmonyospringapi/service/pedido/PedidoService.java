@@ -78,6 +78,7 @@ public class PedidoService {
             throw new EntitadeNaoEncontradaException("Pedido não encontrado");
         }
 
+
         Pedido pedidoEncontradoNoBanco = pedidoEncontradoNoBancoOpt.get();
 
         pedidoEncontradoNoBanco.setStatus(statusService.buscarPorId(2)); //Status - Confirmado é de ID 2
@@ -112,6 +113,7 @@ public class PedidoService {
         Pedido pedido = this.pedidoRepository.findById(id).orElseThrow(() -> new EntitadeNaoEncontradaException("Pedido não encontrado"));
         return PedidoMapper.ofPedidoExibicaoDto(pedido);
     }
+
 
 
 
