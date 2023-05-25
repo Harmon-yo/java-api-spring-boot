@@ -14,6 +14,8 @@ import school.sptech.harmonyospringapi.domain.Naipe;
 import school.sptech.harmonyospringapi.repository.AlunoInstrumentoRepository;
 import school.sptech.harmonyospringapi.repository.AlunoRepository;
 import school.sptech.harmonyospringapi.repository.InstrumentoRepository;
+import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoExibicaoDto;
+import school.sptech.harmonyospringapi.service.usuario.ProfessorService;
 import school.sptech.harmonyospringapi.service.usuario.dto.aluno_instrumento.AlunoInstrumentoCriacaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.aluno_instrumento.AlunoInstrumentoExibicaoDto;
 import school.sptech.harmonyospringapi.service.exceptions.EntitadeNaoEncontradaException;
@@ -28,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class AlunoInstrumentoServiceTest {
 
     @InjectMocks
-    private static AlunoInstrumentoService service;
+    private static AlunoService service;
 
     @InjectMocks
     private static AlunoService alunoService;
@@ -51,7 +53,7 @@ class AlunoInstrumentoServiceTest {
         Mockito.when(alunoInstrumentoRepository.findByAluno_id(id))
                 .thenReturn(List.of());
         //then
-        List<AlunoInstrumentoExibicaoDto> resultado = service.obterTodos(id);
+        List<InstrumentoExibicaoDto> resultado = service.listarInstrumentos(id);
 
         assertEquals(0, resultado.size());
 
@@ -70,9 +72,9 @@ class AlunoInstrumentoServiceTest {
         Mockito.when(alunoInstrumentoRepository.findByAluno_id(Mockito.anyInt()))
                 .thenReturn(List.of());
         //then
-        EntitadeNaoEncontradaException exception1 = assertThrows(EntitadeNaoEncontradaException.class, () -> service.listar(id1));
-        EntitadeNaoEncontradaException exception2 = assertThrows(EntitadeNaoEncontradaException.class, () -> service.listar(id2));
-        EntitadeNaoEncontradaException exception3 = assertThrows(EntitadeNaoEncontradaException.class, () -> service.listar(id3));
+        EntitadeNaoEncontradaException exception1 = assertThrows(EntitadeNaoEncontradaException.class, () -> service.listarInstrumentos(id1));
+        EntitadeNaoEncontradaException exception2 = assertThrows(EntitadeNaoEncontradaException.class, () -> service.listarInstrumentos(id2));
+        EntitadeNaoEncontradaException exception3 = assertThrows(EntitadeNaoEncontradaException.class, () -> service.listarInstrumentos(id3));
 
 
         assertEquals("Id inválido", exception1.getMessage());
@@ -94,7 +96,7 @@ class AlunoInstrumentoServiceTest {
         Mockito.when(alunoInstrumentoRepository.findByAluno_id(id))
                 .thenReturn(List.of());
         //then
-        EntitadeNaoEncontradaException exception = assertThrows(EntitadeNaoEncontradaException.class, () -> service.obterTodos(id));
+        EntitadeNaoEncontradaException exception = assertThrows(EntitadeNaoEncontradaException.class, () -> service.listarInstrumentos(id));
 
         assertEquals("Aluno não encontrado", exception.getMessage());
 
@@ -137,10 +139,10 @@ class AlunoInstrumentoServiceTest {
 
 
         //then
-        AlunoInstrumentoExibicaoDto resultado = service.criar(aluno.getId(), dto);
+        AlunoInstrumentoExibicaoDto resultado = service.adicionarInstrumento(aluno.getId(), dto);
 
         assertEquals(id, resultado.getId().getAlunoFk());
-        assertDoesNotThrow(() -> service.criar(aluno.getId(), dto));
+        assertDoesNotThrow(() -> service.adicionarInstrumento(aluno.getId(), dto));
 
     }
 

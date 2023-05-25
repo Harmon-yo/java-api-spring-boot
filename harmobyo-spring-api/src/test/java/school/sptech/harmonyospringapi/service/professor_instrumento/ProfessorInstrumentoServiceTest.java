@@ -11,6 +11,7 @@ import school.sptech.harmonyospringapi.repository.InstrumentoRepository;
 import school.sptech.harmonyospringapi.repository.ProfessorInstrumentoRepository;
 import school.sptech.harmonyospringapi.repository.ProfessorRepository;
 import school.sptech.harmonyospringapi.service.exceptions.EntitadeNaoEncontradaException;
+import school.sptech.harmonyospringapi.service.usuario.ProfessorService;
 import school.sptech.harmonyospringapi.service.usuario.dto.professor_instrumento.ProfessorInstrumentoCriacaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.professor_instrumento.ProfessorInstrumentoExibicaoDto;
 
@@ -26,7 +27,7 @@ class ProfessorInstrumentoServiceTest {
     private ProfessorInstrumentoRepository professorInstrumentoRepository;
 
     @InjectMocks
-    private ProfessorInstrumentoService professorInstrumentoService;
+    private ProfessorService professorInstrumentoService;
 
     @Mock
     private InstrumentoRepository instrumentoRepository;
@@ -46,11 +47,11 @@ class ProfessorInstrumentoServiceTest {
                 .thenReturn(List.of());
         //then
         IllegalStateException exception1 = assertThrows(IllegalStateException.class, ()
-                -> professorInstrumentoService.obterTodos(id1));
+                -> professorInstrumentoService.listarInstrumentos(id1));
         IllegalStateException exception2 = assertThrows(IllegalStateException.class, ()
-                -> professorInstrumentoService.obterTodos(id2));
+                -> professorInstrumentoService.listarInstrumentos(id2));
         IllegalStateException exception3 = assertThrows(IllegalStateException.class, ()
-                -> professorInstrumentoService.obterTodos(id3));
+                -> professorInstrumentoService.listarInstrumentos(id3));
 
     }
 
@@ -63,7 +64,7 @@ class ProfessorInstrumentoServiceTest {
                 .thenReturn(List.of());
         //then
         EntitadeNaoEncontradaException exception1 = assertThrows(EntitadeNaoEncontradaException.class, ()
-                -> professorInstrumentoService.obterTodos(id1));
+                -> professorInstrumentoService.listarInstrumentos(id1));
 
     }
 
