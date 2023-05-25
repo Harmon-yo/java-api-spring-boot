@@ -1,11 +1,12 @@
 package school.sptech.harmonyospringapi.service.aula.dto;
 
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
 public class AulaCriacaoDto {
 
-    @Min(0)
+    @DecimalMin("0.0")
     @NotNull
     private Double valorAula;
 

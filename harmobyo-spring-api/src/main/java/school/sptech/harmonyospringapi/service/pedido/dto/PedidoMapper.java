@@ -19,7 +19,6 @@ public class PedidoMapper {
         pedido.setAula(aula);
         pedido.setDataAula(pedidoCriacaoDto.getDataAula());
         pedido.setHoraCriacao(LocalDateTime.now());
-        System.out.println(pedido.getAluno().getNome() + "bunda");
         return pedido;
     }
 

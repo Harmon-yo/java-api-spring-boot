@@ -13,6 +13,7 @@ import school.sptech.harmonyospringapi.service.status.StatusService;
 import school.sptech.harmonyospringapi.service.usuario.AlunoService;
 import school.sptech.harmonyospringapi.service.usuario.ProfessorService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,10 +47,12 @@ public class PedidoService {
         Aluno aluno = this.alunoService.buscarPorId(pedidoCriacaoDto.getAlunoId());
         Professor professor = this.professorService.buscarPorId(pedidoCriacaoDto.getProfessorId());
         Aula aula = this.aulaService.buscarPorId(pedidoCriacaoDto.getAulaId());
-        Status status = this.statusService.buscarPorId(pedidoCriacaoDto.getStatusId());
-        Pedido pedido = PedidoMapper.of(pedidoCriacaoDto, aluno, professor, status, aula);
-        Pedido pedidoSalvo = pedidoRepository.save(pedido);
-        return PedidoMapper.ofPedidoExibicaoDto(pedidoSalvo);
+        Status status = this.statusService.buscarPorDescricao("Pendente");
+
+        return PedidoMapper.ofPedidoExibicaoDto(this.pedidoRepository.save(
+                PedidoMapper.of(pedidoCriacaoDto, aluno, professor, status, aula)
+        ));
+
     }
 
     public Pedido buscarPorId(Integer integer) {
@@ -67,4 +70,49 @@ public class PedidoService {
         return PedidoMapper.ofPedidoExibicaoDto(pedidoRepository.save(pedido));
 
     }
+    public PedidoExibicaoDto aceitarPedido(Pedido pedidoPendente){
+        Integer idPedidoPendente = pedidoPendente.getId();
+
+        Optional<Pedido> pedidoEncontradoNoBancoOpt = pedidoRepository.findById(idPedidoPendente);
+        if(pedidoEncontradoNoBancoOpt.isEmpty()){
+            throw new EntitadeNaoEncontradaException("Pedido não encontrado");
+        }
+
+        Pedido pedidoEncontradoNoBanco = pedidoEncontradoNoBancoOpt.get();
+
+        pedidoEncontradoNoBanco.setStatus(statusService.buscarPorId(2)); //Status - Confirmado é de ID 2
+        pedidoEncontradoNoBanco.setHoraResposta(LocalDateTime.now());
+
+        return PedidoMapper.ofPedidoExibicaoDto(pedidoRepository.save(pedidoEncontradoNoBanco));
+    }
+
+    public PedidoExibicaoDto recusarPedido(Pedido pedidoPendente){
+        Integer idPedidoPendente = pedidoPendente.getId();
+
+        Optional<Pedido> pedidoEncontradoNoBancoOpt = pedidoRepository.findById(idPedidoPendente);
+        if(pedidoEncontradoNoBancoOpt.isEmpty()){
+            throw new EntitadeNaoEncontradaException("Pedido não encontrado");
+        }
+
+        Pedido pedidoEncontradoNoBanco = pedidoEncontradoNoBancoOpt.get();
+
+        pedidoEncontradoNoBanco.setStatus(statusService.buscarPorId(4)); //Status - Recusado é de ID 4
+        pedidoEncontradoNoBanco.setHoraResposta(LocalDateTime.now());
+
+        return PedidoMapper.ofPedidoExibicaoDto(pedidoRepository.save(pedidoEncontradoNoBanco));
+    }
+
+    public List<PedidoExibicaoDto> buscarPorUsuarioId(Integer id) {
+        List<Pedido> pedidos = this.pedidoRepository.buscarPorUsuarioId(id);
+        if (pedidos.isEmpty()) throw new EntitadeNaoEncontradaException("Pedido não encontrado");
+        return pedidos.stream().map(PedidoMapper::ofPedidoExibicaoDto).toList();
+    }
+
+    public PedidoExibicaoDto buscarPorIdParaExibicao(Integer id) {
+        Pedido pedido = this.pedidoRepository.findById(id).orElseThrow(() -> new EntitadeNaoEncontradaException("Pedido não encontrado"));
+        return PedidoMapper.ofPedidoExibicaoDto(pedido);
+    }
+
+
+
 }

@@ -1,5 +1,6 @@
 package school.sptech.harmonyospringapi.service.pedido.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -18,14 +19,13 @@ public class PedidoCriacaoDto {
     @Min(1)
     private Integer professorId;
 
-
-    private Integer statusId = 1;
-
     @NotNull
     @Min(1)
     private Integer aulaId;
 
     @FutureOrPresent
+    @NotNull
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dataAula;
 
 
@@ -43,14 +43,6 @@ public class PedidoCriacaoDto {
 
     public void setProfessorId(Integer professorId) {
         this.professorId = professorId;
-    }
-
-    public Integer getStatusId() {
-        return statusId;
-    }
-
-    public void setStatusId(Integer statusId) {
-        this.statusId = statusId;
     }
 
     public LocalDateTime getDataAula() {

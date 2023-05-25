@@ -11,6 +11,7 @@ import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoMapper
 import school.sptech.harmonyospringapi.service.usuario.dto.avaliacao.AvaliacaoCriacaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.avaliacao.AvaliacaoExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.professor.ProfessorExibicaoResumidoDto;
+import school.sptech.harmonyospringapi.service.usuario.dto.professor.ProfessorMapper;
 import school.sptech.harmonyospringapi.service.usuario.dto.professor_instrumento.ProfessorInstrumentoCriacaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.professor_instrumento.ProfessorInstrumentoExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.professor_instrumento.ProfessorInstrumentoMapper;
@@ -233,10 +234,103 @@ public class ProfessorService {
     /* =============== AVALIAÇÃO ================== */
 
     public Double getMediaAvaliacao(Integer professorId){
-        return this.avaliacaoRepository.getMediaAvaliacaoProfessor(professorId);
+        Double media = avaliacaoRepository.getMediaAvaliacaoProfessor(professorId).orElse(0d);
+        return media;
     }
 
     public Integer getQuantidadeAvaliacoes(Integer id) {
-        return this.avaliacaoRepository.getQuantidadeAvaliacoes(id);
+        Integer quantidadeAvaliacoes = avaliacaoRepository.getQuantidadeAvaliacoes(id).orElse(0);
+
+        return quantidadeAvaliacoes;
     }
+
+    public List<ProfessorExibicaoResumidoDto> getProfessoresMelhoresAvaliados(){
+        List<Professor> professoresMelhoresAvaliados = this.professorRepository.findTop50ByOrderByAvaliacaoDesc();
+
+        if (professoresMelhoresAvaliados.isEmpty()) throw new EntitadeNaoEncontradaException("Nenhum professor encontrado !");
+        List<ProfessorExibicaoResumidoDto> professoresExibicao = new ArrayList<>();
+        for(Professor p : professoresMelhoresAvaliados){
+            List<InstrumentoExibicaoDto> instrumentos = listarInstrumentos(p.getId());
+            Double valorMinimo = getMenorValorAula(p.getId());
+            Boolean emprestaInstrumento = emprestaInstrumento(p.getId());
+            Double mediaAvaliacao = getMediaAvaliacao(p.getId());
+            Integer quantidadeAvaliacao = getQuantidadeAvaliacoes(p.getId());
+            ProfessorExibicaoResumidoDto professorExibicao = ProfessorMapper.of(p,
+                    instrumentos,
+                    valorMinimo,
+                    emprestaInstrumento,
+                    mediaAvaliacao,
+                    quantidadeAvaliacao);
+            professoresExibicao.add(professorExibicao);
+        }
+        return professoresExibicao;
+    }
+
+
+    public List<ProfessorExibicaoResumidoDto> getProfessoresComMaiorValorAula(){
+        List<Professor> professoresMaiorValorAula = this.professorRepository.findTop50MaisCarosValorAula();
+
+        if (professoresMaiorValorAula.isEmpty()) throw new EntitadeNaoEncontradaException("Nenhum professor encontrado !");
+        List<ProfessorExibicaoResumidoDto> professoresExibicao = new ArrayList<>();
+        for(Professor p : professoresMaiorValorAula){
+            List<InstrumentoExibicaoDto> instrumentos = listarInstrumentos(p.getId());
+            Double valorMinimo = getMenorValorAula(p.getId());
+            Boolean emprestaInstrumento = emprestaInstrumento(p.getId());
+            Double mediaAvaliacao = getMediaAvaliacao(p.getId());
+            Integer quantidadeAvaliacao = getQuantidadeAvaliacoes(p.getId());
+            ProfessorExibicaoResumidoDto professorExibicao = ProfessorMapper.of(p,
+                    instrumentos,
+                    valorMinimo,
+                    emprestaInstrumento,
+                    mediaAvaliacao,
+                    quantidadeAvaliacao);
+            professoresExibicao.add(professorExibicao);
+        }
+        return professoresExibicao;
+    }
+
+    public List<ProfessorExibicaoResumidoDto> getProfessoresComMenorValorAula(){
+        List<Professor> professoresMenorValorAula = this.professorRepository.findTop50MaisBaratosValorAula();
+
+        if (professoresMenorValorAula.isEmpty()) throw new EntitadeNaoEncontradaException("Nenhum professor encontrado !");
+        List<ProfessorExibicaoResumidoDto> professoresExibicao = new ArrayList<>();
+        for(Professor p : professoresMenorValorAula){
+            List<InstrumentoExibicaoDto> instrumentos = listarInstrumentos(p.getId());
+            Double valorMinimo = getMenorValorAula(p.getId());
+            Boolean emprestaInstrumento = emprestaInstrumento(p.getId());
+            Double mediaAvaliacao = getMediaAvaliacao(p.getId());
+            Integer quantidadeAvaliacao = getQuantidadeAvaliacoes(p.getId());
+            ProfessorExibicaoResumidoDto professorExibicao = ProfessorMapper.of(p,
+                    instrumentos,
+                    valorMinimo,
+                    emprestaInstrumento,
+                    mediaAvaliacao,
+                    quantidadeAvaliacao);
+            professoresExibicao.add(professorExibicao);
+        }
+        return professoresExibicao;
+    }
+
+    public List<ProfessorExibicaoResumidoDto> getProfessorByInstrumento(int idInstrumento){
+        List<Professor> professoresPorInstrumento = this.professorRepository.getProfessoresByInstrumento(idInstrumento);
+
+        if (professoresPorInstrumento.isEmpty()) throw new EntitadeNaoEncontradaException("Nenhum professor encontrado !");
+        List<ProfessorExibicaoResumidoDto> professoresExibicao = new ArrayList<>();
+        for(Professor p : professoresPorInstrumento){
+            List<InstrumentoExibicaoDto> instrumentos = listarInstrumentos(p.getId());
+            Double valorMinimo = getMenorValorAula(p.getId());
+            Boolean emprestaInstrumento = emprestaInstrumento(p.getId());
+            Double mediaAvaliacao = getMediaAvaliacao(p.getId());
+            Integer quantidadeAvaliacao = getQuantidadeAvaliacoes(p.getId());
+            ProfessorExibicaoResumidoDto professorExibicao = ProfessorMapper.of(p,
+                    instrumentos,
+                    valorMinimo,
+                    emprestaInstrumento,
+                    mediaAvaliacao,
+                    quantidadeAvaliacao);
+            professoresExibicao.add(professorExibicao);
+        }
+        return professoresExibicao;
+    }
+
 }
