@@ -280,8 +280,7 @@ class AulaServiceTest {
         Instrumento instrumento = new Instrumento();
         instrumento.setId(1);
         instrumento.setNaipe(naipe);
-
-
+        
         Aula aula1 = new Aula();
         aula1.setId(1);
         aula1.setProfessor(professor);
