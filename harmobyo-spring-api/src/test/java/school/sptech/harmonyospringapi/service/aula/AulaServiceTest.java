@@ -252,7 +252,7 @@ class AulaServiceTest {
 
         double resultado = service.buscarPorId(aula.getId()).getValorAula();
 
-        assertEquals(100.0, resultado);
+        assertEquals(valor, resultado);
     }
 
     @DisplayName("Devolver exceção quando atualizar uma aula quando id for inválido")
@@ -262,11 +262,53 @@ class AulaServiceTest {
         AulaAtualizacaoDto dto = new AulaAtualizacaoDto();
         dto.setValorAula(100.0);
 
-        Mockito.when(repository.findById(Mockito.anyInt()))
-                .thenReturn(Optional.empty());
-
         EntitadeNaoEncontradaException exception = assertThrows(EntitadeNaoEncontradaException.class,
                 () -> service.atualizarAulaPorId(Mockito.anyInt(), dto));
+
+        assertEquals("ID de Aula Inválido. Aula não encontrada !", exception.getMessage());
+    }
+
+    @DisplayName("deletar aula quando o Id for válido")
+    @Test
+    void deletarAulaQuandoAulaIdForValido(){
+        Professor professor = new Professor();
+        professor.setId(1);
+
+        Naipe naipe = new Naipe();
+        naipe.setId(1);
+
+        Instrumento instrumento = new Instrumento();
+        instrumento.setId(1);
+        instrumento.setNaipe(naipe);
+
+
+        Aula aula1 = new Aula();
+        aula1.setId(1);
+        aula1.setProfessor(professor);
+        aula1.setInstrumento(instrumento);
+        aula1.setValorAula(50.0);
+
+        Aula aula2 = new Aula();
+        aula2.setId(2);
+        aula2.setProfessor(professor);
+        aula2.setInstrumento(instrumento);
+        aula2.setValorAula(150.0);
+
+        List<AulaExibicaoDto> aulas = new ArrayList<>();
+
+        Mockito.when(repository.existsById(aula1.getId()))
+                .thenReturn(true);
+
+        service.deletarAulaPorId(aula1.getId());
+
+        Mockito.verify(repository, Mockito.times(1)).deleteById(Mockito.anyInt());
+    }
+
+    @DisplayName("Lançar exceção quando deletar aula e o Id for inválido")
+    @Test
+    void lancarExcecaoQuandoDeletarAulaComIdInválido(){
+        EntitadeNaoEncontradaException exception = assertThrows(EntitadeNaoEncontradaException.class,
+                () -> service.deletarAulaPorId(Mockito.anyInt()));
 
         assertEquals("ID de Aula Inválido. Aula não encontrada !", exception.getMessage());
     }
