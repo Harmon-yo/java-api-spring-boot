@@ -75,30 +75,32 @@ public class PedidoService {
     /* ============= MUDAR STATUS ============== */
     public PedidoExibicaoDto aceitarPropostaDoAluno(Integer id) {
         Pedido pedido = this.buscarPorId(id);
+        Status status = this.statusService.buscarPorDescricao("Aguardando Pagamento");
+        pedido = atualizarStatus(pedido, status);
 
-        pedido.setStatus(this.statusService.buscarPorDescricao("Aguardando Pagamento"));
-        pedido.setHoraResposta(LocalDateTime.now());
-
-        return PedidoMapper.ofPedidoExibicaoDto(this.pedidoRepository.save(pedido));
+        return PedidoMapper.ofPedidoExibicaoDto(pedido);
     }
 
     public PedidoExibicaoDto recusarPropostaDoAluno(Integer id) {
         Pedido pedido = this.buscarPorId(id);
+        Status status = this.statusService.buscarPorDescricao("Recusado");
+        pedido = atualizarStatus(pedido, status);
 
-        pedido.setStatus(this.statusService.buscarPorDescricao("Recusado"));
-        pedido.setHoraResposta(LocalDateTime.now());
-
-        return PedidoMapper.ofPedidoExibicaoDto(this.pedidoRepository.save(pedido));
+        return PedidoMapper.ofPedidoExibicaoDto(pedido);
     }
 
-    public PedidoExibicaoDto cancelarPedido(Integer idPedido){
-        Pedido pedido = buscarPorId(idPedido);
+    public PedidoExibicaoDto cancelarPedido(Integer id){
+        Pedido pedido = this.buscarPorId(id);
+        Status status = this.statusService.buscarPorDescricao("Cancelado");
+        pedido = atualizarStatus(pedido, status);
 
-        Status status = statusService.buscarPorDescricao("Cancelado");
+        return PedidoMapper.ofPedidoExibicaoDto(pedido);
+    }
+
+    private Pedido atualizarStatus(Pedido pedido, Status status) {
         pedido.setStatus(status);
         pedido.setHoraResposta(LocalDateTime.now());
-
-        return PedidoMapper.ofPedidoExibicaoDto(pedidoRepository.save(pedido));
+//      Colocar para salvar mudança de status
+        return this.pedidoRepository.save(pedido);
     }
-
 }
