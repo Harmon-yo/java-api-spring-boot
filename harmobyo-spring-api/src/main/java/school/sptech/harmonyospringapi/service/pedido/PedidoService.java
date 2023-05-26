@@ -61,6 +61,41 @@ public class PedidoService {
         return this.pedidoRepository.findById(integer).orElseThrow(() -> new EntitadeNaoEncontradaException("Pedido não encontrado"));
     }
 
+
+    public PedidoExibicaoDto aceitarPedido(Pedido pedidoPendente){
+        Integer idPedidoPendente = pedidoPendente.getId();
+
+        Optional<Pedido> pedidoEncontradoNoBancoOpt = pedidoRepository.findById(idPedidoPendente);
+        if(pedidoEncontradoNoBancoOpt.isEmpty()){
+            throw new EntitadeNaoEncontradaException("Pedido não encontrado");
+        }
+
+
+        Pedido pedidoEncontradoNoBanco = pedidoEncontradoNoBancoOpt.get();
+
+        pedidoEncontradoNoBanco.setStatus(statusService.buscarPorDescricao("Confirmado")); //Status - Confirmado é de ID 2
+        pedidoEncontradoNoBanco.setHoraResposta(LocalDateTime.now());
+
+        return PedidoMapper.ofPedidoExibicaoDto(pedidoRepository.save(pedidoEncontradoNoBanco));
+    }
+
+    public PedidoExibicaoDto recusarPedido(Pedido pedidoPendente){
+        Integer idPedidoPendente = pedidoPendente.getId();
+
+        Optional<Pedido> pedidoEncontradoNoBancoOpt = pedidoRepository.findById(idPedidoPendente);
+        if(pedidoEncontradoNoBancoOpt.isEmpty()){
+            throw new EntitadeNaoEncontradaException("Pedido não encontrado");
+        }
+
+        Pedido pedidoEncontradoNoBanco = pedidoEncontradoNoBancoOpt.get();
+
+        pedidoEncontradoNoBanco.setStatus(statusService.buscarPorDescricao("Recusado")); //Status - Recusado é de ID 4
+        pedidoEncontradoNoBanco.setHoraResposta(LocalDateTime.now());
+
+        return PedidoMapper.ofPedidoExibicaoDto(pedidoRepository.save(pedidoEncontradoNoBanco));
+    }
+
+
     public List<PedidoExibicaoDto> buscarPorUsuarioId(Integer id) {
         List<Pedido> pedidos = this.pedidoRepository.buscarPorUsuarioId(id);
         if (pedidos.isEmpty()) throw new EntitadeNaoEncontradaException("Pedido não encontrado");
@@ -89,12 +124,16 @@ public class PedidoService {
         return PedidoMapper.ofPedidoExibicaoDto(pedido);
     }
 
-    public PedidoExibicaoDto cancelarPedido(Integer id){
-        Pedido pedido = this.buscarPorId(id);
-        Status status = this.statusService.buscarPorDescricao("Cancelado");
-        pedido = atualizarStatus(pedido, status);
+    public PedidoExibicaoDto cancelarPedido(Integer idPedido){
+        Optional<Pedido> pedidoOpt = pedidoRepository.findById(idPedido);
+        if(pedidoOpt.isEmpty()) throw new EntitadeNaoEncontradaException("Pedido não encontrado");
 
-        return PedidoMapper.ofPedidoExibicaoDto(pedido);
+        Pedido pedido = pedidoOpt.get();
+        Status status = statusService.buscarPorDescricao("Cancelado");
+        pedido.setStatus(status);
+
+        return PedidoMapper.ofPedidoExibicaoDto(pedidoRepository.save(pedido));
+
     }
 
     private Pedido atualizarStatus(Pedido pedido, Status status) {
