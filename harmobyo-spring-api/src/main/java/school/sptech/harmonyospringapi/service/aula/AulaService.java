@@ -80,7 +80,7 @@ public class AulaService {
             return AulaMapper.ofAulaExibicaoDto(aulaAtualizada);
         }
 
-        throw new EntitadeNaoEncontradaException("ID de Aula Inválido. AUla não encontrada !");
+        throw new EntitadeNaoEncontradaException("ID de Aula Inválido. Aula não encontrada !");
     }
 
 
@@ -91,7 +91,7 @@ public class AulaService {
             this.aulaRepository.deleteById(id);
         }
         else {
-            throw new EntitadeNaoEncontradaException("ID de Aula Inválido. AUla não encontrada !");
+            throw new EntitadeNaoEncontradaException("ID de Aula Inválido. Aula não encontrada !");
         }
     }
 }

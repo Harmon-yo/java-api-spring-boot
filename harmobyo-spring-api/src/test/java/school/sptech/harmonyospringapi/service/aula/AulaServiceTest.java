@@ -9,24 +9,15 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import school.sptech.harmonyospringapi.domain.*;
 import school.sptech.harmonyospringapi.repository.AulaRepository;
-import school.sptech.harmonyospringapi.repository.InstrumentoRepository;
-import school.sptech.harmonyospringapi.repository.ProfessorRepository;
-import school.sptech.harmonyospringapi.repository.UsuarioRepository;
-import school.sptech.harmonyospringapi.service.aula.dto.AulaCriacaoDto;
+import school.sptech.harmonyospringapi.service.aula.dto.AulaAtualizacaoDto;
 import school.sptech.harmonyospringapi.service.aula.dto.AulaExibicaoDto;
-import school.sptech.harmonyospringapi.service.instrumento.InstrumentoService;
-import school.sptech.harmonyospringapi.service.usuario.UsuarioService;
 import school.sptech.harmonyospringapi.service.exceptions.EntitadeNaoEncontradaException;
-import school.sptech.harmonyospringapi.service.usuario.dto.professor_instrumento.ProfessorInstrumentoExibicaoDto;
 
-import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.hamcrest.Matchers.any;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -35,23 +26,9 @@ class AulaServiceTest {
     @InjectMocks
     private static AulaService service;
 
-    @InjectMocks
-    private static UsuarioService usuarioService;
-
-<<<<<<< HEAD
-=======
-   @Mock
-    private static InstrumentoRepository instrumentoRepository;
-
->>>>>>> a3a0d73915961618ff4c628568ed0fe0a2140994
     @Mock
     private static AulaRepository repository;
-    @Mock
-    private static InstrumentoRepository instrumentoRepository;
-    @Mock
-    private static UsuarioRepository usuarioRepository;
-    @Mock
-    private static ProfessorRepository professorRepository;
+
 
     @DisplayName("Deve retornar uma lista vazia quando não existir aulas")
     @Test
@@ -104,11 +81,6 @@ class AulaServiceTest {
         int id = 1;
         double valor = 100.00;
 
-        AulaCriacaoDto dto = new AulaCriacaoDto();
-        dto.setValorAula(valor);
-        dto.setInstrumentoId(id);
-        dto.setProfessorId(id);
-
         Professor professor = new Professor();
         professor.setId(id);
         Instrumento instrumento = new Instrumento();
@@ -135,7 +107,7 @@ class AulaServiceTest {
 
     @DisplayName("Deve lançar uma exceção quando AulaId for inválido")
     @Test
-    void lancarExcecaoQuandoAulaKeyIdForInvalido(){
+    void lancarExcecaoQuandoAulaIdForInvalido(){
 
         Aula aula = new Aula();
 
@@ -143,7 +115,7 @@ class AulaServiceTest {
 
         Mockito.when(repository.findById(aula.getId())).thenReturn(Optional.empty());
 
-        assertThrows(EntitadeNaoEncontradaException.class, () -> service.buscarPorId(aula.getId()) );
+        assertThrows(EntitadeNaoEncontradaException.class, () -> service.buscarPorId(aula.getId()));
     }
 
     @DisplayName("Retornar Aula quando AulaId for válido")
@@ -247,53 +219,56 @@ class AulaServiceTest {
         assertEquals(2, aulasExibicaoFiltro.size());
     }
 
-    @DisplayName("Deve atualizar a aula quando os dados forem válidos")
+    @DisplayName("Deve atualizar a aula quando o id for válido")
     @Test
-    void atualizarAulaQuandoDadosForemValidos(){
-        /*double valor = 100.0;
-        double valorNovo = 150.0;
+    void atualizarAulaQuandoIdForVaildo(){
+        double valor = 100.0;
 
         Professor professor = new Professor();
         professor.setId(1);
 
-        Instrumento instrumento = new Instrumento();
-        instrumento.setId(1);
-
         Naipe naipe = new Naipe();
         naipe.setId(1);
+
+        Instrumento instrumento = new Instrumento();
+        instrumento.setId(1);
         instrumento.setNaipe(naipe);
 
+        AulaAtualizacaoDto dto = new AulaAtualizacaoDto();
+        dto.setValorAula(valor);
+
         Aula aula = new Aula();
-        aula.setValorAula(valor);
+        aula.setId(1);
         aula.setProfessor(professor);
         aula.setInstrumento(instrumento);
-
-        Aula aulaAtualizada = new Aula();
-        aulaAtualizada.setValorAula(valorNovo);
-        aulaAtualizada.setProfessor(professor);
-        aulaAtualizada.setInstrumento(instrumento);
+        aula.setValorAula(50.0);
 
         Mockito.when(repository.findById(aula.getId()))
                 .thenReturn(Optional.of(aula));
+        Mockito.when(repository.save(Mockito.any(Aula.class)))
+                .thenReturn(aula);
 
-        AulaExibicaoDto aulaAtualizada = service.atualizarAulaPorId(aula.getId(), )*/
+        service.atualizarAulaPorId(aula.getId(), dto);
+
+        double resultado = service.buscarPorId(aula.getId()).getValorAula();
+
+        assertEquals(100.0, resultado);
     }
 
-    @DisplayName("Devolver exceção quando atualizar uma aula com dados inválidos")
+    @DisplayName("Devolver exceção quando atualizar uma aula quando id for inválido")
     @Test
-    void devolverExcecaoQuandoAtualizarAulaComDadosInvalidos(){
+    void devolverExcecaoQuandoAtualizarAulaQuandoIdForInvalido(){
 
-    }
+        AulaAtualizacaoDto dto = new AulaAtualizacaoDto();
+        dto.setValorAula(100.0);
 
-    @DisplayName("Deve deletar a aula quando o id da aula for válido")
-    @Test
-    void deletarAulaQuandoInformarAulaIdValido(){
+        Mockito.when(repository.findById(Mockito.anyInt()))
+                .thenReturn(Optional.empty());
 
-    }
+        EntitadeNaoEncontradaException exception = assertThrows(EntitadeNaoEncontradaException.class,
+                () -> service.atualizarAulaPorId(Mockito.anyInt(), dto));
 
-    @DisplayName("Devolver exceção quando deletar a aula com o id da aula inválido")
-    @Test
-    void devolverExcecaoQuandoDeletarAulaComAulaIdInvalido(){
-
+        assertEquals("ID de Aula Inválido. Aula não encontrada !", exception.getMessage());
     }
 }
+
