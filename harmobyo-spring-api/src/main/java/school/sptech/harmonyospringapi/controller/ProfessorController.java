@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import school.sptech.harmonyospringapi.domain.Instrumento;
 import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoExibicaoDto;
+import school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoDashboardDto;
+import school.sptech.harmonyospringapi.service.pedido.dto.PedidoHistoricoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.professor.ProfessorExibicaoResumidoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.professor_instrumento.ProfessorInstrumentoCriacaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.professor_instrumento.ProfessorInstrumentoExibicaoDto;
@@ -175,4 +177,55 @@ public class ProfessorController {
         return professores.isEmpty() ? ResponseEntity.status(204).build()
                 : ResponseEntity.status(200).body(professores);
     }
+
+    @SecurityRequirement(name = "Bearer")
+    @GetMapping("/dashboard/media-tempo-resposta/{id}")
+    public ResponseEntity<Integer> getMediaTempoResposta(@PathVariable int id){
+        Integer rendimento = this.professorService.getMediaTempoResposta(id);
+        return ResponseEntity.status(200).body(rendimento);
+    }
+
+
+    @SecurityRequirement(name = "Bearer")
+    @GetMapping("/dashboard/ultimas-24-horas/rendimento/{id}")
+    public ResponseEntity<Double> getRendimentoUltimas24Horas(@PathVariable int id){
+        Double rendimento = this.professorService.getRendimentoUltimas24Horas(id);
+        return ResponseEntity.status(200).body(rendimento);
+    }
+    @SecurityRequirement(name = "Bearer")
+    @GetMapping("/dashboard/ultimas-24-horas/qtd-alunos/{id}")
+    public ResponseEntity<Integer> getQuantidadeAlunosUltimas24Horas(@PathVariable int id){
+        Integer qtdAlunos = this.professorService.getQuantidadeAlunos24Horas(id);
+        return ResponseEntity.status(200).body(qtdAlunos);
+    }
+
+    @SecurityRequirement(name = "Bearer")
+    @GetMapping("/dashboard/ultimas-24-horas/qtd-aulas/{id}")
+    public ResponseEntity<Integer> getQuantidadeAulasUltimas24Horas(@PathVariable int id){
+        Integer qtdAulas = this.professorService.getQuantidadeAulasUltimas24Horas(id);
+        return ResponseEntity.status(200).body(qtdAulas);
+    }
+
+
+    /*  GRAFICO DASH   */
+
+    @SecurityRequirement(name = "Bearer")
+    @GetMapping("/dashboard/grafico/historico/{id}")
+    public ResponseEntity<List<PedidoHistoricoDto>> getHistoricoPedidos(@PathVariable int id){
+        List<PedidoHistoricoDto> historico = this.professorService.getHistoricoPedidos(id);
+        return  historico.isEmpty()? ResponseEntity.status(204).build() :
+                ResponseEntity.status(200).body(historico);
+
+    }
+
+    @SecurityRequirement(name = "Bearer")
+    @GetMapping("/dashboard/minhas-aulas/{id}")
+    public ResponseEntity<List<PedidoExibicaoDashboardDto>> getAulasRealizadas(@PathVariable int id){
+        List<PedidoExibicaoDashboardDto> aulas = this.professorService.getAulasRealizadas(id);
+        return  aulas.isEmpty()? ResponseEntity.status(204).build() :
+                ResponseEntity.status(200).body(aulas);
+
+    }
+
+
 }

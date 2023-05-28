@@ -8,6 +8,8 @@ import school.sptech.harmonyospringapi.repository.*;
 import school.sptech.harmonyospringapi.service.instrumento.InstrumentoService;
 import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoExibicaoDto;
 import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoMapper;
+import school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoDashboardDto;
+import school.sptech.harmonyospringapi.service.pedido.dto.PedidoHistoricoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.avaliacao.AvaliacaoCriacaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.avaliacao.AvaliacaoExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.professor.ProfessorExibicaoResumidoDto;
@@ -22,6 +24,8 @@ import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioCriacaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioMapper;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -333,4 +337,49 @@ public class ProfessorService {
         return professoresExibicao;
     }
 
+
+    /* ========================= DASHBOARD ======================= */
+
+    //ÚLTIMAS 24 HORAS
+
+    public Double getRendimentoUltimas24Horas(int idProfessor){
+
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
+        LocalDateTime comeco = now.minusDays(1);
+        LocalDateTime fim = now;
+        Double rendimento = this.professorRepository.getRendimentoPorPeriodo(idProfessor,comeco, fim).orElse(0d);
+        return rendimento;
+    }
+
+    public Integer getQuantidadeAlunos24Horas(int id) {
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
+        LocalDateTime comeco = now.minusDays(1);
+        LocalDateTime fim = now;
+        Integer quantidadeAlunos = this.professorRepository.getQuantidadeAlunosPorPeriodo(id,comeco, fim).orElse(0);
+        return quantidadeAlunos;
+    }
+
+    public Integer getQuantidadeAulasUltimas24Horas(int id) {
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
+        LocalDateTime comeco = now.minusDays(1);
+        LocalDateTime fim = now;
+        Integer quantidadeAulas = this.professorRepository.getQuantidadeAulasPorPeriodo(id,comeco, fim).orElse(0);
+        return quantidadeAulas;
+    }
+
+    public Integer getMediaTempoResposta(int id) {
+        Integer mediaTempoResposta = this.professorRepository.getMediaTempoResposta(id).orElse(0);
+        return mediaTempoResposta;
+    }
+
+
+    public List<PedidoHistoricoDto> getHistoricoPedidos(int id) {
+        List<PedidoHistoricoDto> pedidos = this.professorRepository.getHistoricoPedidos(id);
+        return pedidos;
+    }
+
+    public List<PedidoExibicaoDashboardDto> getAulasRealizadas(int id){
+        List<PedidoExibicaoDashboardDto> pedidos = this.professorRepository.getAulasRealizadasAgrupadasPorInstrumento(id);
+        return pedidos;
+    }
 }
