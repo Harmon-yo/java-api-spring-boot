@@ -24,6 +24,7 @@ import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioCriacaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioMapper;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -54,6 +55,8 @@ public class ProfessorService {
     @Autowired
     private AvaliacaoRepository avaliacaoRepository;
 
+    @Autowired
+    private PedidoRepository pedidoRepository;
 
 
     /* ================ PROFESSOR ================ */
@@ -367,8 +370,10 @@ public class ProfessorService {
         return quantidadeAulas;
     }
 
-    public Integer getMediaTempoResposta(int id) {
-        Integer mediaTempoResposta = this.professorRepository.getMediaTempoResposta(id).orElse(0);
+    public Long getMediaTempoResposta(int id) {
+        List<Pedido> pedidos = this.pedidoRepository.buscarPorUsuarioId(id);
+        Long somaTempoResposta = pedidos.stream().mapToLong(p -> Duration.between(p.getHoraCriacao(), p.getHoraResposta()).toMinutes()).sum();
+        Long mediaTempoResposta = somaTempoResposta / pedidos.size();
         return mediaTempoResposta;
     }
 

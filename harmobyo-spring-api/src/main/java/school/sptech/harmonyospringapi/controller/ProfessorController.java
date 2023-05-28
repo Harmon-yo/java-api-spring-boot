@@ -180,8 +180,8 @@ public class ProfessorController {
 
     @SecurityRequirement(name = "Bearer")
     @GetMapping("/dashboard/media-tempo-resposta/{id}")
-    public ResponseEntity<Integer> getMediaTempoResposta(@PathVariable int id){
-        Integer rendimento = this.professorService.getMediaTempoResposta(id);
+    public ResponseEntity<Long> getMediaTempoResposta(@PathVariable int id){
+        Long rendimento = this.professorService.getMediaTempoResposta(id);
         return ResponseEntity.status(200).body(rendimento);
     }
 
