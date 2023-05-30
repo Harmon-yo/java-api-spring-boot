@@ -138,13 +138,4 @@ public class AlunoController{
         Aluno aluno = new Aluno();
         return ResponseEntity.status(200).body(aluno.getHistorico());
     }
-
-    @SecurityRequirement(name = "Bearer")
-    @GetMapping("/encontrar-professores")
-    public ResponseEntity<List<ProfessorExibicaoResumidoDto>> encontrarProfessores(){
-        List<ProfessorExibicaoResumidoDto> professores = this.alunoService.listarProfessores();
-
-        return professores.isEmpty() ? ResponseEntity.status(204).build()
-                : ResponseEntity.status(200).body(professores);
-    }
 }

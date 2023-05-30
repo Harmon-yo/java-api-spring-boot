@@ -1,4 +1,4 @@
-package school.sptech.harmonyospringapi.utils;
+package school.sptech.harmonyospringapi.utils.FiltroAvancado;
 
 public enum OperacoesDePesquisa {
     IGUALDADE,
@@ -7,7 +7,6 @@ public enum OperacoesDePesquisa {
     MAIOR_OU_IGUAL_A,
     MENOR_OU_IGUAL_A,
     CONTEM,
-    NAO_CONTEM,
     INICIA_COM,
     TERMINA_COM,
     ENTRE;
@@ -20,9 +19,6 @@ public enum OperacoesDePesquisa {
             case ">:" -> MAIOR_OU_IGUAL_A;
             case "<:" -> MENOR_OU_IGUAL_A;
             case "~" -> CONTEM;
-            case "!" -> NAO_CONTEM;
-            case "^" -> INICIA_COM;
-            case "$" -> TERMINA_COM;
             case "><" -> ENTRE;
             default -> null;
         };

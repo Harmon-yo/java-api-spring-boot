@@ -11,6 +11,7 @@ import java.util.List;
 @DiscriminatorValue("Professor")
 public class Professor extends Usuario {
 
-
+    @OneToMany(mappedBy = "professor")
+    private List<Aula> aulas;
 
 }

@@ -12,6 +12,7 @@ public class ProfessorMapper {
     public static ProfessorExibicaoResumidoDto of(Professor p,
                                                   List<InstrumentoExibicaoDto> instrumentos,
                                                   double valorMinimo,
+                                                  double valorMaximo,
                                                   boolean empresaInstrumento,
                                                   double mediaAvaliacao,
                                                   int qtdeAvaliacoes){
@@ -21,6 +22,7 @@ public class ProfessorMapper {
         dto.setNome(p.getNome());
         dto.setLtInstrumentos(instrumentosLista);
         dto.setValorMinimo(valorMinimo);
+        dto.setValorMaximo(valorMaximo);
         dto.setEmprestaInstrumento(empresaInstrumento);
         dto.setMediaAvaliacao(mediaAvaliacao);
         dto.setQtdeAvaliacoes(qtdeAvaliacoes);

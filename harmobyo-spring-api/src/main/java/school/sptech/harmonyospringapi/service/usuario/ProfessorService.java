@@ -1,9 +1,7 @@
 package school.sptech.harmonyospringapi.service.usuario;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import school.sptech.harmonyospringapi.domain.*;
@@ -20,14 +18,14 @@ import school.sptech.harmonyospringapi.service.usuario.dto.professor.ProfessorMa
 import school.sptech.harmonyospringapi.service.usuario.dto.professor_instrumento.ProfessorInstrumentoCriacaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.professor_instrumento.ProfessorInstrumentoExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.professor_instrumento.ProfessorInstrumentoMapper;
-import school.sptech.harmonyospringapi.utils.CriteriosDePesquisa;
+import school.sptech.harmonyospringapi.utils.FiltroAvancado.CriteriosDePesquisa;
 import school.sptech.harmonyospringapi.utils.ListaGenericaObj;
 import school.sptech.harmonyospringapi.service.exceptions.EntidadeConflitanteException;
 import school.sptech.harmonyospringapi.service.exceptions.EntitadeNaoEncontradaException;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioCriacaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioMapper;
-import school.sptech.harmonyospringapi.utils.ProfessorSpecificationBuilder;
+import school.sptech.harmonyospringapi.utils.FiltroAvancado.ProfessorSpecificationBuilder;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -96,7 +94,7 @@ public class ProfessorService {
         List<ProfessorExibicaoResumidoDto> professorExibicaoDto = new ArrayList<>();
 
         for (Professor professor: professores) {
-           // double mediaAvaliacao = this.avaliacaoRepository.getMediaAvaliacaoProfessor(professor.getId());
+           // double mediaAvaliacao = this.avaliacaoRepository.obterMediaAvaliacaoProfessor(professor.getId());
           //  List<Instrumento> instrumentos = this.professorInstrumentoRepository.listarInstrumentosPeloIdDoProfessor(professor.getId());
 
         }
@@ -111,9 +109,9 @@ public class ProfessorService {
 
     /* ================ PESQUISA ================ */
 
-    public List<UsuarioExibicaoDto> buscarTodosFiltrado(String parametros) {
+    public List<ProfessorExibicaoResumidoDto> buscarTodosFiltrado(String parametros) {
         ProfessorSpecificationBuilder builder = new ProfessorSpecificationBuilder();
-        Pattern pattern = Pattern.compile("(\\w+?)(:|<|>/>:/<:/><)([-\\#\\$\\.\\%\\&\\*]*\\w*\\s?\\w*[-\\#\\$\\.\\%\\&\\*]*),", Pattern.UNICODE_CHARACTER_CLASS);
+        Pattern pattern = Pattern.compile("(\\w+?)(:|<|>|>:|<:|><)([-\\#\\$\\.\\%\\&\\*\\&]*\\w*\\s*\\w*[-\\#\\$\\.\\%\\&\\*\\&]*\\w*),", Pattern.UNICODE_CHARACTER_CLASS);
         Matcher matcher = pattern.matcher(parametros + ",");
 
         while (matcher.find()) {
@@ -126,9 +124,19 @@ public class ProfessorService {
         }
 
         Specification<Professor> spec = builder.build();
-
-        return this.professorRepository.findAll(spec)
-                .stream().map(UsuarioMapper::ofUsuarioExibicao).toList();
+        List<Professor> professores = this.professorRepository.findAll(spec);
+        
+        return professores.stream().map(
+                professor -> {
+                    Double mediaAvaliacao = this.obterMediaAvaliacao(professor.getId());
+                    Double valorMinimo = this.obterValorMinimoAula(professor.getId());
+                    Double valorMaximo = this.obterValorMaximoAula(professor.getId());
+                    Boolean emprestaInstrumento = this.emprestaInstrumento(professor.getId());
+                    List<InstrumentoExibicaoDto> instrumentos = this.listarInstrumentos(professor.getId());
+                    Integer qtdAvaliacoes = this.obterQuantidadeAvaliacoes(professor.getId());
+                    return ProfessorMapper.of(professor, instrumentos, valorMinimo, valorMaximo, emprestaInstrumento, mediaAvaliacao, qtdAvaliacoes);
+                }
+        ).toList();
     }
 
     public UsuarioExibicaoDto buscarPorIdParaExibicao(Integer id){
@@ -252,30 +260,29 @@ public class ProfessorService {
     }
 
     public Boolean emprestaInstrumento(Integer idProfessor){
-        boolean emprestimo = this.professorRepository.emprestaInstrumento(idProfessor);
-        return emprestimo;
+        return this.professorRepository.emprestaInstrumento(idProfessor).orElse(false);
     }
 
     /* =============== AULAS ================== */
-    public Double getMenorValorAula (Integer professorId){
-        Optional<Aula> aula = this.aulaRepository.findFirstByProfessorIdOrderByValorAulaAsc(professorId);
-
-        if (aula.isEmpty()) throw new EntitadeNaoEncontradaException("Professor não possui aulas cadastradas !");
-
-        return aula.get().getValorAula();
+    public Double obterValorMinimoAula (Integer professorId){
+        return this.aulaRepository.obterValorMinimoAula(professorId).orElse(0d);
     }
+
+    public Double obterValorMaximoAula (Integer professorId){
+        return this.aulaRepository.obterValorMaximoAula(professorId).orElse(0d);
+    }
+
+
 
     /* =============== AVALIAÇÃO ================== */
 
-    public Double getMediaAvaliacao(Integer professorId){
+    public Double obterMediaAvaliacao(Integer professorId){
         Double media = avaliacaoRepository.getMediaAvaliacaoProfessor(professorId).orElse(0d);
         return media;
     }
 
-    public Integer getQuantidadeAvaliacoes(Integer id) {
-        Integer quantidadeAvaliacoes = avaliacaoRepository.getQuantidadeAvaliacoes(id).orElse(0);
-
-        return quantidadeAvaliacoes;
+    public Integer obterQuantidadeAvaliacoes(Integer id) {
+        return this.avaliacaoRepository.getQuantidadeAvaliacoes(id).orElse(0);
     }
 
     public List<ProfessorExibicaoResumidoDto> getProfessoresMelhoresAvaliados(){
@@ -285,13 +292,15 @@ public class ProfessorService {
         List<ProfessorExibicaoResumidoDto> professoresExibicao = new ArrayList<>();
         for(Professor p : professoresMelhoresAvaliados){
             List<InstrumentoExibicaoDto> instrumentos = listarInstrumentos(p.getId());
-            Double valorMinimo = getMenorValorAula(p.getId());
+            Double valorMinimo = obterValorMinimoAula(p.getId());
+            Double valorMaximo = this.obterValorMaximoAula(p.getId());
             Boolean emprestaInstrumento = emprestaInstrumento(p.getId());
-            Double mediaAvaliacao = getMediaAvaliacao(p.getId());
-            Integer quantidadeAvaliacao = getQuantidadeAvaliacoes(p.getId());
+            Double mediaAvaliacao = obterMediaAvaliacao(p.getId());
+            Integer quantidadeAvaliacao = obterQuantidadeAvaliacoes(p.getId());
             ProfessorExibicaoResumidoDto professorExibicao = ProfessorMapper.of(p,
                     instrumentos,
                     valorMinimo,
+                    valorMaximo,
                     emprestaInstrumento,
                     mediaAvaliacao,
                     quantidadeAvaliacao);
@@ -308,13 +317,15 @@ public class ProfessorService {
         List<ProfessorExibicaoResumidoDto> professoresExibicao = new ArrayList<>();
         for(Professor p : professoresMaiorValorAula){
             List<InstrumentoExibicaoDto> instrumentos = listarInstrumentos(p.getId());
-            Double valorMinimo = getMenorValorAula(p.getId());
+            Double valorMinimo = obterValorMinimoAula(p.getId());
+            Double valorMaximo = this.obterValorMaximoAula(p.getId());
             Boolean emprestaInstrumento = emprestaInstrumento(p.getId());
-            Double mediaAvaliacao = getMediaAvaliacao(p.getId());
-            Integer quantidadeAvaliacao = getQuantidadeAvaliacoes(p.getId());
+            Double mediaAvaliacao = obterMediaAvaliacao(p.getId());
+            Integer quantidadeAvaliacao = obterQuantidadeAvaliacoes(p.getId());
             ProfessorExibicaoResumidoDto professorExibicao = ProfessorMapper.of(p,
                     instrumentos,
                     valorMinimo,
+                    valorMaximo,
                     emprestaInstrumento,
                     mediaAvaliacao,
                     quantidadeAvaliacao);
@@ -330,13 +341,15 @@ public class ProfessorService {
         List<ProfessorExibicaoResumidoDto> professoresExibicao = new ArrayList<>();
         for(Professor p : professoresMenorValorAula){
             List<InstrumentoExibicaoDto> instrumentos = listarInstrumentos(p.getId());
-            Double valorMinimo = getMenorValorAula(p.getId());
+            Double valorMinimo = obterValorMinimoAula(p.getId());
+            Double valorMaximo = this.obterValorMaximoAula(p.getId());
             Boolean emprestaInstrumento = emprestaInstrumento(p.getId());
-            Double mediaAvaliacao = getMediaAvaliacao(p.getId());
-            Integer quantidadeAvaliacao = getQuantidadeAvaliacoes(p.getId());
+            Double mediaAvaliacao = obterMediaAvaliacao(p.getId());
+            Integer quantidadeAvaliacao = obterQuantidadeAvaliacoes(p.getId());
             ProfessorExibicaoResumidoDto professorExibicao = ProfessorMapper.of(p,
                     instrumentos,
                     valorMinimo,
+                    valorMaximo,
                     emprestaInstrumento,
                     mediaAvaliacao,
                     quantidadeAvaliacao);
@@ -352,13 +365,15 @@ public class ProfessorService {
         List<ProfessorExibicaoResumidoDto> professoresExibicao = new ArrayList<>();
         for(Professor p : professoresPorInstrumento){
             List<InstrumentoExibicaoDto> instrumentos = listarInstrumentos(p.getId());
-            Double valorMinimo = getMenorValorAula(p.getId());
+            Double valorMinimo = obterValorMinimoAula(p.getId());
+            Double valorMaximo = this.obterValorMaximoAula(p.getId());
             Boolean emprestaInstrumento = emprestaInstrumento(p.getId());
-            Double mediaAvaliacao = getMediaAvaliacao(p.getId());
-            Integer quantidadeAvaliacao = getQuantidadeAvaliacoes(p.getId());
+            Double mediaAvaliacao = obterMediaAvaliacao(p.getId());
+            Integer quantidadeAvaliacao = obterQuantidadeAvaliacoes(p.getId());
             ProfessorExibicaoResumidoDto professorExibicao = ProfessorMapper.of(p,
                     instrumentos,
                     valorMinimo,
+                    valorMaximo,
                     emprestaInstrumento,
                     mediaAvaliacao,
                     quantidadeAvaliacao);

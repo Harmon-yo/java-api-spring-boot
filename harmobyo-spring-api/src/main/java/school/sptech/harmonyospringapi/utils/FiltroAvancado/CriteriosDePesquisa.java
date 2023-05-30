@@ -1,6 +1,8 @@
-package school.sptech.harmonyospringapi.utils;
+package school.sptech.harmonyospringapi.utils.FiltroAvancado;
 
 public class CriteriosDePesquisa {
+
+    private boolean orPredicate;
 
     private String key;
     private OperacoesDePesquisa operation;
@@ -8,10 +10,28 @@ public class CriteriosDePesquisa {
 
     private Object value2;
 
-    public CriteriosDePesquisa(String key, OperacoesDePesquisa operation, Object value) {
+
+    public CriteriosDePesquisa(boolean orPredicate, String key, OperacoesDePesquisa operation, Object value) {
+        this.orPredicate = orPredicate;
         this.key = key;
         this.operation = operation;
         this.value = value;
+    }
+
+    public CriteriosDePesquisa(boolean orPredicate, String key, OperacoesDePesquisa operation, Object value, Object value2) {
+        this.orPredicate = orPredicate;
+        this.key = key;
+        this.operation = operation;
+        this.value = value;
+        this.value2 = value2;
+    }
+
+    public boolean isOrPredicate() {
+        return orPredicate;
+    }
+
+    public void setOrPredicate(boolean orPredicate) {
+        this.orPredicate = orPredicate;
     }
 
     public String getKey() {

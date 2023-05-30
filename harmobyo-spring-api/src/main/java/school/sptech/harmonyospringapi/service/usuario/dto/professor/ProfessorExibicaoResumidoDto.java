@@ -18,6 +18,8 @@ public class ProfessorExibicaoResumidoDto {
 
     private Double valorMinimo;
 
+    private Double valorMaximo;
+
     private boolean emprestaInstrumento;
 
     private Double mediaAvaliacao;
@@ -62,6 +64,14 @@ public class ProfessorExibicaoResumidoDto {
 
     public void setValorMinimo(Double valorMinimo) {
         this.valorMinimo = valorMinimo;
+    }
+
+    public Double getValorMaximo() {
+        return valorMaximo;
+    }
+
+    public void setValorMaximo(Double valorMaximo) {
+        this.valorMaximo = valorMaximo;
     }
 
     public boolean isEmprestaInstrumento() {

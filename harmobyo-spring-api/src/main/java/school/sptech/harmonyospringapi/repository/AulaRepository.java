@@ -1,6 +1,7 @@
 package school.sptech.harmonyospringapi.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import school.sptech.harmonyospringapi.domain.Aula;
 
 import java.util.List;
@@ -16,5 +17,11 @@ public interface AulaRepository extends JpaRepository<Aula, Integer> {
     List<Aula> findAllByProfessorId(int fkProfessor);
 
     boolean existsByProfessorIdAndInstrumentoId(int idProfessor, int idInstrumento);
+
+    @Query(value = "SELECT MIN(a.valorAula) FROM Aula a WHERE a.professor.id = :idProfessor")
+    Optional<Double> obterValorMinimoAula(int idProfessor);
+
+    @Query(value = "SELECT MAX(a.valorAula) FROM Aula a WHERE a.professor.id = :idProfessor")
+    Optional<Double> obterValorMaximoAula(int idProfessor);
 
 }
