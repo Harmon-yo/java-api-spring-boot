@@ -9,9 +9,11 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import school.sptech.harmonyospringapi.domain.Instrumento;
+import school.sptech.harmonyospringapi.domain.Professor;
 import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoExibicaoDto;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoDashboardDto;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoHistoricoDto;
@@ -21,8 +23,13 @@ import school.sptech.harmonyospringapi.service.usuario.dto.professor_instrumento
 import school.sptech.harmonyospringapi.service.usuario.ProfessorService;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioCriacaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioExibicaoDto;
+import school.sptech.harmonyospringapi.utils.CriteriosDePesquisa;
+import school.sptech.harmonyospringapi.utils.ProfessorSpecificationBuilder;
 
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping("/professores")
@@ -225,6 +232,15 @@ public class ProfessorController {
         return  aulas.isEmpty()? ResponseEntity.status(204).build() :
                 ResponseEntity.status(200).body(aulas);
 
+    }
+
+    @GetMapping("/filtro")
+    public ResponseEntity<List<UsuarioExibicaoDto>> filtrarProfessor(@RequestParam String params) {
+        List<UsuarioExibicaoDto> professores = this.professorService.buscarTodosFiltrado(params);
+
+        if (professores.isEmpty()) return ResponseEntity.noContent().build();
+
+        return ResponseEntity.ok(professores);
     }
 
 

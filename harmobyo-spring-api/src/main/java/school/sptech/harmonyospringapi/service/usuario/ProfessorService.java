@@ -1,6 +1,9 @@
 package school.sptech.harmonyospringapi.service.usuario;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import school.sptech.harmonyospringapi.domain.*;
@@ -17,12 +20,14 @@ import school.sptech.harmonyospringapi.service.usuario.dto.professor.ProfessorMa
 import school.sptech.harmonyospringapi.service.usuario.dto.professor_instrumento.ProfessorInstrumentoCriacaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.professor_instrumento.ProfessorInstrumentoExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.professor_instrumento.ProfessorInstrumentoMapper;
+import school.sptech.harmonyospringapi.utils.CriteriosDePesquisa;
 import school.sptech.harmonyospringapi.utils.ListaGenericaObj;
 import school.sptech.harmonyospringapi.service.exceptions.EntidadeConflitanteException;
 import school.sptech.harmonyospringapi.service.exceptions.EntitadeNaoEncontradaException;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioCriacaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioMapper;
+import school.sptech.harmonyospringapi.utils.ProfessorSpecificationBuilder;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -30,6 +35,8 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class ProfessorService {
@@ -103,6 +110,26 @@ public class ProfessorService {
     }
 
     /* ================ PESQUISA ================ */
+
+    public List<UsuarioExibicaoDto> buscarTodosFiltrado(String parametros) {
+        ProfessorSpecificationBuilder builder = new ProfessorSpecificationBuilder();
+        Pattern pattern = Pattern.compile("(\\w+?)(:|<|>/>:/<:/><)([-\\#\\$\\.\\%\\&\\*]*\\w*\\s?\\w*[-\\#\\$\\.\\%\\&\\*]*),", Pattern.UNICODE_CHARACTER_CLASS);
+        Matcher matcher = pattern.matcher(parametros + ",");
+
+        while (matcher.find()) {
+            System.out.println(matcher.group(1) + " " + matcher.group(2) + " " + matcher.group(3));
+            builder.adicionarParametro(matcher.group(1), matcher.group(2), matcher.group(3));
+        }
+
+        for(CriteriosDePesquisa parametro : builder.getParametros()) {
+            System.out.println(parametro.getKey() + " " + parametro.getOperation() + " " + parametro.getValue());
+        }
+
+        Specification<Professor> spec = builder.build();
+
+        return this.professorRepository.findAll(spec)
+                .stream().map(UsuarioMapper::ofUsuarioExibicao).toList();
+    }
 
     public UsuarioExibicaoDto buscarPorIdParaExibicao(Integer id){
         Optional<Professor> professorOpt = this.professorRepository.findById(id);
