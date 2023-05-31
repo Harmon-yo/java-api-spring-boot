@@ -114,6 +114,11 @@ public class AlunoController{
         return ResponseEntity.status(200).build();
     }
 
+    @Operation(summary = "Obtém uma lista de todos os instrumentos que o aluno possui nível", description = "")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Instrumentos com esse Id encontrados."),
+            @ApiResponse(responseCode = "204", description = "Não há instrumentos com esse Id de aluno.", content = @Content(schema = @Schema(hidden = true)))
+    })
     @SecurityRequirement(name = "Bearer")
     @GetMapping("/{id}/instrumentos")
     public ResponseEntity<List<InstrumentoExibicaoDto>> listarInstrumentosPorIdAluno(@PathVariable int id) {
@@ -123,6 +128,8 @@ public class AlunoController{
                 : ResponseEntity.status(200).body(instrumentos);
     }
 
+    @Operation(summary = "Cadastra um instrumetno para o aluno", description = "")
+    @ApiResponse(responseCode = "201", description = "Instrumento cadastrado no aluno.")
     @SecurityRequirement(name = "Bearer")
     @PostMapping("/{id}/instrumentos")
 
@@ -132,6 +139,8 @@ public class AlunoController{
         return ResponseEntity.status(201).body(alunoInstrumentoExibicaoDto);
     }
 
+    @Operation(summary = "Retorna o histórico de pedidos do aluno", description = "")
+    @ApiResponse(responseCode = "200", description = "Histórico retornado.")
     @SecurityRequirement(name = "Bearer")
     @GetMapping("/getHistoricoPilha")
     public ResponseEntity<PilhaObj<PedidoExibicaoPilhaDto>> getPilha(){
