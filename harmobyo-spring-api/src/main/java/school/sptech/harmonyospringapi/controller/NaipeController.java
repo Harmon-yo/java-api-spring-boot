@@ -1,5 +1,8 @@
 package school.sptech.harmonyospringapi.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,12 +16,17 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/naipes")
-@Tag(name = "Naipes")
+@Tag(name = "Controller de naipe para os instrumentos cadastrados na API (Exemplo: Corda, Percussão, Sopro...)")
 public class NaipeController {
 
     @Autowired
     private NaipeService naipeService;
 
+    @Operation( summary = "Lista os naipes encontrados para a exibição")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Naipes encontrados: "),
+            @ApiResponse(responseCode = "200", description = "Nao foram encontrados naipes cadastrados ")
+    })
     @GetMapping
     public ResponseEntity<List<NaipeExibicaoDto>> listar() {
         List<NaipeExibicaoDto> naipeExibicaoDtos = this.naipeService.listar();
@@ -27,6 +35,10 @@ public class NaipeController {
                 : ResponseEntity.status(200).body(naipeExibicaoDtos);
     }
 
+    @Operation( summary = "Cadastra um naipe.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Naipe cadastrados. ")
+    })
     @PostMapping
     public ResponseEntity<NaipeExibicaoDto> cadastrar(@RequestBody @Valid NaipeCriacaoDto naipeCriacaoDto) {
         NaipeExibicaoDto naipeExibicaoDto = this.naipeService.cadastrar(naipeCriacaoDto);
