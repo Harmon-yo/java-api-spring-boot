@@ -53,7 +53,10 @@ public class UsuarioController {
         Ass. João
     */
     @Operation(summary = "Entra em uma conta", description = "")
-    @ApiResponse(responseCode = "200", description = "Login realizado.")
+    @ApiResponses( value= {
+            @ApiResponse(responseCode= "200", description = "Login realizado."),
+            @ApiResponse(responseCode = "404", description = "Email de usuário não cadastrado")
+    })
     @PostMapping("/login")
     public ResponseEntity<UsuarioTokenDto> login(@RequestBody UsuarioLoginDto usuarioLoginDto){
 
@@ -83,6 +86,12 @@ public class UsuarioController {
         return ResponseEntity.status(200).body(ltUsuariosExibicao);
     }
 
+    @Operation(summary = "Adiciona uma avaliação a um usuário", description = "")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Avaliação adicionada."),
+            @ApiResponse(responseCode = "404", description = "Não é possível avaliar a si mesmo"),
+    })
+    @SecurityRequirement(name = "Bearer")
     @PostMapping("/{id}/avaliacoes")
     public ResponseEntity<AvaliacaoExibicaoDto> adicionarAvaliacao(@PathVariable int id, @RequestBody @Valid AvaliacaoCriacaoDto avaliacaoCriacaoDto) {
 
@@ -91,6 +100,11 @@ public class UsuarioController {
         return ResponseEntity.created(null).body(avaliacaoExibicaoDto);
     }
 
+    @Operation(summary = "Listar avaliações de um usuário")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Avaliações encontradas"),
+            @ApiResponse(responseCode = "204", description = "Nenhuma avaliação encontrada")
+    })
     @GetMapping("/{id}/avaliacoes")
     public ResponseEntity<List<AvaliacaoExibicaoDto>> listarAvaliacao(@PathVariable int id) {
 
