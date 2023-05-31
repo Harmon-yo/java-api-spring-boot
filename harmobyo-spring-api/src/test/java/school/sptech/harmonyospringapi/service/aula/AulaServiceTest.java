@@ -9,9 +9,14 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import school.sptech.harmonyospringapi.domain.*;
 import school.sptech.harmonyospringapi.repository.AulaRepository;
+import school.sptech.harmonyospringapi.repository.InstrumentoRepository;
+import school.sptech.harmonyospringapi.repository.ProfessorRepository;
 import school.sptech.harmonyospringapi.service.aula.dto.AulaAtualizacaoDto;
+import school.sptech.harmonyospringapi.service.aula.dto.AulaCriacaoDto;
 import school.sptech.harmonyospringapi.service.aula.dto.AulaExibicaoDto;
 import school.sptech.harmonyospringapi.service.exceptions.EntitadeNaoEncontradaException;
+import school.sptech.harmonyospringapi.service.instrumento.InstrumentoService;
+import school.sptech.harmonyospringapi.service.usuario.ProfessorService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,9 +30,17 @@ class AulaServiceTest {
 
     @InjectMocks
     private static AulaService service;
+    @Mock
+    private static ProfessorService professorService;
+    @Mock
+    private static InstrumentoService instrumentoService;
 
     @Mock
     private static AulaRepository repository;
+    @Mock
+    private static ProfessorRepository professorRepository;
+    @Mock
+    private static InstrumentoRepository instrumentoRepository;
 
 
     @DisplayName("Deve retornar uma lista vazia quando não existir aulas")
@@ -81,13 +94,18 @@ class AulaServiceTest {
         int id = 1;
         double valor = 100.00;
 
+        Endereco endereco = new Endereco();
+        endereco.setId(id);
+
         Professor professor = new Professor();
         professor.setId(id);
+        professor.setEndereco(endereco);
+
+        Naipe naipe = new Naipe();
+        naipe.setId(id);
+
         Instrumento instrumento = new Instrumento();
         instrumento.setId(id);
-        instrumento.setNome("teclado");
-        Naipe naipe = new Naipe();
-        naipe.setDescricao("cordas");
         instrumento.setNaipe(naipe);
 
         Aula aula = new Aula();
@@ -96,13 +114,22 @@ class AulaServiceTest {
         aula.setProfessor(professor);
         aula.setValorAula(valor);
 
+        AulaCriacaoDto dto = new AulaCriacaoDto();
+        dto.setProfessorId(id);
+        dto.setInstrumentoId(id);
+        dto.setValorAula(valor);
+
         Mockito.when(repository.save(Mockito.any(Aula.class)))
                 .thenReturn(aula);
+        Mockito.when(repository.existsByProfessorIdAndInstrumentoId(Mockito.anyInt(), Mockito.anyInt()))
+                .thenReturn(false);
 
-        Aula save = repository.save(aula);
+        AulaExibicaoDto resultado = service.criar(dto);
 
-        assertEquals(id, save.getId());
-
+        assertNotNull(resultado);
+        assertEquals(aula.getId(), resultado.getId());
+        assertEquals(aula.getValorAula(), resultado.getValorAula());
+        assertEquals(aula.getInstrumento().getId(), resultado.getInstrumento().getId());
     }
 
     @DisplayName("Deve lançar uma exceção quando AulaId for inválido")
@@ -280,7 +307,7 @@ class AulaServiceTest {
         Instrumento instrumento = new Instrumento();
         instrumento.setId(1);
         instrumento.setNaipe(naipe);
-        
+
         Aula aula1 = new Aula();
         aula1.setId(1);
         aula1.setProfessor(professor);
@@ -305,7 +332,7 @@ class AulaServiceTest {
 
     @DisplayName("Lançar exceção quando deletar aula e o Id for inválido")
     @Test
-    void lancarExcecaoQuandoDeletarAulaComIdInválido(){
+    void lancarExcecaoQuandoDeletarAulaComIdInvalido(){
         EntitadeNaoEncontradaException exception = assertThrows(EntitadeNaoEncontradaException.class,
                 () -> service.deletarAulaPorId(Mockito.anyInt()));
 

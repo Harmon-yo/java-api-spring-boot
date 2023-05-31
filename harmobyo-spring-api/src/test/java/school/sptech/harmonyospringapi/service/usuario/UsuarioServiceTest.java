@@ -1,6 +1,7 @@
 package school.sptech.harmonyospringapi.service.usuario;
 
 import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.server.ResponseStatusException;
 import school.sptech.harmonyospringapi.configuration.security.jwt.GerenciadorTokenJwt;
 import school.sptech.harmonyospringapi.domain.Aluno;
 import school.sptech.harmonyospringapi.domain.Endereco;
@@ -59,6 +61,7 @@ class UsuarioServiceTest {
     @Mock
     private static AuthenticationManager authenticationManager;
 
+    @DisplayName("Retornar lista vazia quando não houver usuários cadastrados")
     @Test
     void quandoAcionadoDeveRetornarListaVazia() {
         //given
@@ -71,6 +74,7 @@ class UsuarioServiceTest {
         assertEquals(0, listaUsuarioExibicaoDtos.size());
     }
 
+    @DisplayName("Retornar lista com 6 usuários cadastrados")
     @Test
     void quandoAcionadoDeveRetornar6Usuarios() {
         Professor usuario1 = new Professor();
@@ -88,7 +92,39 @@ class UsuarioServiceTest {
         assertEquals(6, listaUsuarioExibicaoDtos.size());
     }
 
-    //TODO pedir ajuda test Autenticar
+    @DisplayName("Autenticar usuário e vericar se o processo de autenticação foi feito")
+    @Test
+    void quandoAutenticarVerificarHouveAutenticacao(){
+        Professor professor = new Professor();
+        professor.setEmail("professor@gmail.com");
+        professor.setSenha("1234");
+
+        UsuarioLoginDto dto = new UsuarioLoginDto();
+        dto.setEmail("professor@gmail.com");
+        dto.setSenha("1234");
+
+        Mockito.when(usuarioRepository.findByEmail(dto.getEmail()))
+                        .thenReturn(Optional.of(professor));
+
+        usuarioService.autenticar(dto);
+
+        Mockito.verify(authenticationManager, Mockito.times(1)).authenticate(Mockito.any());
+    }
+
+    @DisplayName("Lançar exceção quando tentar autenticar com email inválido")
+    @Test
+    void lancarExcecaoQuandoAutenticarComEmailInvalido(){
+        UsuarioLoginDto dto = new UsuarioLoginDto();
+        dto.setEmail("professor@gmail.com");
+        dto.setSenha("1234");
+
+        Mockito.when(usuarioRepository.findByEmail(dto.getEmail()))
+                .thenReturn(Optional.empty());
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
+                () -> usuarioService.autenticar(dto));
+
+        assertEquals("Email de usuário não cadastrado", exception.getReason());
+    }
 
     @Test
     void quandoDeletarEnderecoComIdInvalidoForAcionadoDeveRetornarException() {
