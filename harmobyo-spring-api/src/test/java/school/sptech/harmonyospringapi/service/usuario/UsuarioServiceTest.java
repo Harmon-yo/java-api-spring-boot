@@ -28,10 +28,7 @@ import school.sptech.harmonyospringapi.service.usuario.autenticacao.dto.UsuarioT
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioMapper;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -64,13 +61,10 @@ class UsuarioServiceTest {
     @DisplayName("Retornar lista vazia quando não houver usuários cadastrados")
     @Test
     void quandoAcionadoDeveRetornarListaVazia() {
-        //given
-
-        //when
         Mockito.when(usuarioRepository.findAll()).thenReturn(Collections.emptyList());
-        //then
+
         List<UsuarioExibicaoDto> listaUsuarioExibicaoDtos = usuarioService.listarCadastrados();
-        //assert
+
         assertEquals(0, listaUsuarioExibicaoDtos.size());
     }
 
@@ -124,6 +118,101 @@ class UsuarioServiceTest {
                 () -> usuarioService.autenticar(dto));
 
         assertEquals("Email de usuário não cadastrado", exception.getReason());
+    }
+
+    @DisplayName("Quando exibeTodosOrdemAlfabética for acionado deve retorna lista vazia")
+    @Test
+    void quandoExibeTodosOrdemAlfabeticaForAcionadoDeveRetornarListaVazia(){
+        Mockito.when(usuarioRepository.findAll()).thenReturn(Collections.emptyList());
+
+        List<UsuarioExibicaoDto> listaUsuarioExibicaoDtos = usuarioService.exibeTodosOrdemAlfabetica();
+
+        assertTrue(listaUsuarioExibicaoDtos.isEmpty());
+    }
+
+    @DisplayName("Deve retornar lista ordenada quando acionar exibeTodosOrdemAlfabetica")
+    @Test
+    void deveRetornarListaOrdenadaQuandoAcionarExibeTodosOrdemAlfabetica(){
+        List<Usuario> usuarios = new ArrayList<>();
+        List<Usuario> comparacao = new ArrayList<>();
+
+        Professor professor1 = new Professor();
+        professor1.setNome("Manoel");
+
+        Professor professor2 = new Professor();
+        professor2.setNome("Wesley");
+
+        Aluno aluno1 = new Aluno();
+        aluno1.setNome("Maria");
+
+        Aluno aluno2 = new Aluno();
+        aluno2.setNome("Amanda");
+
+        usuarios.add(professor1);
+        usuarios.add(professor2);
+        usuarios.add(aluno1);
+        usuarios.add(aluno2);
+
+        comparacao.add(aluno2);
+        comparacao.add(professor1);
+        comparacao.add(aluno1);
+        comparacao.add(professor2);
+
+        Mockito.when(usuarioRepository.findAll()).thenReturn(usuarios);
+
+        List<UsuarioExibicaoDto> resultado = usuarioService.exibeTodosOrdemAlfabetica();
+
+        assertEquals(comparacao.size(), resultado.size());
+        assertEquals(comparacao.get(0).getNome(), resultado.get(0).getNome());
+        assertEquals(comparacao.get(1).getNome(), resultado.get(1).getNome());
+        assertEquals(comparacao.get(2).getNome(), resultado.get(2).getNome());
+        assertEquals(comparacao.get(3).getNome(), resultado.get(3).getNome());
+    }
+
+    @DisplayName("Retornar verdadeiro quando acionado existeUsuarioPorEmail")
+    @Test
+    void retornarTrueQuandoAcionadoExisteUsuarioPorEmail(){
+        Aluno aluno = new Aluno();
+        aluno.setEmail("email@gmail.com");
+
+        Mockito.when(usuarioRepository.existsByEmail(aluno.getEmail()))
+                .thenReturn(true);
+
+        boolean resultado = usuarioRepository.existsByEmail(aluno.getEmail());
+
+        assertTrue(resultado);
+    }
+
+    @DisplayName("Lançar exceção quando email não existir e for acionado existeUsuarioPorEmail")
+    @Test
+    void LancarExcecaoQuandoEmailNaoExistirQuandoAcionadoExisteUsuarioPorEmail(){
+
+        boolean resultado = usuarioRepository.existsByEmail("teste@gmail.com");
+
+        assertFalse(resultado);
+    }
+
+    @DisplayName("Retornar verdadeiro quando acionado existeUsuarioPorCpf")
+    @Test
+    void retornarTrueQuandoAcionadoExisteUsuarioPorCpf(){
+        Aluno aluno = new Aluno();
+        aluno.setCpf("25238181854");
+
+        Mockito.when(usuarioRepository.existsByCpf(aluno.getCpf()))
+                .thenReturn(true);
+
+        boolean resultado = usuarioRepository.existsByCpf(aluno.getCpf());
+
+        assertTrue(resultado);
+    }
+
+    @DisplayName("Lançar exceção quando cpf não existir e for acionado existeUsuarioPorCpf")
+    @Test
+    void LancarExcecaoQuandoCpfNaoExistirQuandoAcionadoExisteUsuarioPorCpf(){
+
+        boolean resultado = usuarioRepository.existsByCpf("64584252578");
+
+        assertFalse(resultado);
     }
 
     @Test

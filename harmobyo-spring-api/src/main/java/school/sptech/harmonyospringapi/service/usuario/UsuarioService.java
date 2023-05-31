@@ -91,9 +91,11 @@ public class UsuarioService {
 
         List<Usuario> ltUsuarios = this.usuarioRepository.findAll();
 
+
         ListaGenericaObj<Usuario> ltUsuariosGenerica = new ListaGenericaObj<>(ltUsuarios.size());
 
         ltUsuarios.forEach(ltUsuariosGenerica::adiciona);
+
 
         ltUsuariosGenerica = new UsuarioComparador(ltUsuariosGenerica).ordenacaoAlfabetica();
 
