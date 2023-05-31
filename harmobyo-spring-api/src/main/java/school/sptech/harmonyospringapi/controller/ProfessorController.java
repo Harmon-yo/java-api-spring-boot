@@ -123,7 +123,11 @@ public class ProfessorController {
         return ResponseEntity.status(204).build();
     }
 
-
+    @Operation(summary = "Lista professores a partir do ID", description = "")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Professor(es) encontrado(s) : "),
+            @ApiResponse(responseCode = "404", description = "ID Inválido. Professor não encontrado")
+    })
     @GetMapping("/{id}/instrumentos")
     public ResponseEntity<List<InstrumentoExibicaoDto>> listarInstrumentos(@PathVariable int id) {
         List<InstrumentoExibicaoDto> instrumentos = this.professorService.listarInstrumentos(id);
@@ -131,6 +135,10 @@ public class ProfessorController {
                 : ResponseEntity.status(200).body(instrumentos);
     }
 
+    @Operation(summary = "Adiciona Professor a partir do ID", description = "")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Professor adicionado. ")
+    })
     @PostMapping("/{id}/instrumentos")
     public ResponseEntity<ProfessorInstrumentoExibicaoDto> adicionarInstrumentos(@PathVariable int id, @RequestBody @Valid ProfessorInstrumentoCriacaoDto professorInstrumentoCriacaoDto) {
 
@@ -139,6 +147,11 @@ public class ProfessorController {
         return ResponseEntity.status(201).body(professorInstrumentoExibicaoDto);
     }
 
+    @Operation(summary = "Filtra e Lista os professores mais bem avaliados da plataforma", description = "")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Professores melhores avaliados:  "),
+            @ApiResponse(responseCode = "204", description = "Professores não encontrados. ")
+    })
     @SecurityRequirement(name = "Bearer")
     @GetMapping("/melhores-avaliados")
     public ResponseEntity<List<ProfessorExibicaoResumidoDto>> getProfessoresMelhoresAvaliados(){
@@ -148,6 +161,11 @@ public class ProfessorController {
                 : ResponseEntity.status(200).body(professores);
     }
 
+    @Operation(summary = "Filtra e Lista os professores com os preços(valor/aula) mais baixos da plataforma ", description = "")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Professores com o valor/aula mais baixos: "),
+            @ApiResponse(responseCode = "204", description = "Professores não encontrados. ")
+    })
     @SecurityRequirement(name = "Bearer")
     @GetMapping("/menores-valor-aula")
     public ResponseEntity<List<ProfessorExibicaoResumidoDto>> getProfessoresMenorValorAula(){
@@ -157,6 +175,11 @@ public class ProfessorController {
                 : ResponseEntity.status(200).body(professores);
     }
 
+    @Operation(summary = "Filtra e Lista os professores com os preços(valor/aula) mais altos da plataforma ", description = "")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Professores com o valor/aula mais altos: "),
+            @ApiResponse(responseCode = "204", description = "Professores não encontrados. ")
+    })
     @SecurityRequirement(name = "Bearer")
     @GetMapping("/maiores-valor-aula")
     public ResponseEntity<List<ProfessorExibicaoResumidoDto>> getProfessoreMaiorValorAula(){
@@ -166,6 +189,11 @@ public class ProfessorController {
                 : ResponseEntity.status(200).body(professores);
     }
 
+    @Operation(summary = "Filtra e Lista os professores a partir do instrumento desejado (Exemplo: Encontrar professores de violão) ", description = "")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Professores com o instrumento desejado? "),
+            @ApiResponse(responseCode = "204", description = "Professores não encontrados. ")
+    })
     @SecurityRequirement(name = "Bearer")
     @GetMapping("/por-instrumento/{id}")
     public ResponseEntity<List<ProfessorExibicaoResumidoDto>> getProfessorPorInstrumento(
@@ -177,6 +205,11 @@ public class ProfessorController {
                 : ResponseEntity.status(200).body(professores);
     }
 
+    @Operation(summary = "Filtra e Lista os professores com os preços(valor/aula) mais altos da plataforma ", description = "")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Professores com o valor/aula mais altos: "),
+            @ApiResponse(responseCode = "204", description = "Professores não encontrados. ")
+    })
     @SecurityRequirement(name = "Bearer")
     @GetMapping("/dashboard/media-tempo-resposta/{id}")
     public ResponseEntity<Long> getMediaTempoResposta(@PathVariable int id){
@@ -185,12 +218,23 @@ public class ProfessorController {
     }
 
 
+    @Operation(summary = "Obtém o rendimento das últimas 24 horas de um professor a partir de seu ID", description = "")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Rendimento do professor solicitado "),
+            @ApiResponse(responseCode = "204", description = "Professor com o ID fornecido não encontrado. ")
+    })
     @SecurityRequirement(name = "Bearer")
     @GetMapping("/dashboard/ultimas-24-horas/rendimento/{id}")
     public ResponseEntity<Double> getRendimentoUltimas24Horas(@PathVariable int id){
         Double rendimento = this.professorService.getRendimentoUltimas24Horas(id);
         return ResponseEntity.status(200).body(rendimento);
     }
+
+    @Operation(summary = "Obtém a quantidade de alunos nas últimas 24 horas de um professor a partir de seu ID", description = "")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Quantidade de alunos nas ultimas 24 horas do professor solicitado:  "),
+            @ApiResponse(responseCode = "204", description = "Professor com o ID fornecido não encontrado. ")
+    })
     @SecurityRequirement(name = "Bearer")
     @GetMapping("/dashboard/ultimas-24-horas/qtd-alunos/{id}")
     public ResponseEntity<Integer> getQuantidadeAlunosUltimas24Horas(@PathVariable int id){
@@ -198,6 +242,11 @@ public class ProfessorController {
         return ResponseEntity.status(200).body(qtdAlunos);
     }
 
+    @Operation(summary = "Obtém a quantidade de aulas das últimas 24 horas de um professor a partir de seu ID", description = "")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Quantidade de aulas nas ultimas 24 horas do professor solicitado:  "),
+            @ApiResponse(responseCode = "204", description = "Professor com o ID fornecido não encontrado. ")
+    })
     @SecurityRequirement(name = "Bearer")
     @GetMapping("/dashboard/ultimas-24-horas/qtd-aulas/{id}")
     public ResponseEntity<Integer> getQuantidadeAulasUltimas24Horas(@PathVariable int id){
@@ -208,6 +257,11 @@ public class ProfessorController {
 
     /*  GRAFICO DASH   */
 
+    @Operation(summary = "Obtém o histórico de pedidos de um professor a partir de seu ID", description = "")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Histórico de pedidos do professor solicitado:  "),
+            @ApiResponse(responseCode = "204", description = "Professor com o ID fornecido não encontrado. ")
+    })
     @SecurityRequirement(name = "Bearer")
     @GetMapping("/dashboard/grafico/historico/{id}")
     public ResponseEntity<List<PedidoHistoricoDto>> getHistoricoPedidos(@PathVariable int id){
@@ -217,6 +271,11 @@ public class ProfessorController {
 
     }
 
+    @Operation(summary = "Obtém o histórico de aulas realizadas de um professor a partir de seu ID", description = "")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Histórico de aulas realizadas do professor solicitado:  "),
+            @ApiResponse(responseCode = "204", description = "Professor com o ID fornecido não encontrado. ")
+    })
     @SecurityRequirement(name = "Bearer")
     @GetMapping("/dashboard/minhas-aulas/{id}")
     public ResponseEntity<List<PedidoExibicaoDashboardDto>> getAulasRealizadas(@PathVariable int id){
@@ -226,6 +285,12 @@ public class ProfessorController {
 
     }
 
+    @Operation(summary = "Exibe e Filtra um professor a partir dos parãmetros solicitados (Exemplo: você pode pesquisar por 'Joao' para encontrar professores" +
+            "chamados João) ", description = "")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Professores com o parãmetro solicitado encontrados : "),
+            @ApiResponse(responseCode = "204", description = "Professores com o parãmetro solicitado não encontrados. ")
+    })
     @GetMapping("/busca")
     public ResponseEntity<List<ProfessorExibicaoResumidoDto>> filtrarProfessor(@RequestParam String params) {
         List<ProfessorExibicaoResumidoDto> professores = this.professorService.buscarTodosFiltrado(params);
