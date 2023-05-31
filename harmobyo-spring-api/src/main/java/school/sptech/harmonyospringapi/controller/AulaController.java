@@ -1,5 +1,12 @@
 package school.sptech.harmonyospringapi.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,12 +21,20 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/aulas")
+@Tag(name = "Aulas")
 public class AulaController {
 
     @Autowired
     private AulaService aulaService;
 
 
+    @Operation(summary = "Cadastra a aula de um professor ", description = "")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Aula Cadastrada com sucesso"),
+            @ApiResponse(responseCode = "409", description = "Aula já cadastrada para este professor e para este instrumento !", content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "404", description = "ID do Professor inválido e/ou ID do instrumento inválido !", content = @Content(schema = @Schema(hidden = true)))
+    })
+    @SecurityRequirement(name = "Bearer")
     @PostMapping
     public ResponseEntity<AulaExibicaoDto> cadastrar(@RequestBody @Valid AulaCriacaoDto aulaCriacaoDto) {
         AulaExibicaoDto aulaCriada = this.aulaService.criar(aulaCriacaoDto);
@@ -27,6 +42,13 @@ public class AulaController {
         return ResponseEntity.ok(aulaCriada);
     }
 
+    @Operation(summary = "Obtém uma lista de todos as aulas cadastradas de um professor ", description = "")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Aulas encontrados."),
+            @ApiResponse(responseCode = "204", description = "Este professor não possui aulas cadastradas.", content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "404", description = "ID do Professor inválido !", content = @Content(schema = @Schema(hidden = true)))
+    })
+    @SecurityRequirement(name = "Bearer")
     @GetMapping("/{fkProfessor}")
     public ResponseEntity<List<AulaExibicaoDto>> buscarAulasPorIdProfessor(@PathVariable int fkProfessor) {
 
@@ -39,6 +61,13 @@ public class AulaController {
         return ResponseEntity.ok(ltAulas);
     }
 
+    @Operation(summary = "Atualiza uma Aula pelo seu ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Aula atualizada com sucesso."),
+            @ApiResponse(responseCode = "400", description = "O valor da aula não foi digitado corretamente.", content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "404", description = "ID da Aula inválido !", content = @Content(schema = @Schema(hidden = true)))
+    })
+    @SecurityRequirement(name = "Bearer")
     @PutMapping("/{idAula}")
     public ResponseEntity<AulaExibicaoDto> atualizarAulaPorId(@PathVariable int idAula, @RequestBody @Valid AulaAtualizacaoDto aulaAtualizacaoDto){
 
@@ -47,6 +76,12 @@ public class AulaController {
         return ResponseEntity.ok(aulaAtualizada);
     }
 
+    @Operation(summary = "Deleta uma aula através do seu ID", description = "")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Aula deletada com sucesso do sistema"),
+            @ApiResponse(responseCode = "404", description = "ID Inválido. Aula não encontrada")
+    })
+    @SecurityRequirement(name = "Bearer")
     @DeleteMapping("/{idAula}")
     public ResponseEntity<Void> deletarAulaPorId(@PathVariable int idAula){
 
@@ -55,6 +90,12 @@ public class AulaController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Obtém uma lista de todas as aulas cadastradas", description = "")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Aulas encontradas."),
+            @ApiResponse(responseCode = "204", description = "Não há aulas cadastradas.", content = @Content(schema = @Schema(hidden = true)))
+    })
+    @SecurityRequirement(name = "Bearer")
     @GetMapping
     public ResponseEntity<List<AulaExibicaoDto>> listar() {
         List<AulaExibicaoDto> ltAulas = this.aulaService.obterTodos();
