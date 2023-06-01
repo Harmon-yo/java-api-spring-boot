@@ -458,7 +458,7 @@ class UsuarioServiceTest {
         assertEquals(4.5, resultado.getValor());
     }
 
-    @DisplayName("Lançar exceção quando acionado criarAvaliacao e o Id do aluno for igual ao Id do Professor")
+    @DisplayName("Lançar exceção quando acionado criarAvaliacao e o Id do aluno for igual ao Id do professor")
     @Test
     void lancarExcecaoQuandoAcionadoCriarAvaliacaoComIdAlunoIgualIdProfessor() {
         int idGeral = 1;
@@ -513,12 +513,126 @@ class UsuarioServiceTest {
         assertEquals("Não é possível avaliar a si mesmo", exception.getReason());
     }
 
-    @DisplayName("Lançar exceção quando acionado criarAvaliacao e o Id do aluno for igual ao Id do Professor")
+    @DisplayName("Lançar exceção quando acionado criarAvaliacao e o Id do aluno inválido na avaliacaoDto")
     @Test
-    void lancarExcecaoQuandoAcionadoCriarAvaliacaoComIdAlunoIgualIdProfessor() {
+    void lancarExcecaoQuandoAcionadoCriarAvaliacaoComIdAlunoInvalidoNaAvaliacaoDto() {
         int idGeral = 1;
         int idProfessor = 2;
-        int idAluno = 2;
+        int idAluno = 3;
+        int idErrado = 4;
+
+        Aluno alunoErrado = new Aluno();
+        alunoErrado.setId(idErrado);
+
+        Aluno aluno = new Aluno();
+        aluno.setId(idAluno);
+
+        Professor professor = new Professor();
+        professor.setId(idProfessor);
+
+        Naipe naipe = new Naipe();
+        naipe.setId(idGeral);
+
+        Instrumento instrumento = new Instrumento();
+        instrumento.setId(idGeral);
+        instrumento.setNaipe(naipe);
+
+        Aula aula = new Aula();
+        aula.setId(idGeral);
+        aula.setProfessor(professor);
+        aula.setInstrumento(instrumento);
+
+        Status status = new Status();
+        status.setId(idGeral);
+        status.setDescricao("Concluído");
+
+        Pedido pedido = new Pedido();
+        pedido.setId(idGeral);
+        pedido.setAluno(alunoErrado); // aluno errado, era para ser o de aluno normal
+        pedido.setProfessor(professor);
+        pedido.setAula(aula);
+        pedido.setStatus(status);
+
+        AvaliacaoCriacaoDto dto = new AvaliacaoCriacaoDto();
+        dto.setUsuarioAvaliadorId(aluno.getId());
+        dto.setPedidoId(pedido.getId());
+        dto.setValor(4.5);
+        dto.setComentario("Muito boa a aula!");
+
+        Mockito.when(usuarioRepository.findById(idProfessor))
+                .thenReturn(Optional.of(professor));
+        Mockito.when(usuarioRepository.findById(idAluno))
+                .thenReturn(Optional.of(aluno));
+        Mockito.when(pedidoService.buscarPorId(idGeral))
+                .thenReturn(pedido);
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
+                () -> usuarioService.criarAvaliacao(idProfessor, dto));
+
+        assertEquals("Pedido não pertence ao usuário autor", exception.getReason());
+    }
+
+    @DisplayName("Lançar exceção quando acionado criarAvaliacao e o status não esteja 'Concluído'")
+    @Test
+    void lancarExcecaoQuandoAcionadoCriarAvaliacaoComStatusNaoConcluido() {
+        int idGeral = 1;
+        int idProfessor = 2;
+        int idAluno = 3;
+
+        Aluno aluno = new Aluno();
+        aluno.setId(idAluno);
+
+        Professor professor = new Professor();
+        professor.setId(idProfessor);
+
+        Naipe naipe = new Naipe();
+        naipe.setId(idGeral);
+
+        Instrumento instrumento = new Instrumento();
+        instrumento.setId(idGeral);
+        instrumento.setNaipe(naipe);
+
+        Aula aula = new Aula();
+        aula.setId(idGeral);
+        aula.setProfessor(professor);
+        aula.setInstrumento(instrumento);
+
+        Status status = new Status();
+        status.setId(idGeral);
+        status.setDescricao("Pendente");  // era para estar 'Concluído'
+
+        Pedido pedido = new Pedido();
+        pedido.setId(idGeral);
+        pedido.setAluno(aluno);
+        pedido.setProfessor(professor);
+        pedido.setAula(aula);
+        pedido.setStatus(status);
+
+        AvaliacaoCriacaoDto dto = new AvaliacaoCriacaoDto();
+        dto.setUsuarioAvaliadorId(aluno.getId());
+        dto.setPedidoId(pedido.getId());
+        dto.setValor(4.5);
+        dto.setComentario("Muito boa a aula!");
+
+        Mockito.when(usuarioRepository.findById(idProfessor))
+                .thenReturn(Optional.of(professor));
+        Mockito.when(usuarioRepository.findById(idAluno))
+                .thenReturn(Optional.of(aluno));
+        Mockito.when(pedidoService.buscarPorId(idGeral))
+                .thenReturn(pedido);
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
+                () -> usuarioService.criarAvaliacao(idProfessor, dto));
+
+        assertEquals("Pedido não foi concluído", exception.getReason());
+    }
+
+    @DisplayName("Lançar exceção quando acionado criarAvaliacao e o já exista uma avaliação no pedido")
+    @Test
+    void lancarExcecaoQuandoAcionadoCriarAvaliacaoComPedidoJaAvaliadoAntes() {
+        int idGeral = 1;
+        int idProfessor = 2;
+        int idAluno = 3;
 
         Aluno aluno = new Aluno();
         aluno.setId(idAluno);
@@ -561,10 +675,220 @@ class UsuarioServiceTest {
                 .thenReturn(Optional.of(aluno));
         Mockito.when(pedidoService.buscarPorId(idGeral))
                 .thenReturn(pedido);
+        Mockito.when(avaliacaoRepository.existsAvaliacaoByIdPedido(Mockito.anyInt()))
+                .thenReturn(true);
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class,
                 () -> usuarioService.criarAvaliacao(idProfessor, dto));
 
-        assertEquals("Não é possível avaliar a si mesmo", exception.getReason());
+        assertEquals("Pedido já foi avaliado", exception.getReason());
+    }
+
+    @DisplayName("Lançar exceção quando acionado criarAvaliacao e o um aluno queria avaliar outro aluno")
+    @Test
+    void lancarExcecaoQuandoAcionadoCriarAvaliacaoComUmAlunoAvaliandoOutroAluno() {
+        int idGeral = 1;
+        int idProfessor = 2;
+        int idAluno1 = 3;
+        int idAluno2 = 4;
+
+        Aluno aluno1 = new Aluno();
+        aluno1.setId(idAluno1);
+
+        Aluno aluno2 = new Aluno();
+        aluno2.setId(idAluno2);
+
+        Professor professor = new Professor();
+        professor.setId(idProfessor);
+
+        Naipe naipe = new Naipe();
+        naipe.setId(idGeral);
+
+        Instrumento instrumento = new Instrumento();
+        instrumento.setId(idGeral);
+        instrumento.setNaipe(naipe);
+
+        Aula aula = new Aula();
+        aula.setId(idGeral);
+        aula.setProfessor(professor);
+        aula.setInstrumento(instrumento);
+
+        Status status = new Status();
+        status.setId(idGeral);
+        status.setDescricao("Concluído");
+
+        Pedido pedido = new Pedido();
+        pedido.setId(idGeral);
+        pedido.setAluno(aluno1);
+        pedido.setProfessor(professor);
+        pedido.setAula(aula);
+        pedido.setStatus(status);
+
+        AvaliacaoCriacaoDto dto = new AvaliacaoCriacaoDto();
+        dto.setUsuarioAvaliadorId(aluno1.getId());
+        dto.setPedidoId(pedido.getId());
+        dto.setValor(4.5);
+        dto.setComentario("Muito boa a aula!");
+
+        Mockito.when(usuarioRepository.findById(idAluno2))
+                .thenReturn(Optional.of(aluno2));
+        Mockito.when(usuarioRepository.findById(idAluno1))
+                .thenReturn(Optional.of(aluno1));
+        Mockito.when(pedidoService.buscarPorId(idGeral))
+                .thenReturn(pedido);
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
+                () -> usuarioService.criarAvaliacao(idAluno2, dto));
+
+        assertEquals("Aluno não pode avaliar outro aluno", exception.getReason());
+    }
+
+    @DisplayName("Lançar exceção quando acionado criarAvaliacao e um professor queira avaliar outro professor")
+    @Test
+    void lancarExcecaoQuandoAcionadoCriarAvaliacaoComUmProfessorAvaliandoOutroProfessor() {
+        int idGeral = 1;
+        int idProfessor1 = 2;
+        int idProfessor2 = 4;
+        int idAluno = 3;
+
+        Aluno aluno = new Aluno();
+        aluno.setId(idAluno);
+
+        Professor professor1 = new Professor();
+        professor1.setId(idProfessor1);
+
+        Professor professor2 = new Professor();
+        professor2.setId(idProfessor2);
+
+        Naipe naipe = new Naipe();
+        naipe.setId(idGeral);
+
+        Instrumento instrumento = new Instrumento();
+        instrumento.setId(idGeral);
+        instrumento.setNaipe(naipe);
+
+        Aula aula = new Aula();
+        aula.setId(idGeral);
+        aula.setProfessor(professor1);
+        aula.setInstrumento(instrumento);
+
+        Status status = new Status();
+        status.setId(idGeral);
+        status.setDescricao("Concluído");
+
+        Pedido pedido = new Pedido();
+        pedido.setId(idGeral);
+        pedido.setAluno(aluno);
+        pedido.setProfessor(professor2);
+        pedido.setAula(aula);
+        pedido.setStatus(status);
+
+        AvaliacaoCriacaoDto dto = new AvaliacaoCriacaoDto();
+        dto.setUsuarioAvaliadorId(professor1.getId());
+        dto.setPedidoId(pedido.getId());
+        dto.setValor(4.5);
+        dto.setComentario("Muito boa a aula!");
+
+        Mockito.when(usuarioRepository.findById(idProfessor1))
+                .thenReturn(Optional.of(professor1));
+        Mockito.when(usuarioRepository.findById(idProfessor2))
+                .thenReturn(Optional.of(professor2));
+        Mockito.when(pedidoService.buscarPorId(idGeral))
+                .thenReturn(pedido);
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
+                () -> usuarioService.criarAvaliacao(idProfessor2, dto));
+
+        assertEquals("Professor não pode avaliar outro professor", exception.getReason());
+    }
+
+    @DisplayName("Deve retornar lista vazia quando acionado listarAvaliacoesPorUsuario com usuário sem avaliações")
+    @Test
+    void deveRetornarListaVaziaQuandoAcionadoListarAvaliacoesPorUsuarioComUsuarioSemAvaliacoes(){
+        int id = 1;
+
+        Usuario usuario = new Professor();
+        usuario.setId(id);
+
+        Mockito.when(usuarioRepository.findById(id))
+                .thenReturn(Optional.of(usuario));
+        Mockito.when(avaliacaoRepository.findAllById_UsuarioAvaliadoFk(id))
+                .thenReturn(Collections.emptyList());
+
+        List<AvaliacaoExibicaoDto> avaliacoes = usuarioService.listarAvaliacoesPorUsuario(id);
+
+        assertTrue(avaliacoes.isEmpty());
+    }
+
+    @DisplayName("Lançar exceção quando acionado listarAvaliacoesPorUsuario com id usuário inválido")
+    @Test
+    void lancarExcecaoQuandoAcionadoListarAvaliacoesPorUsuarioComIdUsuarioInvalido(){
+        int id = 999;
+
+        EntitadeNaoEncontradaException exception = assertThrows(EntitadeNaoEncontradaException.class,
+                () -> usuarioService.listarAvaliacoesPorUsuario(id));
+
+        assertEquals("Aluno não encontrado", exception.getMessage());
+    }
+
+    @DisplayName("Retonar 3 avaliações no usuário quando acionado listarAvaliacoesPorUsuario com usuário válido")
+    @Test
+    void deveRetonar3AvaliacoesQuandoAcionadoListarAvaliacoesPorUsuarioComUsuarioValido(){
+        int idGeral = 1;
+        int idProfessor = 2;
+        int idAluno = 3;
+
+        Aluno aluno = new Aluno();
+        aluno.setId(idAluno);
+
+        Professor professor = new Professor();
+        professor.setId(idProfessor);
+
+        Naipe naipe = new Naipe();
+        naipe.setId(idGeral);
+
+        Instrumento instrumento = new Instrumento();
+        instrumento.setId(idGeral);
+        instrumento.setNaipe(naipe);
+
+        Aula aula = new Aula();
+        aula.setId(idGeral);
+        aula.setProfessor(professor);
+        aula.setInstrumento(instrumento);
+
+        Status status = new Status();
+        status.setId(idGeral);
+        status.setDescricao("Concluído");
+
+        Pedido pedido = new Pedido();
+        pedido.setId(idGeral);
+        pedido.setAluno(aluno);
+        pedido.setProfessor(professor);
+        pedido.setAula(aula);
+        pedido.setStatus(status);
+
+        AvaliacaoCriacaoDto dto = new AvaliacaoCriacaoDto();
+        dto.setUsuarioAvaliadorId(aluno.getId());
+        dto.setPedidoId(pedido.getId());
+        dto.setValor(4.5);
+        dto.setComentario("Muito boa a aula!");
+
+        Avaliacao avaliacao = AvaliacaoMapper.of(dto, professor, aluno, pedido);
+
+        List<Avaliacao> avaliacoes = new ArrayList<>();
+
+        avaliacoes.add(avaliacao);
+        avaliacoes.add(avaliacao);
+        avaliacoes.add(avaliacao);
+
+        Mockito.when(usuarioRepository.findById(idProfessor))
+                .thenReturn(Optional.of(professor));
+        Mockito.when(avaliacaoRepository.findAllById_UsuarioAvaliadoFk(idProfessor))
+                .thenReturn(avaliacoes);
+
+        List<AvaliacaoExibicaoDto> resultado = usuarioService.listarAvaliacoesPorUsuario(idProfessor);
+
+        assertNotNull(resultado);
+        assertEquals(avaliacoes.size(), resultado.size());
     }
 }

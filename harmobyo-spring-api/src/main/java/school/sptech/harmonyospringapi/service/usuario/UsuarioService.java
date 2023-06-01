@@ -30,8 +30,10 @@ import school.sptech.harmonyospringapi.service.usuario.autenticacao.dto.UsuarioT
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioMapper;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class UsuarioService {
@@ -168,25 +170,35 @@ public class UsuarioService {
     /* ================ AVALIAÇÃO ================ */
 
     public AvaliacaoExibicaoDto criarAvaliacao(Integer idAvaliado, AvaliacaoCriacaoDto avaliacaoCriacaoDto) {
-        Usuario avaliado = buscarPorId(idAvaliado);
-        Usuario avaliador = buscarPorId(avaliacaoCriacaoDto.getUsuarioAvaliadorId());
+        Usuario receptor = buscarPorId(idAvaliado);
+        Usuario autor = buscarPorId(avaliacaoCriacaoDto.getUsuarioAvaliadorId());
         Pedido pedido = pedidoService.buscarPorId(avaliacaoCriacaoDto.getPedidoId());
 
-        if (avaliado.getId().equals(avaliador.getId())){
+        if (receptor.getId().equals(autor.getId())){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Não é possível avaliar a si mesmo");
-        } else if ((!pedido.getAluno().getId().equals(avaliador.getId())) || (!pedido.getProfessor().getId().equals(avaliado.getId()))) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pedido não pertence ao usuário avaliado");
         } else if (!Objects.equals(pedido.getStatus().getDescricao(), "Concluído")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pedido não foi concluído");
         } else if (avaliacaoRepository.existsAvaliacaoByIdPedido(pedido.getId())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pedido já foi avaliado");
-        } else if (avaliado instanceof Aluno && avaliador instanceof Aluno) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Aluno não pode avaliar outro aluno");
-        } else if (avaliado instanceof Professor && avaliador instanceof Professor) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Professor não pode avaliar outro professor");
+        } else if (receptor instanceof Aluno){
+            if (autor instanceof Aluno) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Aluno não pode avaliar outro aluno");
+            } else if ((!pedido.getProfessor().getId().equals(receptor.getId())) && (!pedido.getAluno().getId().equals(receptor.getId()))) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pedido não pertence ao usuário receptor");
+            } else if ((!pedido.getAluno().getId().equals(autor.getId())) && (!pedido.getProfessor().getId().equals(autor.getId()))) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pedido não pertence ao usuário autor");
+            }
+        } else if (receptor instanceof Professor){
+            if (autor instanceof Professor) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Professor não pode avaliar outro professor");
+            } else if ((!pedido.getAluno().getId().equals(receptor.getId())) && (!pedido.getProfessor().getId().equals(receptor.getId()))) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pedido não pertence ao usuário receptor");
+            } else if ((!pedido.getAluno().getId().equals(autor.getId())) && (!pedido.getProfessor().getId().equals(autor.getId()))) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pedido não pertence ao usuário autor");
+            }
         }
 
-        Avaliacao avaliacao = AvaliacaoMapper.of(avaliacaoCriacaoDto, avaliado, avaliador, pedido);
+        Avaliacao avaliacao = AvaliacaoMapper.of(avaliacaoCriacaoDto, receptor, autor, pedido);
 
         Avaliacao avaliacaoCadastrada = this.avaliacaoRepository.save(avaliacao);
 
@@ -194,7 +206,10 @@ public class UsuarioService {
     }
 
     public List<AvaliacaoExibicaoDto> listarAvaliacoesPorUsuario(Integer idUsuario) {
-        List<Avaliacao> avaliacoes = this.avaliacaoRepository.findAllById_UsuarioAvaliadoFk(idUsuario);
+        Usuario usuario = buscarPorId(idUsuario);
+        List<Avaliacao> avaliacoes = new ArrayList<>();
+
+        avaliacoes = this.avaliacaoRepository.findAllById_UsuarioAvaliadoFk(idUsuario);
 
         return avaliacoes.stream().map(AvaliacaoMapper::ofAvaliacaoExibicao).toList();
     }
