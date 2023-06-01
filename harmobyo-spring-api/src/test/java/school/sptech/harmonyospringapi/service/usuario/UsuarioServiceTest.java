@@ -11,22 +11,24 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.server.ResponseStatusException;
 import school.sptech.harmonyospringapi.configuration.security.jwt.GerenciadorTokenJwt;
-import school.sptech.harmonyospringapi.domain.Aluno;
-import school.sptech.harmonyospringapi.domain.Endereco;
-import school.sptech.harmonyospringapi.domain.Professor;
-import school.sptech.harmonyospringapi.domain.Usuario;
-import school.sptech.harmonyospringapi.repository.AlunoRepository;
-import school.sptech.harmonyospringapi.repository.ProfessorRepository;
-import school.sptech.harmonyospringapi.repository.UsuarioRepository;
+import school.sptech.harmonyospringapi.domain.*;
+import school.sptech.harmonyospringapi.repository.*;
 import school.sptech.harmonyospringapi.service.endereco.EnderecoService;
+import school.sptech.harmonyospringapi.service.endereco.dto.EnderecoAtualizacaoDto;
+import school.sptech.harmonyospringapi.service.endereco.dto.EnderecoExibicaoDto;
 import school.sptech.harmonyospringapi.service.exceptions.EntitadeNaoEncontradaException;
+import school.sptech.harmonyospringapi.service.pedido.PedidoService;
 import school.sptech.harmonyospringapi.service.usuario.autenticacao.dto.UsuarioLoginDto;
 import school.sptech.harmonyospringapi.service.usuario.autenticacao.dto.UsuarioTokenDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioMapper;
+import school.sptech.harmonyospringapi.service.usuario.dto.avaliacao.AvaliacaoCriacaoDto;
+import school.sptech.harmonyospringapi.service.usuario.dto.avaliacao.AvaliacaoExibicaoDto;
+import school.sptech.harmonyospringapi.service.usuario.dto.avaliacao.AvaliacaoMapper;
 
 import java.util.*;
 
@@ -44,7 +46,16 @@ class UsuarioServiceTest {
     private static ProfessorRepository professorRepository;
 
     @Mock
-    private  static EnderecoService enderecoService;
+    private static PedidoRepository pedidoRepository;
+
+    @Mock
+    private static AvaliacaoRepository avaliacaoRepository;
+
+    @Mock
+    private static EnderecoService enderecoService;
+
+    @Mock
+    private static PedidoService pedidoService;
 
     @InjectMocks
     private static UsuarioService usuarioService;
@@ -88,7 +99,7 @@ class UsuarioServiceTest {
 
     @DisplayName("Autenticar usuário e vericar se o processo de autenticação foi feito")
     @Test
-    void quandoAutenticarVerificarHouveAutenticacao(){
+    void quandoAutenticarVerificarHouveAutenticacao() {
         Professor professor = new Professor();
         professor.setEmail("professor@gmail.com");
         professor.setSenha("1234");
@@ -98,7 +109,7 @@ class UsuarioServiceTest {
         dto.setSenha("1234");
 
         Mockito.when(usuarioRepository.findByEmail(dto.getEmail()))
-                        .thenReturn(Optional.of(professor));
+                .thenReturn(Optional.of(professor));
 
         usuarioService.autenticar(dto);
 
@@ -107,7 +118,7 @@ class UsuarioServiceTest {
 
     @DisplayName("Lançar exceção quando tentar autenticar com email inválido")
     @Test
-    void lancarExcecaoQuandoAutenticarComEmailInvalido(){
+    void lancarExcecaoQuandoAutenticarComEmailInvalido() {
         UsuarioLoginDto dto = new UsuarioLoginDto();
         dto.setEmail("professor@gmail.com");
         dto.setSenha("1234");
@@ -122,7 +133,7 @@ class UsuarioServiceTest {
 
     @DisplayName("Quando exibeTodosOrdemAlfabética for acionado deve retorna lista vazia")
     @Test
-    void quandoExibeTodosOrdemAlfabeticaForAcionadoDeveRetornarListaVazia(){
+    void quandoExibeTodosOrdemAlfabeticaForAcionadoDeveRetornarListaVazia() {
         Mockito.when(usuarioRepository.findAll()).thenReturn(Collections.emptyList());
 
         List<UsuarioExibicaoDto> listaUsuarioExibicaoDtos = usuarioService.exibeTodosOrdemAlfabetica();
@@ -132,7 +143,7 @@ class UsuarioServiceTest {
 
     @DisplayName("Deve retornar lista ordenada quando acionar exibeTodosOrdemAlfabetica")
     @Test
-    void deveRetornarListaOrdenadaQuandoAcionarExibeTodosOrdemAlfabetica(){
+    void deveRetornarListaOrdenadaQuandoAcionarExibeTodosOrdemAlfabetica() {
         List<Usuario> usuarios = new ArrayList<>();
         List<Usuario> comparacao = new ArrayList<>();
 
@@ -171,7 +182,7 @@ class UsuarioServiceTest {
 
     @DisplayName("Retornar verdadeiro quando acionado existeUsuarioPorEmail")
     @Test
-    void retornarTrueQuandoAcionadoExisteUsuarioPorEmail(){
+    void retornarTrueQuandoAcionadoExisteUsuarioPorEmail() {
         Aluno aluno = new Aluno();
         aluno.setEmail("email@gmail.com");
 
@@ -183,9 +194,9 @@ class UsuarioServiceTest {
         assertTrue(resultado);
     }
 
-    @DisplayName("Lançar exceção quando email não existir e for acionado existeUsuarioPorEmail")
+    @DisplayName("Retornar falso quando email não existir e for acionado existeUsuarioPorEmail")
     @Test
-    void LancarExcecaoQuandoEmailNaoExistirQuandoAcionadoExisteUsuarioPorEmail(){
+    void retornarFalseQuandoEmailNaoExistirQuandoAcionadoExisteUsuarioPorEmail() {
 
         boolean resultado = usuarioRepository.existsByEmail("teste@gmail.com");
 
@@ -194,7 +205,7 @@ class UsuarioServiceTest {
 
     @DisplayName("Retornar verdadeiro quando acionado existeUsuarioPorCpf")
     @Test
-    void retornarTrueQuandoAcionadoExisteUsuarioPorCpf(){
+    void retornarTrueQuandoAcionadoExisteUsuarioPorCpf() {
         Aluno aluno = new Aluno();
         aluno.setCpf("25238181854");
 
@@ -206,23 +217,130 @@ class UsuarioServiceTest {
         assertTrue(resultado);
     }
 
-    @DisplayName("Lançar exceção quando cpf não existir e for acionado existeUsuarioPorCpf")
+    @DisplayName("Retornar falso quando cpf não existir e for acionado existeUsuarioPorCpf")
     @Test
-    void LancarExcecaoQuandoCpfNaoExistirQuandoAcionadoExisteUsuarioPorCpf(){
+    void retornarFalseQuandoCpfNaoExistirQuandoAcionadoExisteUsuarioPorCpf() {
 
         boolean resultado = usuarioRepository.existsByCpf("64584252578");
 
         assertFalse(resultado);
     }
 
+    @DisplayName("Retornar usuário quando buscarPorId com Id válido")
+    @Test
+    void retornarUsuarioQuandoBuscarPorIdComIdValido() {
+        Aluno aluno = new Aluno();
+        aluno.setId(1);
+        aluno.setNome("Vitor");
+        aluno.setEmail("vitor@gmail.com");
+        aluno.setCpf("32391393945");
+
+        Mockito.when(usuarioRepository.findById(aluno.getId()))
+                .thenReturn(Optional.of(aluno));
+
+        Usuario resultado = usuarioService.buscarPorId(aluno.getId());
+
+        assertNotNull(resultado);
+        assertEquals(aluno.getNome(), resultado.getNome());
+        assertEquals(aluno.getEmail(), resultado.getEmail());
+        assertEquals(aluno.getCpf(), resultado.getCpf());
+    }
+
+    @DisplayName("Lançar exceção quando buscarPorId com Id inválido")
+    @Test
+    void lancarExcecaoQuandoBuscarPorIdComIdInvalido() {
+        int idUsuario = 999;
+
+        EntitadeNaoEncontradaException exception = assertThrows(EntitadeNaoEncontradaException.class,
+                () -> usuarioService.buscarPorId(idUsuario));
+
+        assertEquals("Aluno não encontrado", exception.getMessage());
+    }
+
+    @DisplayName("Deve inserir endereço no usuário quando dados forem válidos")
+    @Test
+    void deveInserirEnderecoNoUsuarioQuandoDadosForemValidos() {
+        String cep = "09074039";
+        int id = 1;
+
+        Professor professor = new Professor();
+        professor.setId(id);
+
+        Endereco endereco = new Endereco();
+        endereco.setId(id);
+        endereco.setCep(cep);
+
+        Mockito.when(usuarioRepository.findById(professor.getId()))
+                .thenReturn(Optional.of(professor));
+        Mockito.when(enderecoService.cadastrarEndereco(Mockito.any(Endereco.class)))
+                .thenReturn(endereco);
+
+        UsuarioExibicaoDto resultado = usuarioService.inserirEndereco(professor.getId(), endereco);
+
+        assertNotNull(resultado);
+        assertEquals(endereco, resultado.getEndereco());
+        assertEquals(id, resultado.getEndereco().getId());
+        assertEquals(cep, resultado.getEndereco().getCep());
+    }
+
+    @DisplayName("retornar endereço no usuário quando dados forem válidos")
+    @Test
+    void lancarExcecaoQuandoInserirEnderecoComIdInvalido() {
+        int id = 999;
+
+        Endereco endereco = new Endereco();
+        endereco.setId(id);
+
+        EntitadeNaoEncontradaException exception = assertThrows(EntitadeNaoEncontradaException.class,
+                () -> usuarioService.inserirEndereco(id, endereco));
+
+        assertEquals("Usuario não encontrado", exception.getMessage());
+    }
+
+    @DisplayName("Deve atualizar o endereco do usuario caso os dados forem válidos")
+    @Test
+    void deveAtualizarEnderecoQuandoDadosForemValidos() {
+        int id = 1;
+        String cidade = "São Paulo";
+        String cidadeNovo = "Santo André";
+
+        Endereco endereco = new Endereco();
+        endereco.setId(id);
+        endereco.setCidade(cidade);
+
+        Professor professor = new Professor();
+        professor.setId(id);
+        professor.setEndereco(endereco);
+
+        EnderecoAtualizacaoDto dto = new EnderecoAtualizacaoDto();
+        dto.setCidade(cidadeNovo);
+
+        endereco.setCidade(cidadeNovo);
+
+        Mockito.when(usuarioRepository.findById(professor.getId()))
+                .thenReturn(Optional.of(professor));
+        Mockito.when(enderecoService.atualizarEndereco(Mockito.any(Endereco.class)))
+                .thenReturn(endereco);
+
+        UsuarioExibicaoDto resultado = usuarioService.atualizarEndereco(id, dto);
+
+        assertNotNull(resultado);
+        assertEquals(cidadeNovo, resultado.getEndereco().getCidade());
+    }
+
+    @DisplayName("Quando deletarEndereco tiver Id inválido deve retornar exception")
     @Test
     void quandoDeletarEnderecoComIdInvalidoForAcionadoDeveRetornarException() {
         int idUsuario = 999;
 
-        Mockito.when(usuarioRepository.findById(idUsuario)).thenReturn(Optional.empty());
+        Mockito.when(usuarioRepository.findById(idUsuario))
+                .thenReturn(Optional.empty());
 
-        assertThrows(EntitadeNaoEncontradaException.class, () -> usuarioService.deletarEndereco(idUsuario));
+        assertThrows(EntitadeNaoEncontradaException.class,
+                () -> usuarioService.deletarEndereco(idUsuario));
     }
+
+    @DisplayName("Quando deletarEndereco tiver Id válido deve excluir endereço")
     @Test
     void quandoDeletarEnderecoComIdValidoForAcionadoDeveExcluirEndereco() {
         int idUsuario = 1;
@@ -233,7 +351,8 @@ class UsuarioServiceTest {
         endereco.setId(1);
         usuario.setEndereco(endereco);
 
-        Mockito.when(usuarioRepository.findById(idUsuario)).thenReturn(Optional.of(usuario));
+        Mockito.when(usuarioRepository.findById(idUsuario))
+                .thenReturn(Optional.of(usuario));
 
         usuarioService.deletarEndereco(idUsuario);
 
@@ -241,22 +360,211 @@ class UsuarioServiceTest {
         assertNull(usuario.getEndereco());
     }
 
-
+    @DisplayName("Retornar endereço quando acionado buscarEndereco com Id válido")
     @Test
-    void exibeTodosOrdemAlfabetica() {
+    void retornarEnderecoQuandoAcionadoBuscarEnderecoComIdValido() {
+        String cidade = "São Paulo";
+        int id = 1;
+
+        Endereco endereco = new Endereco();
+        endereco.setId(id);
+        endereco.setCep(cidade);
+
+        Professor professor = new Professor();
+        professor.setId(id);
+        professor.setEndereco(endereco);
+
+        Mockito.when(usuarioRepository.findById(id))
+                .thenReturn(Optional.of(professor));
+
+        EnderecoExibicaoDto resultado = usuarioService.buscarEndereco(id);
+
+        assertNotNull(resultado);
+        assertEquals(professor.getEndereco().getCidade(), resultado.getCidade());
     }
 
+    @DisplayName("Lançar exceção quando acionado buscarEndereco com Id inválido")
     @Test
-    void inserirEndereco() {
+    void lancarExcecaoQuandoAcionadoBuscarEnderecoComIdInvalido() {
+        int id = 999;
+
+        Mockito.when(usuarioRepository.findById(id))
+                .thenReturn(Optional.empty());
+        EntitadeNaoEncontradaException exception = assertThrows(EntitadeNaoEncontradaException.class,
+                () -> usuarioService.buscarEndereco(id));
+
+        assertEquals("Aluno não encontrado", exception.getMessage());
     }
 
+    @DisplayName("Deve criar uma avaliação quando acionado criarAvaliacao com dados válidos")
     @Test
-    void atualizarEndereco() {
+    void deveCriarUmaAvaliacaoQuandoAcionadoCriarAvaliacaoComDadosValidos() {
+        int idGeral = 1;
+        int idProfessor = 2;
+        int idAluno = 3;
+
+        Aluno aluno = new Aluno();
+        aluno.setId(idAluno);
+
+        Professor professor = new Professor();
+        professor.setId(idProfessor);
+
+        Naipe naipe = new Naipe();
+        naipe.setId(idGeral);
+
+        Instrumento instrumento = new Instrumento();
+        instrumento.setId(idGeral);
+        instrumento.setNaipe(naipe);
+
+        Aula aula = new Aula();
+        aula.setId(idGeral);
+        aula.setProfessor(professor);
+        aula.setInstrumento(instrumento);
+
+        Status status = new Status();
+        status.setId(idGeral);
+        status.setDescricao("Concluído");
+
+        Pedido pedido = new Pedido();
+        pedido.setId(idGeral);
+        pedido.setAluno(aluno);
+        pedido.setProfessor(professor);
+        pedido.setAula(aula);
+        pedido.setStatus(status);
+
+        AvaliacaoCriacaoDto dto = new AvaliacaoCriacaoDto();
+        dto.setUsuarioAvaliadorId(aluno.getId());
+        dto.setPedidoId(pedido.getId());
+        dto.setValor(4.5);
+        dto.setComentario("Muito boa a aula!");
+
+        Avaliacao avaliacao = AvaliacaoMapper.of(dto, professor, aluno, pedido);
+
+        Mockito.when(usuarioRepository.findById(idProfessor))
+                .thenReturn(Optional.of(professor));
+        Mockito.when(usuarioRepository.findById(idAluno))
+                .thenReturn(Optional.of(aluno));
+        Mockito.when(pedidoService.buscarPorId(idGeral))
+                .thenReturn(pedido);
+        Mockito.when(avaliacaoRepository.save(Mockito.any(Avaliacao.class)))
+                .thenReturn(avaliacao);
+
+        AvaliacaoExibicaoDto resultado = usuarioService.criarAvaliacao(idProfessor, dto);
+
+        assertNotNull(resultado);
+        assertEquals(aluno.getId(), resultado.getUsuarioAvaliador().getId());
+        assertEquals(pedido.getId(), resultado.getPedidoAula().getId());
+        assertEquals("Muito boa a aula!", resultado.getComentario());
+        assertEquals(4.5, resultado.getValor());
     }
 
-
-
+    @DisplayName("Lançar exceção quando acionado criarAvaliacao e o Id do aluno for igual ao Id do Professor")
     @Test
-    void buscarEndereco() {
+    void lancarExcecaoQuandoAcionadoCriarAvaliacaoComIdAlunoIgualIdProfessor() {
+        int idGeral = 1;
+        int idProfessor = 2;
+        int idAluno = 2;
+
+        Aluno aluno = new Aluno();
+        aluno.setId(idAluno);
+
+        Professor professor = new Professor();
+        professor.setId(idProfessor);
+
+        Naipe naipe = new Naipe();
+        naipe.setId(idGeral);
+
+        Instrumento instrumento = new Instrumento();
+        instrumento.setId(idGeral);
+        instrumento.setNaipe(naipe);
+
+        Aula aula = new Aula();
+        aula.setId(idGeral);
+        aula.setProfessor(professor);
+        aula.setInstrumento(instrumento);
+
+        Status status = new Status();
+        status.setId(idGeral);
+        status.setDescricao("Concluído");
+
+        Pedido pedido = new Pedido();
+        pedido.setId(idGeral);
+        pedido.setAluno(aluno);
+        pedido.setProfessor(professor);
+        pedido.setAula(aula);
+        pedido.setStatus(status);
+
+        AvaliacaoCriacaoDto dto = new AvaliacaoCriacaoDto();
+        dto.setUsuarioAvaliadorId(aluno.getId());
+        dto.setPedidoId(pedido.getId());
+        dto.setValor(4.5);
+        dto.setComentario("Muito boa a aula!");
+
+        Mockito.when(usuarioRepository.findById(idProfessor))
+                .thenReturn(Optional.of(professor));
+        Mockito.when(usuarioRepository.findById(idAluno))
+                .thenReturn(Optional.of(aluno));
+        Mockito.when(pedidoService.buscarPorId(idGeral))
+                .thenReturn(pedido);
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
+                () -> usuarioService.criarAvaliacao(idProfessor, dto));
+
+        assertEquals("Não é possível avaliar a si mesmo", exception.getReason());
+    }
+
+    @DisplayName("Lançar exceção quando acionado criarAvaliacao e o Id do aluno for igual ao Id do Professor")
+    @Test
+    void lancarExcecaoQuandoAcionadoCriarAvaliacaoComIdAlunoIgualIdProfessor() {
+        int idGeral = 1;
+        int idProfessor = 2;
+        int idAluno = 2;
+
+        Aluno aluno = new Aluno();
+        aluno.setId(idAluno);
+
+        Professor professor = new Professor();
+        professor.setId(idProfessor);
+
+        Naipe naipe = new Naipe();
+        naipe.setId(idGeral);
+
+        Instrumento instrumento = new Instrumento();
+        instrumento.setId(idGeral);
+        instrumento.setNaipe(naipe);
+
+        Aula aula = new Aula();
+        aula.setId(idGeral);
+        aula.setProfessor(professor);
+        aula.setInstrumento(instrumento);
+
+        Status status = new Status();
+        status.setId(idGeral);
+        status.setDescricao("Concluído");
+
+        Pedido pedido = new Pedido();
+        pedido.setId(idGeral);
+        pedido.setAluno(aluno);
+        pedido.setProfessor(professor);
+        pedido.setAula(aula);
+        pedido.setStatus(status);
+
+        AvaliacaoCriacaoDto dto = new AvaliacaoCriacaoDto();
+        dto.setUsuarioAvaliadorId(aluno.getId());
+        dto.setPedidoId(pedido.getId());
+        dto.setValor(4.5);
+        dto.setComentario("Muito boa a aula!");
+
+        Mockito.when(usuarioRepository.findById(idProfessor))
+                .thenReturn(Optional.of(professor));
+        Mockito.when(usuarioRepository.findById(idAluno))
+                .thenReturn(Optional.of(aluno));
+        Mockito.when(pedidoService.buscarPorId(idGeral))
+                .thenReturn(pedido);
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
+                () -> usuarioService.criarAvaliacao(idProfessor, dto));
+
+        assertEquals("Não é possível avaliar a si mesmo", exception.getReason());
     }
 }

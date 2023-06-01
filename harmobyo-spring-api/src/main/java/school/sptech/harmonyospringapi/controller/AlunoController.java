@@ -132,7 +132,6 @@ public class AlunoController{
     @ApiResponse(responseCode = "201", description = "Instrumento cadastrado no aluno.")
     @SecurityRequirement(name = "Bearer")
     @PostMapping("/{id}/instrumentos")
-
     public ResponseEntity<AlunoInstrumentoExibicaoDto> cadastrarInstrumento(@PathVariable int id, @RequestBody @Valid AlunoInstrumentoCriacaoDto alunoInstrumentoCriacaoDto) {
         AlunoInstrumentoExibicaoDto alunoInstrumentoExibicaoDto = this.alunoService.adicionarInstrumento(id, alunoInstrumentoCriacaoDto);
 

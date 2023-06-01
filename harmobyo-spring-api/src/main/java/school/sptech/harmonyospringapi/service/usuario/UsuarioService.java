@@ -147,7 +147,6 @@ public class UsuarioService {
 
         this.usuarioRepository.save(usuario);
         return UsuarioMapper.ofUsuarioExibicao(usuario);
-
     }
 
     public void deletarEndereco(Integer idUsuario ){
@@ -173,12 +172,19 @@ public class UsuarioService {
         Usuario avaliador = buscarPorId(avaliacaoCriacaoDto.getUsuarioAvaliadorId());
         Pedido pedido = pedidoService.buscarPorId(avaliacaoCriacaoDto.getPedidoId());
 
-        if (avaliado.getId().equals(avaliador.getId())) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Não é possível avaliar a si mesmo");
-        else if ((!pedido.getAluno().getId().equals(avaliado.getId())) || (!pedido.getProfessor().getId().equals(avaliado.getId()))) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pedido não pertence ao usuário avaliado");
-        else if (!Objects.equals(pedido.getStatus().getDescricao(), "Concluído")) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pedido não foi concluído");
-        else if (avaliacaoRepository.existsAvaliacaoByIdPedido(pedido.getId())) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pedido já foi avaliado");
-        else if (avaliado instanceof Aluno && avaliador instanceof Aluno) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Aluno não pode avaliar outro aluno");
-        else if (avaliado instanceof Professor && avaliador instanceof Professor) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Professor não pode avaliar outro professor");
+        if (avaliado.getId().equals(avaliador.getId())){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Não é possível avaliar a si mesmo");
+        } else if ((!pedido.getAluno().getId().equals(avaliador.getId())) || (!pedido.getProfessor().getId().equals(avaliado.getId()))) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pedido não pertence ao usuário avaliado");
+        } else if (!Objects.equals(pedido.getStatus().getDescricao(), "Concluído")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pedido não foi concluído");
+        } else if (avaliacaoRepository.existsAvaliacaoByIdPedido(pedido.getId())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pedido já foi avaliado");
+        } else if (avaliado instanceof Aluno && avaliador instanceof Aluno) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Aluno não pode avaliar outro aluno");
+        } else if (avaliado instanceof Professor && avaliador instanceof Professor) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Professor não pode avaliar outro professor");
+        }
 
         Avaliacao avaliacao = AvaliacaoMapper.of(avaliacaoCriacaoDto, avaliado, avaliador, pedido);
 
