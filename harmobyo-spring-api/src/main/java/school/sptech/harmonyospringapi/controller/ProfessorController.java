@@ -147,64 +147,6 @@ public class ProfessorController {
         return ResponseEntity.status(201).body(professorInstrumentoExibicaoDto);
     }
 
-    @Operation(summary = "Filtra e Lista os professores mais bem avaliados da plataforma", description = "")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Professores melhores avaliados:  "),
-            @ApiResponse(responseCode = "204", description = "Professores não encontrados. ")
-    })
-    @SecurityRequirement(name = "Bearer")
-    @GetMapping("/melhores-avaliados")
-    public ResponseEntity<List<ProfessorExibicaoResumidoDto>> getProfessoresMelhoresAvaliados(){
-        List<ProfessorExibicaoResumidoDto> professores = this.professorService.getProfessoresMelhoresAvaliados();
-
-        return professores.isEmpty() ? ResponseEntity.status(204).build()
-                : ResponseEntity.status(200).body(professores);
-    }
-
-    @Operation(summary = "Filtra e Lista os professores com os preços(valor/aula) mais baixos da plataforma ", description = "")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Professores com o valor/aula mais baixos: "),
-            @ApiResponse(responseCode = "204", description = "Professores não encontrados. ")
-    })
-    @SecurityRequirement(name = "Bearer")
-    @GetMapping("/menores-valor-aula")
-    public ResponseEntity<List<ProfessorExibicaoResumidoDto>> getProfessoresMenorValorAula(){
-        List<ProfessorExibicaoResumidoDto> professores = this.professorService.getProfessoresComMenorValorAula();
-
-        return professores.isEmpty() ? ResponseEntity.status(204).build()
-                : ResponseEntity.status(200).body(professores);
-    }
-
-    @Operation(summary = "Filtra e Lista os professores com os preços(valor/aula) mais altos da plataforma ", description = "")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Professores com o valor/aula mais altos: "),
-            @ApiResponse(responseCode = "204", description = "Professores não encontrados. ")
-    })
-    @SecurityRequirement(name = "Bearer")
-    @GetMapping("/maiores-valor-aula")
-    public ResponseEntity<List<ProfessorExibicaoResumidoDto>> getProfessoreMaiorValorAula(){
-        List<ProfessorExibicaoResumidoDto> professores = this.professorService.getProfessoresComMaiorValorAula();
-
-        return professores.isEmpty() ? ResponseEntity.status(204).build()
-                : ResponseEntity.status(200).body(professores);
-    }
-
-    @Operation(summary = "Filtra e Lista os professores a partir do instrumento desejado (Exemplo: Encontrar professores de violão) ", description = "")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Professores com o instrumento desejado? "),
-            @ApiResponse(responseCode = "204", description = "Professores não encontrados. ")
-    })
-    @SecurityRequirement(name = "Bearer")
-    @GetMapping("/por-instrumento/{id}")
-    public ResponseEntity<List<ProfessorExibicaoResumidoDto>> getProfessorPorInstrumento(
-            @PathVariable int id
-    ){
-        List<ProfessorExibicaoResumidoDto> professores = this.professorService.getProfessorByInstrumento(id);
-
-        return professores.isEmpty() ? ResponseEntity.status(204).build()
-                : ResponseEntity.status(200).body(professores);
-    }
-
     @Operation(summary = "Filtra e Lista os professores com os preços(valor/aula) mais altos da plataforma ", description = "")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Professores com o valor/aula mais altos: "),
@@ -292,7 +234,7 @@ public class ProfessorController {
             @ApiResponse(responseCode = "204", description = "Professores com o parãmetro solicitado não encontrados. ")
     })
     @GetMapping("/busca")
-    public ResponseEntity<List<ProfessorExibicaoResumidoDto>> filtrarProfessor(@RequestParam String params) {
+    public ResponseEntity<List<ProfessorExibicaoResumidoDto>> filtrarProfessor(@RequestParam(required = false) String params) {
         List<ProfessorExibicaoResumidoDto> professores = this.professorService.buscarTodosFiltrado(params);
 
         if (professores.isEmpty()) return ResponseEntity.noContent().build();

@@ -128,13 +128,28 @@ public class ProfessorService {
         
         return professores.stream().map(
                 professor -> {
+                    Endereco endereco = professor.getEndereco();
                     Double mediaAvaliacao = this.obterMediaAvaliacao(professor.getId());
                     Double valorMinimo = this.obterValorMinimoAula(professor.getId());
                     Double valorMaximo = this.obterValorMaximoAula(professor.getId());
                     Boolean emprestaInstrumento = this.emprestaInstrumento(professor.getId());
+                    String bairro = endereco.getBairro();
+                    String cidade = endereco.getCidade();
+                    String estado = endereco.getEstado();
+                    Double distancia = 0.0;
                     List<InstrumentoExibicaoDto> instrumentos = this.listarInstrumentos(professor.getId());
                     Integer qtdAvaliacoes = this.obterQuantidadeAvaliacoes(professor.getId());
-                    return ProfessorMapper.of(professor, instrumentos, valorMinimo, valorMaximo, emprestaInstrumento, mediaAvaliacao, qtdAvaliacoes);
+                    return ProfessorMapper.of(professor,
+                            instrumentos,
+                            valorMinimo,
+                            valorMaximo,
+                            emprestaInstrumento,
+                            mediaAvaliacao,
+                            qtdAvaliacoes,
+                            distancia,
+                            bairro,
+                            cidade,
+                            estado);
                 }
         ).toList();
     }
@@ -284,104 +299,6 @@ public class ProfessorService {
     public Integer obterQuantidadeAvaliacoes(Integer id) {
         return this.avaliacaoRepository.getQuantidadeAvaliacoes(id).orElse(0);
     }
-
-    public List<ProfessorExibicaoResumidoDto> getProfessoresMelhoresAvaliados(){
-        List<Professor> professoresMelhoresAvaliados = this.professorRepository.findTop50ByOrderByAvaliacaoDesc();
-
-        if (professoresMelhoresAvaliados.isEmpty()) throw new EntitadeNaoEncontradaException("Nenhum professor encontrado !");
-        List<ProfessorExibicaoResumidoDto> professoresExibicao = new ArrayList<>();
-        for(Professor p : professoresMelhoresAvaliados){
-            List<InstrumentoExibicaoDto> instrumentos = listarInstrumentos(p.getId());
-            Double valorMinimo = obterValorMinimoAula(p.getId());
-            Double valorMaximo = this.obterValorMaximoAula(p.getId());
-            Boolean emprestaInstrumento = emprestaInstrumento(p.getId());
-            Double mediaAvaliacao = obterMediaAvaliacao(p.getId());
-            Integer quantidadeAvaliacao = obterQuantidadeAvaliacoes(p.getId());
-            ProfessorExibicaoResumidoDto professorExibicao = ProfessorMapper.of(p,
-                    instrumentos,
-                    valorMinimo,
-                    valorMaximo,
-                    emprestaInstrumento,
-                    mediaAvaliacao,
-                    quantidadeAvaliacao);
-            professoresExibicao.add(professorExibicao);
-        }
-        return professoresExibicao;
-    }
-
-
-    public List<ProfessorExibicaoResumidoDto> getProfessoresComMaiorValorAula(){
-        List<Professor> professoresMaiorValorAula = this.professorRepository.findTop50MaisCarosValorAula();
-
-        if (professoresMaiorValorAula.isEmpty()) throw new EntitadeNaoEncontradaException("Nenhum professor encontrado !");
-        List<ProfessorExibicaoResumidoDto> professoresExibicao = new ArrayList<>();
-        for(Professor p : professoresMaiorValorAula){
-            List<InstrumentoExibicaoDto> instrumentos = listarInstrumentos(p.getId());
-            Double valorMinimo = obterValorMinimoAula(p.getId());
-            Double valorMaximo = this.obterValorMaximoAula(p.getId());
-            Boolean emprestaInstrumento = emprestaInstrumento(p.getId());
-            Double mediaAvaliacao = obterMediaAvaliacao(p.getId());
-            Integer quantidadeAvaliacao = obterQuantidadeAvaliacoes(p.getId());
-            ProfessorExibicaoResumidoDto professorExibicao = ProfessorMapper.of(p,
-                    instrumentos,
-                    valorMinimo,
-                    valorMaximo,
-                    emprestaInstrumento,
-                    mediaAvaliacao,
-                    quantidadeAvaliacao);
-            professoresExibicao.add(professorExibicao);
-        }
-        return professoresExibicao;
-    }
-
-    public List<ProfessorExibicaoResumidoDto> getProfessoresComMenorValorAula(){
-        List<Professor> professoresMenorValorAula = this.professorRepository.findTop50MaisBaratosValorAula();
-
-        if (professoresMenorValorAula.isEmpty()) throw new EntitadeNaoEncontradaException("Nenhum professor encontrado !");
-        List<ProfessorExibicaoResumidoDto> professoresExibicao = new ArrayList<>();
-        for(Professor p : professoresMenorValorAula){
-            List<InstrumentoExibicaoDto> instrumentos = listarInstrumentos(p.getId());
-            Double valorMinimo = obterValorMinimoAula(p.getId());
-            Double valorMaximo = this.obterValorMaximoAula(p.getId());
-            Boolean emprestaInstrumento = emprestaInstrumento(p.getId());
-            Double mediaAvaliacao = obterMediaAvaliacao(p.getId());
-            Integer quantidadeAvaliacao = obterQuantidadeAvaliacoes(p.getId());
-            ProfessorExibicaoResumidoDto professorExibicao = ProfessorMapper.of(p,
-                    instrumentos,
-                    valorMinimo,
-                    valorMaximo,
-                    emprestaInstrumento,
-                    mediaAvaliacao,
-                    quantidadeAvaliacao);
-            professoresExibicao.add(professorExibicao);
-        }
-        return professoresExibicao;
-    }
-
-    public List<ProfessorExibicaoResumidoDto> getProfessorByInstrumento(int idInstrumento){
-        List<Professor> professoresPorInstrumento = this.professorRepository.getProfessoresByInstrumento(idInstrumento);
-
-        if (professoresPorInstrumento.isEmpty()) throw new EntitadeNaoEncontradaException("Nenhum professor encontrado !");
-        List<ProfessorExibicaoResumidoDto> professoresExibicao = new ArrayList<>();
-        for(Professor p : professoresPorInstrumento){
-            List<InstrumentoExibicaoDto> instrumentos = listarInstrumentos(p.getId());
-            Double valorMinimo = obterValorMinimoAula(p.getId());
-            Double valorMaximo = this.obterValorMaximoAula(p.getId());
-            Boolean emprestaInstrumento = emprestaInstrumento(p.getId());
-            Double mediaAvaliacao = obterMediaAvaliacao(p.getId());
-            Integer quantidadeAvaliacao = obterQuantidadeAvaliacoes(p.getId());
-            ProfessorExibicaoResumidoDto professorExibicao = ProfessorMapper.of(p,
-                    instrumentos,
-                    valorMinimo,
-                    valorMaximo,
-                    emprestaInstrumento,
-                    mediaAvaliacao,
-                    quantidadeAvaliacao);
-            professoresExibicao.add(professorExibicao);
-        }
-        return professoresExibicao;
-    }
-
 
     /* ========================= DASHBOARD ======================= */
 

@@ -5,6 +5,8 @@ import school.sptech.harmonyospringapi.domain.Professor;
 import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.ProfessorService;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 
 public class ProfessorMapper {
@@ -15,19 +17,29 @@ public class ProfessorMapper {
                                                   double valorMaximo,
                                                   boolean empresaInstrumento,
                                                   double mediaAvaliacao,
-                                                  int qtdeAvaliacoes){
+                                                  int qtdeAvaliacoes,
+                                                  double distancia,
+                                                  String bairro,
+                                                  String cidade,
+                                                  String estado){
         ProfessorExibicaoResumidoDto dto = new ProfessorExibicaoResumidoDto();
-        List<InstrumentoExibicaoDto> instrumentosLista = instrumentos;
+
+        Integer idade = Period.between(p.getDataNasc(), LocalDate.now()).getYears();
+
         dto.setId(p.getId());
         dto.setNome(p.getNome());
-        dto.setLtInstrumentos(instrumentosLista);
+        dto.setLtInstrumentos(instrumentos);
         dto.setValorMinimo(valorMinimo);
         dto.setValorMaximo(valorMaximo);
+        dto.setDistancia(distancia);
+        dto.setBairro(bairro);
+        dto.setCidade(cidade);
+        dto.setEstado(estado);
+        dto.setIdade(idade);
         dto.setEmprestaInstrumento(empresaInstrumento);
         dto.setMediaAvaliacao(mediaAvaliacao);
         dto.setQtdeAvaliacoes(qtdeAvaliacoes);
 
-        /*dto.setDistancia(p.getDi());*/
         return dto;
     }
 

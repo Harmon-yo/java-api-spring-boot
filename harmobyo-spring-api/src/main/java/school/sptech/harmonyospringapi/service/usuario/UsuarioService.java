@@ -206,10 +206,7 @@ public class UsuarioService {
     }
 
     public List<AvaliacaoExibicaoDto> listarAvaliacoesPorUsuario(Integer idUsuario) {
-        Usuario usuario = buscarPorId(idUsuario);
-        List<Avaliacao> avaliacoes = new ArrayList<>();
-
-        avaliacoes = this.avaliacaoRepository.findAllById_UsuarioAvaliadoFk(idUsuario);
+        List<Avaliacao> avaliacoes = this.avaliacaoRepository.findAllById_UsuarioAvaliadoFk(idUsuario);
 
         return avaliacoes.stream().map(AvaliacaoMapper::ofAvaliacaoExibicao).toList();
     }

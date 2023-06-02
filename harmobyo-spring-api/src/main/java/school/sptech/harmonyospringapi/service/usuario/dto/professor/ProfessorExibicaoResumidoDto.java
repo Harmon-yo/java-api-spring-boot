@@ -20,6 +20,14 @@ public class ProfessorExibicaoResumidoDto {
 
     private Double valorMaximo;
 
+    private String bairro;
+
+    private String cidade;
+
+    private String estado;
+
+    private Integer idade;
+
     private boolean emprestaInstrumento;
 
     private Double mediaAvaliacao;
@@ -96,5 +104,37 @@ public class ProfessorExibicaoResumidoDto {
 
     public void setQtdeAvaliacoes(Integer qtdeAvaliacoes) {
         this.qtdeAvaliacoes = qtdeAvaliacoes;
+    }
+
+    public String getBairro() {
+        return bairro;
+    }
+
+    public void setBairro(String bairro) {
+        this.bairro = bairro;
+    }
+
+    public String getCidade() {
+        return cidade;
+    }
+
+    public void setCidade(String cidade) {
+        this.cidade = cidade;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public Integer getIdade() {
+        return idade;
+    }
+
+    public void setIdade(Integer idade) {
+        this.idade = idade;
     }
 }
