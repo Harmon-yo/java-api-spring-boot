@@ -14,6 +14,9 @@ public class AlunoFilaDeEsperaDTO {
         this.alunoInstrumento = alunoInstrumento;
     }
 
+    public AlunoFilaDeEsperaDTO() {
+    }
+
     public int getIdAlunoFila() {
         return idAlunoFila;
     }

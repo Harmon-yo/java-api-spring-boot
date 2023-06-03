@@ -3,6 +3,9 @@ package school.sptech.harmonyospringapi.domain;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Transient;
+import org.springframework.beans.factory.annotation.Autowired;
+import school.sptech.harmonyospringapi.service.pedido.PedidoService;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoPilhaDto;
 import school.sptech.harmonyospringapi.service.usuario.AlunoService;
 import school.sptech.harmonyospringapi.service.usuario.ProfessorService;
@@ -16,6 +19,7 @@ import java.util.List;
 @Entity
 @DiscriminatorValue("Aluno")
 public class Aluno extends Usuario{
+
     public PilhaObj<PedidoExibicaoPilhaDto> getHistorico() {
         PilhaObj<PedidoExibicaoPilhaDto> historico = new PilhaObj<>(AlunoService.MAX_AULAS);
         List<Pedido> listinha = new ArrayList<>();
@@ -52,5 +56,6 @@ public class Aluno extends Usuario{
 
 
     }
+
 
 }

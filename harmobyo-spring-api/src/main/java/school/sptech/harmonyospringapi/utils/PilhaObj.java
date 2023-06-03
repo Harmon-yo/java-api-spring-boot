@@ -1,10 +1,12 @@
 package school.sptech.harmonyospringapi.utils;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class PilhaObj<T> {
 
     // Atributos
     private T[] pilha;
-    private int topo;
+    protected int topo;
 
     // Construtor
     public PilhaObj(int capacidade) {
@@ -15,12 +17,13 @@ public class PilhaObj<T> {
     // Métodos
 
     // Retorna true se a pilha estiver vazia e false caso contrário
+    @JsonIgnore
     public Boolean isEmpty() {
         return topo == -1;
     }
 
     // 04) MÃ©todo isFull
-    public Boolean isFull() {
+    protected Boolean isFull() {
         return topo == pilha.length - 1;
     }
     public T[] getPilha() {

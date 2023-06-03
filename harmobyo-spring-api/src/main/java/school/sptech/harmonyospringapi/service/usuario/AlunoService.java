@@ -10,6 +10,7 @@ import school.sptech.harmonyospringapi.service.aula.dto.AulaExibicaoDto;
 import school.sptech.harmonyospringapi.service.instrumento.InstrumentoService;
 import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoExibicaoDto;
 import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoMapper;
+import school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoPilhaDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.aluno_instrumento.AlunoInstrumentoCriacaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.aluno_instrumento.AlunoInstrumentoExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.aluno_instrumento.AlunoInstrumentoMapper;
@@ -23,6 +24,7 @@ import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioMapper;
 import school.sptech.harmonyospringapi.utils.PilhaObj;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -54,6 +56,7 @@ public class AlunoService {
     private InstrumentoService instrumentoService;
 
     /* ============= ALUNO ================ */
+
 
     public UsuarioExibicaoDto cadastrar(UsuarioCriacaoDto novoAlunoDto) {
         if (this.usuarioService.existeUsuarioPorEmail((novoAlunoDto.getEmail()))) throw new EntidadeConflitanteException("Erro ao cadastrar. Email já cadastrado !");

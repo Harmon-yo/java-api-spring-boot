@@ -7,10 +7,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import school.sptech.harmonyospringapi.service.fila_de_espera.AlunoFilaDeEsperaService;
 import school.sptech.harmonyospringapi.service.fila_de_espera.dto.AlunoFilaDeEsperaDTO;
 import school.sptech.harmonyospringapi.utils.FilaObj;
@@ -24,12 +21,14 @@ public class AlunoFilaDeEsperaController {
 
     @Operation( summary = "Retorna o primeiro aluno (prioridade) da fila")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Primeiro Aluno esperando na fila: ")
+            @ApiResponse(responseCode = "200", description = "Primeiro Aluno esperando na fila: "),
+            @ApiResponse(responseCode = "204", description = "Fila vazia ")
+
     })
     @SecurityRequirement(name = "Bearer")
-    @GetMapping("/primeiro-aluno")
-    public ResponseEntity<AlunoFilaDeEsperaDTO> pollAlunoFilaDeEspera(){
-        return ResponseEntity.ok().body(service.pollAluno());
+    @GetMapping("/primeiro-aluno/{idProfessor}")
+    public ResponseEntity<AlunoFilaDeEsperaDTO> pollAlunoFilaDeEspera(@PathVariable int idProfessor){
+        return ResponseEntity.ok().body(service.pollAluno(idProfessor));
     }
 
     @Operation( summary = "Adiciona um aluno à fila de espera")
@@ -37,9 +36,10 @@ public class AlunoFilaDeEsperaController {
             @ApiResponse(responseCode = "200", description = "Alunos na fila encontrados: ")
     })
     @SecurityRequirement(name = "Bearer")
-    @PostMapping
-    public ResponseEntity<FilaObj<AlunoFilaDeEsperaDTO>> postFilaAlunoDeEspera(){
-        return ResponseEntity.ok().body(service.getFilaEsperaAluno());
+    @PostMapping("/adiciona-aluno/{idAluno}/{idAula}")
+    public ResponseEntity<AlunoFilaDeEsperaDTO> postFilaAlunoDeEspera(@PathVariable  int idAluno,
+                                                                      @PathVariable int idAula){
+        return ResponseEntity.created(null).body(service.addAlunoFilaEspera(idAluno,idAula));
     }
 
 

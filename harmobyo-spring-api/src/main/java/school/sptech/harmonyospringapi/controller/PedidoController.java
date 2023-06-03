@@ -12,6 +12,7 @@ import school.sptech.harmonyospringapi.service.pedido.PedidoService;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoCriacaoDto;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoDto;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoPilhaDto;
+import school.sptech.harmonyospringapi.utils.PilhaObj;
 
 import java.util.List;
 
@@ -36,6 +37,23 @@ public class PedidoController {
 
         return ResponseEntity.ok(ltPedidosExibicao);
     }
+
+    @GetMapping("/pedidos-pendentes/{idProfessor}")
+    @Operation(summary = "Lista todos os pedidos pendentes de um professor")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Pedidos encontrados"),
+            @ApiResponse(responseCode = "404", description = "Nenhum pedido encontrado"),
+            @ApiResponse(responseCode =  "204", description = "Nenhum pedido pendente encontrado")
+    })
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<PilhaObj<PedidoExibicaoDto>> listarPedidosPendentes(@PathVariable int idProfessor){
+        PilhaObj<PedidoExibicaoDto> ltPedidosExibicao = this.pedidoService.obterPedidosPendentes(idProfessor);
+
+        if(ltPedidosExibicao.isEmpty()) return ResponseEntity.noContent().build();
+
+        return ResponseEntity.ok(ltPedidosExibicao);
+    }
+
 
     @PostMapping
     @Operation(summary = "Cadastra um pedido")

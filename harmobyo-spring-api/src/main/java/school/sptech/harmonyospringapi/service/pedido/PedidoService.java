@@ -8,10 +8,12 @@ import school.sptech.harmonyospringapi.service.aula.AulaService;
 import school.sptech.harmonyospringapi.service.exceptions.EntitadeNaoEncontradaException;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoCriacaoDto;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoDto;
+import school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoPilhaDto;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoMapper;
 import school.sptech.harmonyospringapi.service.status.StatusService;
 import school.sptech.harmonyospringapi.service.usuario.AlunoService;
 import school.sptech.harmonyospringapi.service.usuario.ProfessorService;
+import school.sptech.harmonyospringapi.utils.PilhaObj;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -36,11 +38,23 @@ public class PedidoService {
     private StatusService statusService;
 
     public List<PedidoExibicaoDto> obterTodos() {
+
         return this.pedidoRepository.findAll()
                 .stream()
                 .map(PedidoMapper::ofPedidoExibicaoDto)
                 .toList();
     }
+
+    public PilhaObj<PedidoExibicaoDto> obterPedidosPendentes(int idProfessor){
+
+        List<Pedido> pedidosPendentes = pedidoRepository.encontrarPedidosPendentesPorIdProfessor(idProfessor);
+        PilhaObj<PedidoExibicaoDto> pilhaPedidos = new PilhaObj<>(pedidosPendentes.size());
+
+        pedidosPendentes.stream().map(PedidoMapper::ofPedidoExibicaoDto).forEach(pilhaPedidos::push);
+
+        return pilhaPedidos;
+    }
+
 
     public PedidoExibicaoDto criar(PedidoCriacaoDto pedidoCriacaoDto) {
 

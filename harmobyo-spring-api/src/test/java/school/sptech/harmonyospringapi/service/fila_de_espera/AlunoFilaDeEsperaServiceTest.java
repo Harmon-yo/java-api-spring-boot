@@ -6,14 +6,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import school.sptech.harmonyospringapi.domain.Aluno;
-import school.sptech.harmonyospringapi.domain.Usuario;
-import school.sptech.harmonyospringapi.service.exceptions.EntitadeNaoEncontradaException;
 import school.sptech.harmonyospringapi.service.exceptions.FilaVaziaException;
 import school.sptech.harmonyospringapi.service.fila_de_espera.dto.AlunoFilaDeEsperaDTO;
 import school.sptech.harmonyospringapi.utils.FilaObj;
-
-import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -47,7 +42,7 @@ class AlunoFilaDeEsperaServiceTest {
         service.getFilaEsperaAluno().insert(alunoParaFila2);
         service.getFilaEsperaAluno().insert(alunoParaFila3);
 
-        assertEquals("teclado", service.pollAluno().getAlunoInstrumento());
+        assertEquals("teclado", service.pollAluno(idProfessor).getAlunoInstrumento());
     }
 
     @Test
@@ -59,7 +54,7 @@ class AlunoFilaDeEsperaServiceTest {
 
         Mockito.when(filaMock.isEmpty()).thenReturn(true);
 
-        assertThrows(FilaVaziaException.class, () -> service.pollAluno());
+        assertThrows(FilaVaziaException.class, () -> service.pollAluno(idProfessor));
     }
 
 }
