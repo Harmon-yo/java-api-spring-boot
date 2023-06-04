@@ -30,6 +30,9 @@ public class EnderecoService {
     }
 
     public Endereco buscarPorId(Integer id){
+        if(id <= 0)
+            throw new RuntimeException("Id inválido");
+
         return enderecoRepository.findById(id).orElseThrow(() -> new RuntimeException("Endereço não encontrado"));
     }
 

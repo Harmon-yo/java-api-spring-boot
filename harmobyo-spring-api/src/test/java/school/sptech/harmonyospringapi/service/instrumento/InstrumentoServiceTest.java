@@ -16,6 +16,7 @@ import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoCriaca
 import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoExibicaoDto;
 import school.sptech.harmonyospringapi.service.naipe.NaipeService;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -86,5 +87,23 @@ class InstrumentoServiceTest {
         Mockito.verify(instrumentoRepository, times(1)).existsInstrumentoByNomeIgnoreCase("Violão");
         Mockito.verify(naipeService, never()).buscarPorId(anyInt());
         Mockito.verify(instrumentoRepository, never()).save(Mockito.any(Instrumento.class));
+    }
+
+    @Test
+    void devolverListaDeInstrumentosComTamanho3(){
+
+        Instrumento instrumento = new Instrumento();
+        Naipe naipe = new Naipe();
+        naipe.setId(1);
+        naipe.setDescricao("Cordas");
+        instrumento.setId(1);
+        instrumento.setNome("Violão");
+        instrumento.setNaipe(naipe);
+
+
+        Mockito.when(instrumentoRepository.findAll()).thenReturn(List.of(instrumento, instrumento, instrumento));
+
+        assertEquals(3, instrumentoService.listar().size());
+
     }
 }

@@ -21,40 +21,27 @@ class AlunoFilaDeEsperaServiceTest {
     @Mock
     FilaObj<AlunoFilaDeEsperaDTO> fila;
 
-    @InjectMocks
+    @Mock
     AlunoFilaDeEsperaService service;
     @Test
-    public void quandoAcionadoOPrimeiroAlunoDaFilaDeveEstarInteressadoEmTeclado() {
-        // Arrange
-        AlunoFilaDeEsperaDTO alunoParaFila1 = new AlunoFilaDeEsperaDTO(
-                1, "joaozinho", "teclado"
-        );
+    public void quandoAcionadoOPrimeiroAlunoDaFilaDeveEstarInteressadoEmViolino() {
 
-        AlunoFilaDeEsperaDTO alunoParaFila2 = new AlunoFilaDeEsperaDTO(
-                1, "joaozinho", "violao"
-        );
 
-        AlunoFilaDeEsperaDTO alunoParaFila3 = new AlunoFilaDeEsperaDTO(
-                1, "maria", "xilofone"
-        );
+        Mockito.when(service.pollAluno(Mockito.anyInt())).thenReturn(
+            new AlunoFilaDeEsperaDTO(1, "João", "violino"));
 
-        service.getFilaEsperaAluno().insert(alunoParaFila1);
-        service.getFilaEsperaAluno().insert(alunoParaFila2);
-        service.getFilaEsperaAluno().insert(alunoParaFila3);
 
-        assertEquals("teclado", service.pollAluno(idProfessor).getAlunoInstrumento());
+
+
+        assertEquals("violino", service.pollAluno(1).getAlunoInstrumento());
     }
 
     @Test
     public void quandoAcionadoDeveRetornarFilaVaziaException() {
-        FilaObj<AlunoFilaDeEsperaDTO> filaMock = Mockito.mock(FilaObj.class);
-        AlunoFilaDeEsperaService service = new AlunoFilaDeEsperaService();
 
-        service.filaAluno1 = filaMock;
+        Mockito.when(service.pollAluno(Mockito.anyInt())).thenThrow(FilaVaziaException.class);
 
-        Mockito.when(filaMock.isEmpty()).thenReturn(true);
-
-        assertThrows(FilaVaziaException.class, () -> service.pollAluno(idProfessor));
+        assertThrows(FilaVaziaException.class, () -> service.pollAluno(1));
     }
 
 }
