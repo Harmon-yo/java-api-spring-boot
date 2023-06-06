@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import school.sptech.harmonyospringapi.service.aula.dto.AulaGraficoInformacoesDashboardDto;
 import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoExibicaoDto;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoDashboardDto;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoHistoricoDto;
@@ -153,46 +154,46 @@ public class ProfessorController {
             @ApiResponse(responseCode = "204", description = "Professores não encontrados. ")
     })
     @SecurityRequirement(name = "Bearer")
-    @GetMapping("/dashboard/media-tempo-resposta/{id}")
+        @GetMapping("/dashboard/media-tempo-resposta/{id}")
     public ResponseEntity<Long> getMediaTempoResposta(@PathVariable int id){
         Long rendimento = this.professorService.getMediaTempoResposta(id);
         return ResponseEntity.status(200).body(rendimento);
     }
 
 
-    @Operation(summary = "Obtém o rendimento das últimas 24 horas de um professor a partir de seu ID", description = "")
+    @Operation(summary = "Obtém o rendimento do mês atual de um professor a partir de seu ID", description = "")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Rendimento do professor solicitado "),
             @ApiResponse(responseCode = "204", description = "Professor com o ID fornecido não encontrado. ")
     })
     @SecurityRequirement(name = "Bearer")
-    @GetMapping("/dashboard/ultimas-24-horas/rendimento/{id}")
-    public ResponseEntity<Double> getRendimentoUltimas24Horas(@PathVariable int id){
-        Double rendimento = this.professorService.getRendimentoUltimas24Horas(id);
+    @GetMapping("/dashboard/mes-atual/rendimento/{id}")
+    public ResponseEntity<Double> getRendimentoMesAtual(@PathVariable int id){
+        Double rendimento = this.professorService.getRendimentoMesAtual(id);
         return ResponseEntity.status(200).body(rendimento);
     }
 
-    @Operation(summary = "Obtém a quantidade de alunos nas últimas 24 horas de um professor a partir de seu ID", description = "")
+    @Operation(summary = "Obtém a quantidade de alunos do mês atual de um professor a partir de seu ID", description = "")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Quantidade de alunos nas ultimas 24 horas do professor solicitado:  "),
             @ApiResponse(responseCode = "204", description = "Professor com o ID fornecido não encontrado. ")
     })
     @SecurityRequirement(name = "Bearer")
-    @GetMapping("/dashboard/ultimas-24-horas/qtd-alunos/{id}")
-    public ResponseEntity<Integer> getQuantidadeAlunosUltimas24Horas(@PathVariable int id){
-        Integer qtdAlunos = this.professorService.getQuantidadeAlunos24Horas(id);
+    @GetMapping("/dashboard/mes-atual/qtd-alunos/{id}")
+    public ResponseEntity<Integer> getQuantidadeAlunosMesAtual(@PathVariable int id){
+        Integer qtdAlunos = this.professorService.getQuantidadeAlunosMesAtual(id);
         return ResponseEntity.status(200).body(qtdAlunos);
     }
 
-    @Operation(summary = "Obtém a quantidade de aulas das últimas 24 horas de um professor a partir de seu ID", description = "")
+    @Operation(summary = "Obtém a quantidade de aulas do mês atual de um professor a partir de seu ID", description = "")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Quantidade de aulas nas ultimas 24 horas do professor solicitado:  "),
+            @ApiResponse(responseCode = "200", description = "Quantidade de aulas do mês atual do professor solicitado:  "),
             @ApiResponse(responseCode = "204", description = "Professor com o ID fornecido não encontrado. ")
     })
     @SecurityRequirement(name = "Bearer")
-    @GetMapping("/dashboard/ultimas-24-horas/qtd-aulas/{id}")
-    public ResponseEntity<Integer> getQuantidadeAulasUltimas24Horas(@PathVariable int id){
-        Integer qtdAulas = this.professorService.getQuantidadeAulasUltimas24Horas(id);
+    @GetMapping("/dashboard/mes-atual/qtd-aulas/{id}")
+    public ResponseEntity<Integer> getQuantidadeAulasMesAtual(@PathVariable int id){
+        Integer qtdAulas = this.professorService.getQuantidadeAulasMesAtual(id);
         return ResponseEntity.status(200).body(qtdAulas);
     }
 
@@ -212,6 +213,21 @@ public class ProfessorController {
                 ResponseEntity.status(200).body(historico);
 
     }
+
+    @Operation(summary = "Obtém a quantidade de aulas solicitadas, canceladas e realizadas de um professor a partir de seu ID", description = "")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Histórico de pedidos do professor solicitado:  "),
+            @ApiResponse(responseCode = "204", description = "Professor com o ID fornecido não encontrado. ")
+    })
+    @SecurityRequirement(name = "Bearer")
+    @GetMapping("/dashboard/grafico/aulas-realizadas-mes-atual/{id}")
+    public ResponseEntity<AulaGraficoInformacoesDashboardDto> getDadosAulasMesAtual(@PathVariable int id){
+        AulaGraficoInformacoesDashboardDto historico = this.professorService.getDadosAulasMesAtual(id);
+        return
+                ResponseEntity.status(200).body(historico);
+
+    }
+
 
     @Operation(summary = "Obtém o histórico de aulas realizadas de um professor a partir de seu ID", description = "")
     @ApiResponses(value = {

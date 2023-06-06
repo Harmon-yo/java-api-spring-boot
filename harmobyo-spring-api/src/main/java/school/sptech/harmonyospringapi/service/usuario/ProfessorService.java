@@ -6,6 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import school.sptech.harmonyospringapi.domain.*;
 import school.sptech.harmonyospringapi.repository.*;
+import school.sptech.harmonyospringapi.service.aula.dto.AulaGraficoInformacoesDashboardDto;
 import school.sptech.harmonyospringapi.service.instrumento.InstrumentoService;
 import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoExibicaoDto;
 import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoMapper;
@@ -27,6 +28,7 @@ import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioMapper;
 import school.sptech.harmonyospringapi.utils.FiltroAvancado.ProfessorSpecificationBuilder;
 
+import javax.swing.text.html.Option;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -125,7 +127,7 @@ public class ProfessorService {
 
         Specification<Professor> spec = builder.build();
         List<Professor> professores = this.professorRepository.findAll(spec);
-        
+
         return professores.stream().map(
                 professor -> {
                     Endereco endereco = professor.getEndereco();
@@ -304,27 +306,27 @@ public class ProfessorService {
 
     //ÚLTIMAS 24 HORAS
 
-    public Double getRendimentoUltimas24Horas(int idProfessor){
+    public Double getRendimentoMesAtual(int idProfessor){
 
         LocalDateTime now = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
-        LocalDateTime comeco = now.minusDays(1);
-        LocalDateTime fim = now;
+        LocalDateTime comeco = LocalDateTime.of(now.getYear(), now.getMonth().getValue(),1,0,0);
+        LocalDateTime fim = LocalDateTime.of(now.getYear(), now.getMonth().getValue(),30,23,59);
         Double rendimento = this.professorRepository.getRendimentoPorPeriodo(idProfessor,comeco, fim).orElse(0d);
         return rendimento;
     }
 
-    public Integer getQuantidadeAlunos24Horas(int id) {
+    public Integer getQuantidadeAlunosMesAtual(int id) {
         LocalDateTime now = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
-        LocalDateTime comeco = now.minusDays(1);
-        LocalDateTime fim = now;
+        LocalDateTime comeco = LocalDateTime.of(now.getYear(), now.getMonth().getValue(),1,0,0);
+        LocalDateTime fim = LocalDateTime.of(now.getYear(), now.getMonth().getValue(),30,23,59);
         Integer quantidadeAlunos = this.professorRepository.getQuantidadeAlunosPorPeriodo(id,comeco, fim).orElse(0);
         return quantidadeAlunos;
     }
 
-    public Integer getQuantidadeAulasUltimas24Horas(int id) {
+    public Integer getQuantidadeAulasMesAtual(int id) {
         LocalDateTime now = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
-        LocalDateTime comeco = now.minusDays(1);
-        LocalDateTime fim = now;
+        LocalDateTime comeco = LocalDateTime.of(now.getYear(), now.getMonth().getValue(),1,0,0);
+        LocalDateTime fim = LocalDateTime.of(now.getYear(), now.getMonth().getValue(),30,23,59);
         Integer quantidadeAulas = this.professorRepository.getQuantidadeAulasPorPeriodo(id,comeco, fim).orElse(0);
         return quantidadeAulas;
     }
@@ -345,5 +347,16 @@ public class ProfessorService {
     public List<PedidoExibicaoDashboardDto> getAulasRealizadas(int id){
         List<PedidoExibicaoDashboardDto> pedidos = this.professorRepository.getAulasRealizadasAgrupadasPorInstrumento(id);
         return pedidos;
+    }
+
+    public AulaGraficoInformacoesDashboardDto getDadosAulasMesAtual(int id) {
+
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
+        LocalDateTime comeco = LocalDateTime.of(now.getYear(), now.getMonth().getValue(),1,0,0);
+        LocalDateTime fim = LocalDateTime.of(now.getYear(), now.getMonth().getValue(),30,23,59);
+
+        AulaGraficoInformacoesDashboardDto quantidadeAulas = this.pedidoRepository.getDadosAulasPeriodoPorIdProfessor(id, comeco,fim);
+
+        return quantidadeAulas;
     }
 }
