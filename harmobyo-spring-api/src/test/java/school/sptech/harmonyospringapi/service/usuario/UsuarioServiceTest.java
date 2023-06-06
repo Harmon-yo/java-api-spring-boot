@@ -254,7 +254,7 @@ class UsuarioServiceTest {
         EntitadeNaoEncontradaException exception = assertThrows(EntitadeNaoEncontradaException.class,
                 () -> usuarioService.buscarPorId(idUsuario));
 
-        assertEquals("Aluno não encontrado", exception.getMessage());
+        assertEquals("Usuário não encontrado", exception.getMessage());
     }
 
     @DisplayName("Deve inserir endereço no usuário quando dados forem válidos")
@@ -294,7 +294,7 @@ class UsuarioServiceTest {
         EntitadeNaoEncontradaException exception = assertThrows(EntitadeNaoEncontradaException.class,
                 () -> usuarioService.inserirEndereco(id, endereco));
 
-        assertEquals("Usuario não encontrado", exception.getMessage());
+        assertEquals("Usuário não encontrado", exception.getMessage());
     }
 
     @DisplayName("Deve atualizar o endereco do usuario caso os dados forem válidos")
@@ -393,7 +393,7 @@ class UsuarioServiceTest {
         EntitadeNaoEncontradaException exception = assertThrows(EntitadeNaoEncontradaException.class,
                 () -> usuarioService.buscarEndereco(id));
 
-        assertEquals("Aluno não encontrado", exception.getMessage());
+        assertEquals("Usuário não encontrado", exception.getMessage());
     }
 
     @DisplayName("Deve criar uma avaliação quando acionado criarAvaliacao com dados válidos")
@@ -725,7 +725,7 @@ class UsuarioServiceTest {
         pedido.setStatus(status);
 
         AvaliacaoCriacaoDto dto = new AvaliacaoCriacaoDto();
-        dto.setUsuarioAvaliadorId(aluno1.getId());
+        dto.setUsuarioAvaliadorId(aluno2.getId());
         dto.setPedidoId(pedido.getId());
         dto.setValor(4.5);
         dto.setComentario("Muito boa a aula!");
@@ -738,7 +738,7 @@ class UsuarioServiceTest {
                 .thenReturn(pedido);
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class,
-                () -> usuarioService.criarAvaliacao(idAluno2, dto));
+                () -> usuarioService.criarAvaliacao(idAluno1, dto));
 
         assertEquals("Aluno não pode avaliar outro aluno", exception.getReason());
     }
@@ -810,8 +810,8 @@ class UsuarioServiceTest {
         Usuario usuario = new Professor();
         usuario.setId(id);
 
-        Mockito.when(usuarioRepository.findById(id))
-                .thenReturn(Optional.of(usuario));
+        Mockito.when(usuarioRepository.findById(usuario.getId()))
+                        .thenReturn(Optional.of(usuario));
         Mockito.when(avaliacaoRepository.findAllById_UsuarioAvaliadoFk(id))
                 .thenReturn(Collections.emptyList());
 
@@ -825,10 +825,12 @@ class UsuarioServiceTest {
     void lancarExcecaoQuandoAcionadoListarAvaliacoesPorUsuarioComIdUsuarioInvalido(){
         int id = 999;
 
+        Mockito.when(usuarioRepository.findById(id))
+                .thenReturn(Optional.empty());
         EntitadeNaoEncontradaException exception = assertThrows(EntitadeNaoEncontradaException.class,
                 () -> usuarioService.listarAvaliacoesPorUsuario(id));
 
-        assertEquals("Aluno não encontrado", exception.getMessage());
+        assertEquals("Usuário não encontrado", exception.getMessage());
     }
 
     @DisplayName("Retonar 3 avaliações no usuário quando acionado listarAvaliacoesPorUsuario com usuário válido")
@@ -881,7 +883,8 @@ class UsuarioServiceTest {
         avaliacoes.add(avaliacao);
         avaliacoes.add(avaliacao);
 
-        Mockito.when(usuarioRepository.findById(idProfessor))
+
+        Mockito.when(usuarioRepository.findById(professor.getId()))
                 .thenReturn(Optional.of(professor));
         Mockito.when(avaliacaoRepository.findAllById_UsuarioAvaliadoFk(idProfessor))
                 .thenReturn(avaliacoes);

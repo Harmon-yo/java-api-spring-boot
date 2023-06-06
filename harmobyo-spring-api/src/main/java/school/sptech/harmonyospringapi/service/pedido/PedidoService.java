@@ -13,6 +13,7 @@ import school.sptech.harmonyospringapi.service.pedido.dto.PedidoMapper;
 import school.sptech.harmonyospringapi.service.status.StatusService;
 import school.sptech.harmonyospringapi.service.usuario.AlunoService;
 import school.sptech.harmonyospringapi.service.usuario.ProfessorService;
+import school.sptech.harmonyospringapi.service.usuario.UsuarioService;
 import school.sptech.harmonyospringapi.utils.PilhaObj;
 
 import java.time.LocalDateTime;
@@ -23,10 +24,13 @@ import java.util.Optional;
 public class PedidoService {
 
     @Autowired
-    private PedidoRepository pedidoRepository;
+    private PedidoRepository repository;
 
     @Autowired
     private AlunoService alunoService;
+
+    @Autowired
+    private UsuarioService usuarioService;
 
     @Autowired
     private ProfessorService professorService;
@@ -39,7 +43,7 @@ public class PedidoService {
 
     public List<PedidoExibicaoDto> obterTodos() {
 
-        return this.pedidoRepository.findAll()
+        return this.repository.findAll()
                 .stream()
                 .map(PedidoMapper::ofPedidoExibicaoDto)
                 .toList();
@@ -47,7 +51,7 @@ public class PedidoService {
 
     public PilhaObj<PedidoExibicaoDto> obterPedidosPendentes(int idProfessor){
 
-        List<Pedido> pedidosPendentes = pedidoRepository.encontrarPedidosPendentesPorIdProfessor(idProfessor);
+        List<Pedido> pedidosPendentes = repository.encontrarPedidosPendentesPorIdProfessor(idProfessor);
         PilhaObj<PedidoExibicaoDto> pilhaPedidos = new PilhaObj<>(pedidosPendentes.size());
 
         pedidosPendentes.stream().map(PedidoMapper::ofPedidoExibicaoDto).forEach(pilhaPedidos::push);
@@ -63,7 +67,7 @@ public class PedidoService {
         Aula aula = this.aulaService.buscarPorId(pedidoCriacaoDto.getAulaId());
         Status status = this.statusService.buscarPorDescricao("Pendente");
 
-        return PedidoMapper.ofPedidoExibicaoDto(this.pedidoRepository.save(
+        return PedidoMapper.ofPedidoExibicaoDto(this.repository.save(
                 PedidoMapper.of(pedidoCriacaoDto, aluno, professor, status, aula)
         ));
 
@@ -72,52 +76,40 @@ public class PedidoService {
     /* ============= PESQUISA ============== */
 
     public Pedido buscarPorId(Integer integer) {
-        return this.pedidoRepository.findById(integer).orElseThrow(() -> new EntitadeNaoEncontradaException("Pedido não encontrado"));
+        return repository.findById(integer)
+                .orElseThrow(() -> new EntitadeNaoEncontradaException("Pedido não encontrado"));
     }
 
 
     public PedidoExibicaoDto aceitarPedido(Pedido pedidoPendente){
-        Integer idPedidoPendente = pedidoPendente.getId();
-
-        Optional<Pedido> pedidoEncontradoNoBancoOpt = pedidoRepository.findById(idPedidoPendente);
-        if(pedidoEncontradoNoBancoOpt.isEmpty()){
-            throw new EntitadeNaoEncontradaException("Pedido não encontrado");
-        }
-
-
-        Pedido pedidoEncontradoNoBanco = pedidoEncontradoNoBancoOpt.get();
+        Pedido pedidoEncontradoNoBanco = this.buscarPorId(pedidoPendente.getId());
 
         pedidoEncontradoNoBanco.setStatus(statusService.buscarPorDescricao("Confirmado")); //Status - Confirmado é de ID 2
         pedidoEncontradoNoBanco.setHoraResposta(LocalDateTime.now());
 
-        return PedidoMapper.ofPedidoExibicaoDto(pedidoRepository.save(pedidoEncontradoNoBanco));
+        return PedidoMapper.ofPedidoExibicaoDto(repository.save(pedidoEncontradoNoBanco));
     }
 
     public PedidoExibicaoDto recusarPedido(Pedido pedidoPendente){
-        Integer idPedidoPendente = pedidoPendente.getId();
-
-        Optional<Pedido> pedidoEncontradoNoBancoOpt = pedidoRepository.findById(idPedidoPendente);
-        if(pedidoEncontradoNoBancoOpt.isEmpty()){
-            throw new EntitadeNaoEncontradaException("Pedido não encontrado");
-        }
-
-        Pedido pedidoEncontradoNoBanco = pedidoEncontradoNoBancoOpt.get();
+        Pedido pedidoEncontradoNoBanco = this.buscarPorId(pedidoPendente.getId());
 
         pedidoEncontradoNoBanco.setStatus(statusService.buscarPorDescricao("Recusado")); //Status - Recusado é de ID 4
         pedidoEncontradoNoBanco.setHoraResposta(LocalDateTime.now());
 
-        return PedidoMapper.ofPedidoExibicaoDto(pedidoRepository.save(pedidoEncontradoNoBanco));
+        return PedidoMapper.ofPedidoExibicaoDto(repository.save(pedidoEncontradoNoBanco));
     }
 
-
     public List<PedidoExibicaoDto> buscarPorUsuarioId(Integer id) {
-        List<Pedido> pedidos = this.pedidoRepository.buscarPorUsuarioId(id);
-        if (pedidos.isEmpty()) throw new EntitadeNaoEncontradaException("Pedido não encontrado");
+        Usuario usuario = usuarioService.buscarPorId(id);
+
+        List<Pedido> pedidos = this.repository.buscarPorUsuarioId(usuario.getId());
+
         return pedidos.stream().map(PedidoMapper::ofPedidoExibicaoDto).toList();
     }
 
     public PedidoExibicaoDto buscarPorIdParaExibicao(Integer id) {
-        Pedido pedido = this.pedidoRepository.findById(id).orElseThrow(() -> new EntitadeNaoEncontradaException("Pedido não encontrado"));
+        Pedido pedido = this.buscarPorId(id);
+
         return PedidoMapper.ofPedidoExibicaoDto(pedido);
     }
 
@@ -138,22 +130,19 @@ public class PedidoService {
         return PedidoMapper.ofPedidoExibicaoDto(pedido);
     }
 
-    public PedidoExibicaoDto cancelarPedido(Integer idPedido){
-        Optional<Pedido> pedidoOpt = pedidoRepository.findById(idPedido);
-        if(pedidoOpt.isEmpty()) throw new EntitadeNaoEncontradaException("Pedido não encontrado");
+    public PedidoExibicaoDto cancelarPedido(Integer id){
+        Pedido pedido = this.buscarPorId(id);
+        Status status = this.statusService.buscarPorDescricao("Cancelado");
+        pedido = atualizarStatus(pedido, status);
 
-        Pedido pedido = pedidoOpt.get();
-        Status status = statusService.buscarPorDescricao("Cancelado");
-        pedido.setStatus(status);
-
-        return PedidoMapper.ofPedidoExibicaoDto(pedidoRepository.save(pedido));
+        return PedidoMapper.ofPedidoExibicaoDto(pedido);
 
     }
 
-    private Pedido atualizarStatus(Pedido pedido, Status status) {
+    public Pedido atualizarStatus(Pedido pedido, Status status) {
         pedido.setStatus(status);
         pedido.setHoraResposta(LocalDateTime.now());
 //      Colocar para salvar mudança de status
-        return this.pedidoRepository.save(pedido);
+        return this.repository.save(pedido);
     }
 }

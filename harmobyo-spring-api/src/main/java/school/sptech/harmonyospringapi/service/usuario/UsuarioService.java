@@ -122,7 +122,7 @@ public class UsuarioService {
 
     public Usuario buscarPorId(Integer id){
         return usuarioRepository.findById(id).orElseThrow(
-                () -> new EntitadeNaoEncontradaException("Aluno não encontrado")
+                () -> new EntitadeNaoEncontradaException("Usuário não encontrado")
         );
     }
 
@@ -131,7 +131,7 @@ public class UsuarioService {
     public UsuarioExibicaoDto inserirEndereco(Integer idUsuario, Endereco endereco ){
         Endereco enderecoInserido = enderecoService.cadastrarEndereco(endereco);
         Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(
-                () -> new EntitadeNaoEncontradaException("Usuario não encontrado")
+                () -> new EntitadeNaoEncontradaException("Usuário não encontrado")
         );
         usuario.setEndereco(enderecoInserido);
         usuarioRepository.save(usuario);
@@ -153,7 +153,7 @@ public class UsuarioService {
 
     public void deletarEndereco(Integer idUsuario ){
         Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(
-                () -> new EntitadeNaoEncontradaException("Usuario não encontrado")
+                () -> new EntitadeNaoEncontradaException("Usuário não encontrado")
         );
         usuario.setEndereco(null);
         usuarioRepository.save(usuario);
@@ -180,19 +180,17 @@ public class UsuarioService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pedido não foi concluído");
         } else if (avaliacaoRepository.existsAvaliacaoByIdPedido(pedido.getId())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pedido já foi avaliado");
+        } else if ((!pedido.getAluno().getId().equals(receptor.getId())) && (!pedido.getProfessor().getId().equals(receptor.getId()))) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pedido não pertence ao usuário receptor");
         } else if (receptor instanceof Aluno){
             if (autor instanceof Aluno) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Aluno não pode avaliar outro aluno");
-            } else if ((!pedido.getProfessor().getId().equals(receptor.getId())) && (!pedido.getAluno().getId().equals(receptor.getId()))) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pedido não pertence ao usuário receptor");
             } else if ((!pedido.getAluno().getId().equals(autor.getId())) && (!pedido.getProfessor().getId().equals(autor.getId()))) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pedido não pertence ao usuário autor");
             }
         } else if (receptor instanceof Professor){
             if (autor instanceof Professor) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Professor não pode avaliar outro professor");
-            } else if ((!pedido.getAluno().getId().equals(receptor.getId())) && (!pedido.getProfessor().getId().equals(receptor.getId()))) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pedido não pertence ao usuário receptor");
             } else if ((!pedido.getAluno().getId().equals(autor.getId())) && (!pedido.getProfessor().getId().equals(autor.getId()))) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pedido não pertence ao usuário autor");
             }
@@ -206,7 +204,9 @@ public class UsuarioService {
     }
 
     public List<AvaliacaoExibicaoDto> listarAvaliacoesPorUsuario(Integer idUsuario) {
-        List<Avaliacao> avaliacoes = this.avaliacaoRepository.findAllById_UsuarioAvaliadoFk(idUsuario);
+        Usuario usuario = buscarPorId(idUsuario);
+
+        List<Avaliacao> avaliacoes = this.avaliacaoRepository.findAllById_UsuarioAvaliadoFk(usuario.getId());
 
         return avaliacoes.stream().map(AvaliacaoMapper::ofAvaliacaoExibicao).toList();
     }
