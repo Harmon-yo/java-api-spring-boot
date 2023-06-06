@@ -67,4 +67,8 @@ public class PilhaObj<T> {
         }
     }
 
+    public int getTopo(){
+        return topo;
+    }
+
 }
