@@ -14,8 +14,8 @@ import java.util.Optional;
 
 @Repository
 public interface ProfessorRepository extends JpaRepository<Professor, Integer>, JpaSpecificationExecutor<Professor> {
-    @Query("SELECT p FROM Professor p LEFT JOIN Avaliacao a ON a.usuarioAvaliado.id = p.id  GROUP BY p.id ORDER BY AVG(a.valor) DESC LIMIT 50")
-    List<Professor> findTop50ByOrderByAvaliacaoDesc();
+    @Query("SELECT p FROM Professor p LEFT JOIN Avaliacao a ON a.usuarioAvaliado.id = p.id  GROUP BY p.id ORDER BY AVG(a.valor) DESC LIMIT 4")
+    List<Professor> buscarProfessoresPopulares();
 
     @Query("SELECT p FROM Professor p INNER JOIN Aula a" +
             " ON a.professor.id = p.id  GROUP BY p.id ORDER BY a.valorAula DESC")
@@ -49,6 +49,8 @@ public interface ProfessorRepository extends JpaRepository<Professor, Integer>, 
     @Query("SELECT new school.sptech.harmonyospringapi.service.pedido.dto.PedidoHistoricoDto(FUNCTION('MONTHNAME', p.dataAula), (SELECT COUNT(p.id) FROM Pedido where p.professor.id = :id), COUNT(p.id)) FROM Pedido p WHERE p.professor.id = :id AND p.status.descricao = 'Concluído' GROUP BY FUNCTION('MONTHNAME', p.dataAula)")
     List<PedidoHistoricoDto> getHistoricoPedidos(int id);
 
-    @Query("SELECT new school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoDashboardDto(p.aula.instrumento.id, p.aula.instrumento.nome, COUNT(p.id), SUM(p.aula.valorAula)) FROM Pedido p WHERE p.professor.id = :id AND p.status.descricao = 'Concluído' GROUP BY p.aula.instrumento.id")
-    List<PedidoExibicaoDashboardDto> getAulasRealizadasAgrupadasPorInstrumento(int id);
+    @Query("SELECT new school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoDashboardDto(p.aula.instrumento.id, p.aula.instrumento.nome, COUNT(p.id), SUM(p.aula.valorAula)) FROM Pedido p WHERE p.professor.id = :id AND p.status.descricao = 'Concluído' AND p.dataAula BETWEEN :comeco AND :fim  GROUP BY p.aula.instrumento.id")
+    List<PedidoExibicaoDashboardDto> getAulasRealizadasAgrupadasPorInstrumentoMesAtual(int id, LocalDateTime comeco, LocalDateTime fim);
+
+
 }

@@ -11,11 +11,13 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import school.sptech.harmonyospringapi.domain.Professor;
 import school.sptech.harmonyospringapi.service.aula.dto.AulaGraficoInformacoesDashboardDto;
 import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoExibicaoDto;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoDashboardDto;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoHistoricoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.professor.ProfessorExibicaoResumidoDto;
+import school.sptech.harmonyospringapi.service.usuario.dto.professor.ProfessorPopularDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.professor_instrumento.ProfessorInstrumentoCriacaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.professor_instrumento.ProfessorInstrumentoExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.ProfessorService;
@@ -257,6 +259,20 @@ public class ProfessorController {
 
         return ResponseEntity.ok(professores);
     }
+
+    @Operation(summary = "Exibe os 4 professores mais populares (por melhores avaliações)", description = "")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Professores encontrados: ")
+    })
+    @GetMapping("/populares")
+    public ResponseEntity<List<ProfessorPopularDto>> getProfessoresPopulares() {
+        List<ProfessorPopularDto> professores = this.professorService.buscarProfessoresPopulares();
+
+        if (professores.isEmpty()) return ResponseEntity.noContent().build();
+
+        return ResponseEntity.ok(professores);
+    }
+
 
 
 }

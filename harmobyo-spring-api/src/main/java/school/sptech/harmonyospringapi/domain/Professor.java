@@ -14,4 +14,6 @@ public class Professor extends Usuario {
     @OneToMany(mappedBy = "professor")
     private List<Aula> aulas;
 
+    
+
 }

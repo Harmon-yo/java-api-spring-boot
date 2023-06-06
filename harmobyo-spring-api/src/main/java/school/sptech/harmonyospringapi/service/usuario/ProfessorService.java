@@ -16,6 +16,7 @@ import school.sptech.harmonyospringapi.service.usuario.dto.avaliacao.AvaliacaoCr
 import school.sptech.harmonyospringapi.service.usuario.dto.avaliacao.AvaliacaoExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.professor.ProfessorExibicaoResumidoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.professor.ProfessorMapper;
+import school.sptech.harmonyospringapi.service.usuario.dto.professor.ProfessorPopularDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.professor_instrumento.ProfessorInstrumentoCriacaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.professor_instrumento.ProfessorInstrumentoExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.professor_instrumento.ProfessorInstrumentoMapper;
@@ -28,7 +29,6 @@ import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioMapper;
 import school.sptech.harmonyospringapi.utils.FiltroAvancado.ProfessorSpecificationBuilder;
 
-import javax.swing.text.html.Option;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -126,6 +126,8 @@ public class ProfessorService {
         }
 
         Specification<Professor> spec = builder.build();
+
+
         List<Professor> professores = this.professorRepository.findAll(spec);
 
         return professores.stream().map(
@@ -345,7 +347,11 @@ public class ProfessorService {
     }
 
     public List<PedidoExibicaoDashboardDto> getAulasRealizadas(int id){
-        List<PedidoExibicaoDashboardDto> pedidos = this.professorRepository.getAulasRealizadasAgrupadasPorInstrumento(id);
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
+        LocalDateTime comeco = LocalDateTime.of(now.getYear(), now.getMonth().getValue(),1,0,0);
+        LocalDateTime fim = LocalDateTime.of(now.getYear(), now.getMonth().getValue(),30,23,59);
+
+        List<PedidoExibicaoDashboardDto> pedidos = this.professorRepository.getAulasRealizadasAgrupadasPorInstrumentoMesAtual(id, comeco, fim);
         return pedidos;
     }
 
@@ -355,8 +361,23 @@ public class ProfessorService {
         LocalDateTime comeco = LocalDateTime.of(now.getYear(), now.getMonth().getValue(),1,0,0);
         LocalDateTime fim = LocalDateTime.of(now.getYear(), now.getMonth().getValue(),30,23,59);
 
-        AulaGraficoInformacoesDashboardDto quantidadeAulas = this.pedidoRepository.getDadosAulasPeriodoPorIdProfessor(id, comeco,fim);
+        return this.pedidoRepository.getDadosAulasPeriodoPorIdProfessor(id, comeco,fim);
+    }
 
-        return quantidadeAulas;
+    public List<ProfessorPopularDto> buscarProfessoresPopulares() {
+        List<Professor> professores = this.professorRepository.buscarProfessoresPopulares();
+        List<ProfessorPopularDto> professoresPopulares = new ArrayList<>();
+        for(Professor p : professores){
+            ProfessorPopularDto professorPopularDto = new ProfessorPopularDto();
+            professorPopularDto.setId(p.getId());
+            professorPopularDto.setNome(p.getNome());
+            professorPopularDto.setMediaAvaliacao(this.obterMediaAvaliacao(p.getId()));
+            professorPopularDto.setLocalizacao(p.getEndereco().getBairro());
+            professorPopularDto.setUltimaVezOnline(p.getUltimaVezOnline());
+            professoresPopulares.add(professorPopularDto);
+
+        }
+
+        return professoresPopulares;
     }
 }
