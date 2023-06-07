@@ -1,5 +1,7 @@
 package school.sptech.harmonyospringapi.service.usuario;
 
+import com.google.common.base.CharMatcher;
+import com.google.common.base.Splitter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,6 +36,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -112,25 +115,24 @@ public class ProfessorService {
     /* ================ PESQUISA ================ */
 
     public List<ProfessorExibicaoResumidoDto> buscarTodosFiltrado(String parametros) {
+        System.out.println("Parametro Recebido: " + parametros);
         ProfessorSpecificationBuilder builder = new ProfessorSpecificationBuilder();
-        Pattern pattern = Pattern.compile("(\\w+?)(:|<|>|>:|<:|><)([-\\#\\$\\.\\%\\&\\*\\&]*\\w*\\s*\\w*[-\\#\\$\\.\\%\\&\\*\\&]*\\w*),", Pattern.UNICODE_CHARACTER_CLASS);
+        Pattern pattern = Pattern.compile("(\\w+?)(:|<|>|>:|<:|><)([\\-\\#\\$\\.\\%\\*\\/]*\\w*\\s*\\w*[\\-\\#\\$\\.\\%\\*\\/]*\\w*[\\-\\#\\$\\.\\%\\*\\/]*),", Pattern.UNICODE_CHARACTER_CLASS);
         Matcher matcher = pattern.matcher(parametros + ",");
+        boolean compararDistancia = false;
+
 
         while (matcher.find()) {
-            System.out.println(matcher.group(1) + " " + matcher.group(2) + " " + matcher.group(3));
-            builder.adicionarParametro(matcher.group(1), matcher.group(2), matcher.group(3));
+            if (!Objects.equals(matcher.group(1), "distancia")) {
+                System.out.println("Parametro: " + matcher.group(1) + " Operador: " + matcher.group(2) + " Valor: " + matcher.group(3));
+                builder.adicionarParametro(matcher.group(1), matcher.group(2), matcher.group(3));
+            } else {
+                compararDistancia = true;
+            }
         }
-
-        for(CriteriosDePesquisa parametro : builder.getParametros()) {
-            System.out.println(parametro.getKey() + " " + parametro.getOperation() + " " + parametro.getValue());
-        }
-
         Specification<Professor> spec = builder.build();
 
-
-        List<Professor> professores = this.professorRepository.findAll(spec);
-
-        return professores.stream().map(
+        return this.professorRepository.findAll(spec).stream().map(
                 professor -> {
                     Endereco endereco = professor.getEndereco();
                     Double mediaAvaliacao = this.obterMediaAvaliacao(professor.getId());
@@ -156,6 +158,18 @@ public class ProfessorService {
                             estado);
                 }
         ).toList();
+    }
+
+    public List<List<String>> filtrarParametrosDeBusca(String parametros) {
+        System.out.println("Parametro Recebido: " + parametros);
+        List<String> retorno = List.of(parametros.split(","));
+        for (String parametro : retorno) {
+            List<String> criterios = Splitter.on(CharMatcher.anyOf(":<>=!")).trimResults().omitEmptyStrings().splitToList(parametro);
+            System.out.println("=====================================");
+            System.out.println(criterios);
+            System.out.println("=====================================");
+        }
+        return retorno.stream().map(parametro -> Splitter.on(CharMatcher.anyOf(":<>=!")).trimResults().omitEmptyStrings().splitToList(parametro)).toList();
     }
 
     public UsuarioExibicaoDto buscarPorIdParaExibicao(Integer id){

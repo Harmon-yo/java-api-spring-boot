@@ -1,10 +1,9 @@
 package school.sptech.harmonyospringapi.domain;
 
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import school.sptech.harmonyospringapi.utils.FilaObj;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -14,6 +13,11 @@ public class Professor extends Usuario {
     @OneToMany(mappedBy = "professor")
     private List<Aula> aulas;
 
+    @OneToMany(mappedBy = "usuarioAvaliado")
+    private List<Avaliacao> avaliacoesRecebidas;
+
+    @OneToMany(mappedBy = "usuarioAvaliador")
+    private List<Avaliacao> avaliacoesFeitas;
     
 
 }

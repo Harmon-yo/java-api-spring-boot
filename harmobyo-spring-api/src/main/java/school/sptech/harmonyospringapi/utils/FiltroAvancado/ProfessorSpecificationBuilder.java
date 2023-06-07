@@ -18,8 +18,18 @@ public class ProfessorSpecificationBuilder {
 
     public final void adicionarParametro(String key, String operation, Object value) {
         OperacoesDePesquisa op = OperacoesDePesquisa.getOperacaoSimples(operation);
+
+        System.out.println("=====================================");
+        System.out.println("Filtro: " + key);
+        System.out.println("Operação: " + op);
+        System.out.println("Valor: " + value);
+
+
         if (Objects.nonNull(op)) {
-            List<Object> values = List.of(((String) value).split("&"));
+            List<String> values = List.of(((String) value).split("-"));
+
+            System.out.println("Valor: " + values);
+            System.out.println("=====================================");
 
             if (values.size() == 2) {
                 this.parametros.add(new CriteriosDePesquisa(false, key, op, values.get(0), values.get(1)));
