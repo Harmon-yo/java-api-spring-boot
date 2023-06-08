@@ -3,11 +3,14 @@ package school.sptech.harmonyospringapi.service.usuario;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Splitter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import school.sptech.harmonyospringapi.domain.*;
 import school.sptech.harmonyospringapi.repository.*;
+import school.sptech.harmonyospringapi.service.aula.AulaService;
+import school.sptech.harmonyospringapi.service.aula.dto.AulaExibicaoDto;
 import school.sptech.harmonyospringapi.service.aula.dto.AulaGraficoInformacoesDashboardDto;
 import school.sptech.harmonyospringapi.service.instrumento.InstrumentoService;
 import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoExibicaoDto;
@@ -68,6 +71,10 @@ public class ProfessorService {
     @Autowired
     private PedidoRepository pedidoRepository;
 
+    @Autowired
+    @Lazy
+    private AulaService aulaService;
+
 
     /* ================ PROFESSOR ================ */
 
@@ -114,22 +121,22 @@ public class ProfessorService {
 
     /* ================ PESQUISA ================ */
 
-    public List<ProfessorExibicaoResumidoDto> buscarTodosFiltrado(String parametros) {
-        System.out.println("Parametro Recebido: " + parametros);
-        ProfessorSpecificationBuilder builder = new ProfessorSpecificationBuilder();
-        Pattern pattern = Pattern.compile("(\\w+?)(:|<|>|>:|<:|><)([\\-\\#\\$\\.\\%\\*\\/]*\\w*\\s*\\w*[\\-\\#\\$\\.\\%\\*\\/]*\\w*[\\-\\#\\$\\.\\%\\*\\/]*),", Pattern.UNICODE_CHARACTER_CLASS);
-        Matcher matcher = pattern.matcher(parametros + ",");
+    public List<ProfessorExibicaoResumidoDto> buscarTodosFiltrado(String listaDeParametros) {
+        System.out.println("Lista de parâmetros: " + listaDeParametros);
+        List<String> listaDeParametrosSeparados = List.of(listaDeParametros.split(","));
+
         boolean compararDistancia = false;
+        ProfessorSpecificationBuilder builder = new ProfessorSpecificationBuilder();
 
-
-        while (matcher.find()) {
-            if (!Objects.equals(matcher.group(1), "distancia")) {
-                System.out.println("Parametro: " + matcher.group(1) + " Operador: " + matcher.group(2) + " Valor: " + matcher.group(3));
-                builder.adicionarParametro(matcher.group(1), matcher.group(2), matcher.group(3));
+        for (String parametro : listaDeParametrosSeparados) {
+            List<String> parametrosSeparados = filtrarParametrosDeBusca(parametro);
+            if (!Objects.equals(parametrosSeparados.get(0), "distancia")) {
+                builder.adicionarParametro(parametrosSeparados.get(0), parametrosSeparados.get(1), parametrosSeparados.get(2));
             } else {
                 compararDistancia = true;
             }
         }
+
         Specification<Professor> spec = builder.build();
 
         return this.professorRepository.findAll(spec).stream().map(
@@ -143,10 +150,11 @@ public class ProfessorService {
                     String cidade = endereco.getCidade();
                     String estado = endereco.getEstado();
                     Double distancia = 0.0;
-                    List<InstrumentoExibicaoDto> instrumentos = this.listarInstrumentos(professor.getId());
+                    List<InstrumentoExibicaoDto> instrumentosConhecidos = this.listarInstrumentos(professor.getId());
+                    List<AulaExibicaoDto> aulas = this.aulaService.buscarAulasPorIdProfessor(professor.getId());
                     Integer qtdAvaliacoes = this.obterQuantidadeAvaliacoes(professor.getId());
                     return ProfessorMapper.of(professor,
-                            instrumentos,
+                            instrumentosConhecidos,
                             valorMinimo,
                             valorMaximo,
                             emprestaInstrumento,
@@ -155,21 +163,28 @@ public class ProfessorService {
                             distancia,
                             bairro,
                             cidade,
-                            estado);
+                            estado,
+                            aulas);
                 }
         ).toList();
     }
 
-    public List<List<String>> filtrarParametrosDeBusca(String parametros) {
-        System.out.println("Parametro Recebido: " + parametros);
-        List<String> retorno = List.of(parametros.split(","));
-        for (String parametro : retorno) {
-            List<String> criterios = Splitter.on(CharMatcher.anyOf(":<>=!")).trimResults().omitEmptyStrings().splitToList(parametro);
-            System.out.println("=====================================");
-            System.out.println(criterios);
-            System.out.println("=====================================");
+    public List<String> filtrarParametrosDeBusca(String parametros) {
+        String operacao = "";
+
+        List<String> criteriosDePesquisa = List.of("><", ">:", "<:", ":", "<", ">");
+
+        for (String criterio: criteriosDePesquisa) {
+            if (parametros.contains(criterio)) {
+                operacao = criterio;
+                break;
+            }
         }
-        return retorno.stream().map(parametro -> Splitter.on(CharMatcher.anyOf(":<>=!")).trimResults().omitEmptyStrings().splitToList(parametro)).toList();
+
+        List<String> criterios = new ArrayList<>(List.of(parametros.split(operacao)));
+        criterios.add(1, operacao);
+
+        return criterios;
     }
 
     public UsuarioExibicaoDto buscarPorIdParaExibicao(Integer id){

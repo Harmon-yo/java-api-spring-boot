@@ -61,7 +61,6 @@ public class AulaService {
     }
 
     public List<AulaExibicaoDto> buscarAulasPorIdProfessor(int fkProfessor) {
-
         List<Aula> ltAulas = this.aulaRepository.findAllByProfessorId(fkProfessor);
 
         return ltAulas.stream().map(AulaMapper::ofAulaExibicaoDto).toList();

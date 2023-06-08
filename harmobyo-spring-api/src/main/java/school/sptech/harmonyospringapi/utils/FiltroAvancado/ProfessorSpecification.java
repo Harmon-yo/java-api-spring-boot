@@ -2,9 +2,7 @@ package school.sptech.harmonyospringapi.utils.FiltroAvancado;
 
 import jakarta.persistence.criteria.*;
 import org.springframework.data.jpa.domain.Specification;
-import school.sptech.harmonyospringapi.domain.Aula;
-import school.sptech.harmonyospringapi.domain.Avaliacao;
-import school.sptech.harmonyospringapi.domain.Professor;
+import school.sptech.harmonyospringapi.domain.*;
 
 import java.util.Objects;
 
@@ -24,6 +22,10 @@ public class ProfessorSpecification implements Specification<Professor> {
             return construirCriterioComJoinValorAula(root, builder);
         } else if (Objects.equals(criterio.getKey(), "avaliacao")) {
             return construirCriterioComJoinPararMediaAvaliacao(builder, query, root);
+        } else if (Objects.equals(criterio.getKey(), "instrumentos")) {
+            return construirCriterioComJoinInstrumentos(builder, query, root);
+        } else if (Objects.equals(criterio.getKey(), "instrumentosAula")) {
+            return construirCriterioComJoinInstrumentosParaAula(builder, query, root);
         } else {
             return construirCriterioSemJoin(root, builder);
         }
@@ -63,5 +65,43 @@ public class ProfessorSpecification implements Specification<Professor> {
         subquery.where(builder.equal(subRoot.get("id"), root.get("id")));
 
         return builder.greaterThanOrEqualTo(subquery, Double.parseDouble((String) criterio.getValue()));
+    }
+
+    public Predicate construirCriterioComJoinInstrumentos(CriteriaBuilder builder, CriteriaQuery<?> query, Root<Professor> root) {
+        Subquery<Long> subquery = query.subquery(Long.class);
+        Root<Professor> subRoot = subquery.from(Professor.class);
+        Join<Professor, ProfessorInstrumento> joinProfessorInstrumentos = subRoot.join("instrumentos", JoinType.INNER);
+        Predicate possuiOMesmoId = builder.equal(subRoot.get("id"), root.get("id"));
+        Predicate possuiOMesmoInstrumento = null;
+        Path<String> nomeInstrumento = joinProfessorInstrumentos.get("instrumento").get("nome");
+
+        if (criterio.getOperation().equals(OperacoesDePesquisa.IGUALDADE)) possuiOMesmoInstrumento = builder.equal(nomeInstrumento, criterio.getValue());
+        else if (criterio.getOperation().equals(OperacoesDePesquisa.CONTEM)) possuiOMesmoInstrumento = builder.like(nomeInstrumento, "%" + criterio.getValue() + "%");
+        else if (criterio.getOperation().equals(OperacoesDePesquisa.INICIA_COM)) possuiOMesmoInstrumento = builder.like(nomeInstrumento, criterio.getValue() + "%");
+        else if (criterio.getOperation().equals(OperacoesDePesquisa.TERMINA_COM)) possuiOMesmoInstrumento = builder.like(nomeInstrumento, "%" + criterio.getValue());
+
+        subquery.select(builder.count(joinProfessorInstrumentos))
+                .where(possuiOMesmoId, possuiOMesmoInstrumento);
+
+        return builder.equal(subquery, 1L);
+    }
+
+    public Predicate construirCriterioComJoinInstrumentosParaAula(CriteriaBuilder builder, CriteriaQuery<?> query, Root<Professor> root) {
+        Subquery<Long> subquery = query.subquery(Long.class);
+        Root<Professor> subRoot = subquery.from(Professor.class);
+        Join<Professor, Aula> joinAula = subRoot.join("aulas", JoinType.INNER);
+        Predicate possuiOMesmoId = builder.equal(subRoot.get("id"), root.get("id"));
+        Predicate ensinaOInstrumento = null;
+        Path<String> nomeInstrumento = joinAula.get("instrumento").get("nome");
+
+        if (criterio.getOperation().equals(OperacoesDePesquisa.IGUALDADE)) ensinaOInstrumento = builder.equal(nomeInstrumento, criterio.getValue());
+        else if (criterio.getOperation().equals(OperacoesDePesquisa.CONTEM)) ensinaOInstrumento = builder.like(nomeInstrumento, "%" + criterio.getValue() + "%");
+        else if (criterio.getOperation().equals(OperacoesDePesquisa.INICIA_COM)) ensinaOInstrumento = builder.like(nomeInstrumento, criterio.getValue() + "%");
+        else if (criterio.getOperation().equals(OperacoesDePesquisa.TERMINA_COM)) ensinaOInstrumento = builder.like(nomeInstrumento, "%" + criterio.getValue());
+
+        subquery.select(builder.count(joinAula))
+                .where(possuiOMesmoId, ensinaOInstrumento);
+
+        return builder.greaterThanOrEqualTo(subquery, 1L);
     }
 }

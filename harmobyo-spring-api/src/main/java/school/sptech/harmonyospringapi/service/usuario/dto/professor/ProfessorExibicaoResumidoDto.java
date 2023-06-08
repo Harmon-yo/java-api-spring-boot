@@ -1,6 +1,7 @@
 package school.sptech.harmonyospringapi.service.usuario.dto.professor;
 
 import jakarta.persistence.OneToMany;
+import school.sptech.harmonyospringapi.service.aula.dto.AulaExibicaoDto;
 import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoExibicaoDto;
 
 import java.util.List;
@@ -11,8 +12,9 @@ public class ProfessorExibicaoResumidoDto {
 
     private String nome;
 
-    @OneToMany(mappedBy = "professor")
-    private List<InstrumentoExibicaoDto> ltInstrumentos;
+    private List<InstrumentoExibicaoDto> instrumentosConhecidos;
+
+    private List<AulaExibicaoDto> aulasPossiveis;
 
     private Double distancia;
 
@@ -50,12 +52,20 @@ public class ProfessorExibicaoResumidoDto {
         this.nome = nome;
     }
 
-    public List<InstrumentoExibicaoDto> getLtInstrumentos() {
-        return ltInstrumentos;
+    public List<InstrumentoExibicaoDto> getInstrumentosConhecidos() {
+        return instrumentosConhecidos;
     }
 
-    public void setLtInstrumentos(List<InstrumentoExibicaoDto> ltInstrumentos) {
-        this.ltInstrumentos = ltInstrumentos;
+    public void setInstrumentosConhecidos(List<InstrumentoExibicaoDto> instrumentosConhecidos) {
+        this.instrumentosConhecidos = instrumentosConhecidos;
+    }
+
+    public List<AulaExibicaoDto> getAulasPossiveis() {
+        return aulasPossiveis;
+    }
+
+    public void setAulasPossiveis(List<AulaExibicaoDto> aulasPossiveis) {
+        this.aulasPossiveis = aulasPossiveis;
     }
 
     public Double getDistancia() {

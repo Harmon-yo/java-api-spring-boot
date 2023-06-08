@@ -2,6 +2,7 @@ package school.sptech.harmonyospringapi.service.usuario.dto.professor;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import school.sptech.harmonyospringapi.domain.Professor;
+import school.sptech.harmonyospringapi.service.aula.dto.AulaExibicaoDto;
 import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.ProfessorService;
 
@@ -21,14 +22,16 @@ public class ProfessorMapper {
                                                   double distancia,
                                                   String bairro,
                                                   String cidade,
-                                                  String estado){
+                                                  String estado,
+                                                  List<AulaExibicaoDto> aulas){
         ProfessorExibicaoResumidoDto dto = new ProfessorExibicaoResumidoDto();
 
         Integer idade = Period.between(p.getDataNasc(), LocalDate.now()).getYears();
 
         dto.setId(p.getId());
         dto.setNome(p.getNome());
-        dto.setLtInstrumentos(instrumentos);
+        dto.setInstrumentosConhecidos(instrumentos);
+        dto.setAulasPossiveis(aulas);
         dto.setValorMinimo(valorMinimo);
         dto.setValorMaximo(valorMaximo);
         dto.setDistancia(distancia);
