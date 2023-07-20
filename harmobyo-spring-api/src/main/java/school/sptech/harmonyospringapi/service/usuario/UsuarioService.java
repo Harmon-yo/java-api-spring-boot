@@ -12,15 +12,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import school.sptech.harmonyospringapi.configuration.security.jwt.GerenciadorTokenJwt;
 import school.sptech.harmonyospringapi.domain.*;
-import school.sptech.harmonyospringapi.repository.AvaliacaoRepository;
-import school.sptech.harmonyospringapi.repository.PedidoRepository;
+import school.sptech.harmonyospringapi.repository.*;
 import school.sptech.harmonyospringapi.service.endereco.dto.EnderecoAtualizacaoDto;
+import school.sptech.harmonyospringapi.service.experiencia.ExperienciaMapper;
+import school.sptech.harmonyospringapi.service.experiencia.ExperienciaResumidaDto;
 import school.sptech.harmonyospringapi.service.pedido.PedidoService;
+import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioDadosPerfilDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.avaliacao.AvaliacaoCriacaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.avaliacao.AvaliacaoExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.avaliacao.AvaliacaoMapper;
 import school.sptech.harmonyospringapi.utils.ListaGenericaObj;
-import school.sptech.harmonyospringapi.repository.UsuarioRepository;
 import school.sptech.harmonyospringapi.service.exceptions.EntitadeNaoEncontradaException;
 import school.sptech.harmonyospringapi.service.endereco.EnderecoService;
 import school.sptech.harmonyospringapi.service.endereco.dto.EnderecoExibicaoDto;
@@ -42,6 +43,9 @@ public class UsuarioService {
     private UsuarioRepository usuarioRepository;
 
     @Autowired
+    private ExperienciaRepository experienciaRepository;
+
+    @Autowired
     private EnderecoService enderecoService;
 
     @Autowired
@@ -58,7 +62,7 @@ public class UsuarioService {
     private AuthenticationManager authenticationManager;
 
 
-    public List<UsuarioExibicaoDto> listarCadastrados(){
+    public List<UsuarioExibicaoDto> listarCadastrados() {
 
         List<Usuario> ltUsuarios = this.usuarioRepository.findAll();
 
@@ -66,7 +70,7 @@ public class UsuarioService {
     }
 
 
-    public UsuarioTokenDto autenticar(UsuarioLoginDto usuarioLoginDto){
+    public UsuarioTokenDto autenticar(UsuarioLoginDto usuarioLoginDto) {
 
         final UsernamePasswordAuthenticationToken credentials =
                 new UsernamePasswordAuthenticationToken(
@@ -77,19 +81,19 @@ public class UsuarioService {
 
         Usuario usuarioAutenticado =
                 usuarioRepository.findByEmail(usuarioLoginDto.getEmail())
-                                .orElseThrow(
-                                        () -> new ResponseStatusException(404, "Email de usuário não cadastrado", null)
-                                );
+                        .orElseThrow(
+                                () -> new ResponseStatusException(404, "Email de usuário não cadastrado", null)
+                        );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         final String token = gerenciadorTokenJwt.generateToken(authentication);
 
-        return UsuarioMapper.of(usuarioAutenticado,token);
+        return UsuarioMapper.of(usuarioAutenticado, token);
 
     }
 
-    public List<UsuarioExibicaoDto> exibeTodosOrdemAlfabetica(){
+    public List<UsuarioExibicaoDto> exibeTodosOrdemAlfabetica() {
 
         List<Usuario> ltUsuarios = this.usuarioRepository.findAll();
 
@@ -103,7 +107,7 @@ public class UsuarioService {
 
         ltUsuarios.clear();
 
-        for (int i = 0; i < ltUsuariosGenerica.size(); i ++){
+        for (int i = 0; i < ltUsuariosGenerica.size(); i++) {
             ltUsuarios.add(ltUsuariosGenerica.getElemento(i));
         }
 
@@ -112,15 +116,15 @@ public class UsuarioService {
 
     /* ================ PESQUISA ================ */
 
-    public boolean existeUsuarioPorEmail(String email){
+    public boolean existeUsuarioPorEmail(String email) {
         return usuarioRepository.existsByEmail(email);
     }
 
-    public boolean existeUsuarioPorCpf(String cpf){
+    public boolean existeUsuarioPorCpf(String cpf) {
         return usuarioRepository.existsByCpf(cpf);
     }
 
-    public Usuario buscarPorId(Integer id){
+    public Usuario buscarPorId(Integer id) {
         return usuarioRepository.findById(id).orElseThrow(
                 () -> new EntitadeNaoEncontradaException("Usuário não encontrado")
         );
@@ -128,7 +132,7 @@ public class UsuarioService {
 
     /* ================ ENDEREÇO ================ */
 
-    public UsuarioExibicaoDto inserirEndereco(Integer idUsuario, Endereco endereco ){
+    public UsuarioExibicaoDto inserirEndereco(Integer idUsuario, Endereco endereco) {
         Endereco enderecoInserido = enderecoService.cadastrarEndereco(endereco);
         Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(
                 () -> new EntitadeNaoEncontradaException("Usuário não encontrado")
@@ -138,7 +142,7 @@ public class UsuarioService {
         return UsuarioMapper.ofUsuarioExibicao(usuario);
     }
 
-    public UsuarioExibicaoDto atualizarEndereco(Integer idUsuario, EnderecoAtualizacaoDto enderecoAtualizacaoDto ){
+    public UsuarioExibicaoDto atualizarEndereco(Integer idUsuario, EnderecoAtualizacaoDto enderecoAtualizacaoDto) {
         Usuario usuario = buscarPorId(idUsuario);
 
         Endereco endereco = EnderecoMapper.of(enderecoAtualizacaoDto);
@@ -151,7 +155,7 @@ public class UsuarioService {
         return UsuarioMapper.ofUsuarioExibicao(usuario);
     }
 
-    public void deletarEndereco(Integer idUsuario ){
+    public void deletarEndereco(Integer idUsuario) {
         Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(
                 () -> new EntitadeNaoEncontradaException("Usuário não encontrado")
         );
@@ -161,7 +165,7 @@ public class UsuarioService {
         enderecoService.deletarEndereco(endereco);
     }
 
-    public EnderecoExibicaoDto buscarEndereco(Integer idUsuario){
+    public EnderecoExibicaoDto buscarEndereco(Integer idUsuario) {
         Usuario usuario = buscarPorId(idUsuario);
 
         return EnderecoMapper.ofExibicaoDto(usuario.getEndereco());
@@ -174,7 +178,7 @@ public class UsuarioService {
         Usuario autor = buscarPorId(avaliacaoCriacaoDto.getUsuarioAvaliadorId());
         Pedido pedido = pedidoService.buscarPorId(avaliacaoCriacaoDto.getPedidoId());
 
-        if (receptor.getId().equals(autor.getId())){
+        if (receptor.getId().equals(autor.getId())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Não é possível avaliar a si mesmo");
         } else if (!Objects.equals(pedido.getStatus().getDescricao(), "Concluído")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pedido não foi concluído");
@@ -182,13 +186,13 @@ public class UsuarioService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pedido já foi avaliado");
         } else if ((!pedido.getAluno().getId().equals(receptor.getId())) && (!pedido.getProfessor().getId().equals(receptor.getId()))) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pedido não pertence ao usuário receptor");
-        } else if (receptor instanceof Aluno){
+        } else if (receptor instanceof Aluno) {
             if (autor instanceof Aluno) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Aluno não pode avaliar outro aluno");
             } else if ((!pedido.getAluno().getId().equals(autor.getId())) && (!pedido.getProfessor().getId().equals(autor.getId()))) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pedido não pertence ao usuário autor");
             }
-        } else if (receptor instanceof Professor){
+        } else if (receptor instanceof Professor) {
             if (autor instanceof Professor) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Professor não pode avaliar outro professor");
             } else if ((!pedido.getAluno().getId().equals(autor.getId())) && (!pedido.getProfessor().getId().equals(autor.getId()))) {
@@ -209,5 +213,26 @@ public class UsuarioService {
         List<Avaliacao> avaliacoes = this.avaliacaoRepository.findAllById_UsuarioAvaliadoFk(usuario.getId());
 
         return avaliacoes.stream().map(AvaliacaoMapper::ofAvaliacaoExibicao).toList();
+    }
+
+    public UsuarioDadosPerfilDto obterDadosPerfilUsuario(int id) {
+
+        Optional<Usuario> usuario = this.usuarioRepository.findById(id);
+
+        if (usuario.isPresent()) {
+
+            Usuario usuarioEncontrado = usuario.get();
+
+            List<ExperienciaResumidaDto> experiencias = new ArrayList<>();
+
+            if (usuarioEncontrado instanceof Professor){
+                experiencias = this.experienciaRepository.findAllByProfessorId(id).stream().map(ExperienciaMapper::of).toList();
+            }
+
+            return UsuarioMapper.ofDadosPerfilUsuario(usuarioEncontrado, experiencias);
+
+        }
+
+        throw new EntitadeNaoEncontradaException("ID de Usuário invalido. Usuário não encontrado !");
     }
 }

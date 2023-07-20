@@ -11,9 +11,11 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import school.sptech.harmonyospringapi.domain.ViewDadosPerfilUsuario;
 import school.sptech.harmonyospringapi.service.usuario.UsuarioService;
 import school.sptech.harmonyospringapi.service.usuario.autenticacao.dto.UsuarioLoginDto;
 import school.sptech.harmonyospringapi.service.usuario.autenticacao.dto.UsuarioTokenDto;
+import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioDadosPerfilDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.avaliacao.AvaliacaoCriacaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.avaliacao.AvaliacaoExibicaoDto;
@@ -114,5 +116,10 @@ public class UsuarioController {
 
 
         return ResponseEntity.ok(ltAvaliacaoExibicaoDto);
+    }
+
+    @GetMapping("/dados-perfil/{id}")
+    public ResponseEntity<UsuarioDadosPerfilDto> obterDadosPerfilUsuario(@PathVariable int id){
+        return ResponseEntity.ok(this.usuarioService.obterDadosPerfilUsuario(id));
     }
 }

@@ -31,6 +31,8 @@ public abstract class Usuario {
 
     private LocalDate dataNasc;
 
+    private String bibliografia;
+
     @Pattern(
             regexp = "(\\(?\\d{2}\\)?\\s)?(\\d{4,5}\\-\\d{4})",
             message = "Indique um telefone válido"
@@ -122,7 +124,13 @@ public abstract class Usuario {
         this.telefone = telefone;
     }
 
+    public String getBibliografia() {
+        return bibliografia;
+    }
 
+    public void setBibliografia(String bibliografia) {
+        this.bibliografia = bibliografia;
+    }
 
     public String getCategoria() {
         return categoria;
