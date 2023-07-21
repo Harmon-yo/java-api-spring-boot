@@ -34,7 +34,7 @@ public interface ProfessorRepository extends JpaRepository<Professor, Integer>, 
     @Query("SELECT pi.emprestaInstrumento FROM ProfessorInstrumento pi WHERE pi.professor.id = :idProfessor AND pi.emprestaInstrumento = TRUE ORDER BY pi.emprestaInstrumento LIMIT 1")
     Optional<Boolean> emprestaInstrumento(Integer idProfessor);
 
-    @Query("SELECT SUM(a.valorAula) FROM Aula a  INNER JOIN Pedido p on a.id = p.aula.id  WHERE a.professor.id = :idProfessor AND p.status.descricao = 'Concluído' AND p.dataAula BETWEEN :comeco AND :fim")
+    @Query("SELECT SUM(a.valorAula) FROM Aula a INNER JOIN Pedido p ON p.aula.id = a.id WHERE p.professor.id = :idProfessor AND p.dataAula BETWEEN :comeco AND :fim")
     Optional<Double> getRendimentoPorPeriodo(int idProfessor, LocalDateTime comeco, LocalDateTime fim);
 
     @Query("SELECT COUNT(DISTINCT (p.aluno.id)) FROM Pedido p WHERE p.professor.id = :id AND p.status.descricao = 'Concluído' AND p.dataAula BETWEEN :comeco AND :fim")
