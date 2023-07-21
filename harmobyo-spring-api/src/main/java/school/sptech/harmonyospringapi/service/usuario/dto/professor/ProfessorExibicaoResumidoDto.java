@@ -12,9 +12,7 @@ public class ProfessorExibicaoResumidoDto {
 
     private String nome;
 
-    private List<InstrumentoExibicaoDto> instrumentosConhecidos;
-
-    private List<AulaExibicaoDto> aulasPossiveis;
+    private List<InstrumentoExibicaoDto> instrumentos;
 
     private Double distancia;
 
@@ -52,20 +50,12 @@ public class ProfessorExibicaoResumidoDto {
         this.nome = nome;
     }
 
-    public List<InstrumentoExibicaoDto> getInstrumentosConhecidos() {
-        return instrumentosConhecidos;
+    public List<InstrumentoExibicaoDto> getInstrumentos() {
+        return instrumentos;
     }
 
-    public void setInstrumentosConhecidos(List<InstrumentoExibicaoDto> instrumentosConhecidos) {
-        this.instrumentosConhecidos = instrumentosConhecidos;
-    }
-
-    public List<AulaExibicaoDto> getAulasPossiveis() {
-        return aulasPossiveis;
-    }
-
-    public void setAulasPossiveis(List<AulaExibicaoDto> aulasPossiveis) {
-        this.aulasPossiveis = aulasPossiveis;
+    public void setInstrumentos(List<InstrumentoExibicaoDto> instrumentos) {
+        this.instrumentos = instrumentos;
     }
 
     public Double getDistancia() {

@@ -21,6 +21,9 @@ public class Professor extends Usuario {
 
     @OneToMany(mappedBy = "professor")
     private List<ProfessorInstrumento> instrumentos;
+
+    @OneToOne
+    private Endereco endereco;
     
 
 }

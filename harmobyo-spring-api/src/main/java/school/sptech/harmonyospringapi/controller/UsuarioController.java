@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import school.sptech.harmonyospringapi.domain.FiltroMinimoMaximo;
 import school.sptech.harmonyospringapi.service.usuario.UsuarioService;
 import school.sptech.harmonyospringapi.service.usuario.autenticacao.dto.UsuarioLoginDto;
 import school.sptech.harmonyospringapi.service.usuario.autenticacao.dto.UsuarioTokenDto;
@@ -120,5 +121,13 @@ public class UsuarioController {
     @GetMapping("/dados-perfil/{id}")
     public ResponseEntity<UsuarioDadosPerfilDto> obterDadosPerfilUsuario(@PathVariable int id){
         return ResponseEntity.ok(this.usuarioService.obterDadosPerfilUsuario(id));
+    }
+
+    @GetMapping("/filtro-minimo-maximo")
+    public ResponseEntity<FiltroMinimoMaximo> filtroMinimoMaximo(){
+
+        FiltroMinimoMaximo filtroMinimoMaximo = this.usuarioService.filtroMinimoMaximo();
+
+        return ResponseEntity.ok(filtroMinimoMaximo);
     }
 }

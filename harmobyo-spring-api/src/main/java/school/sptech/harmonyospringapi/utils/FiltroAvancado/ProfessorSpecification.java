@@ -26,6 +26,8 @@ public class ProfessorSpecification implements Specification<Professor> {
             return construirCriterioComJoinInstrumentos(builder, query, root);
         } else if (Objects.equals(criterio.getKey(), "instrumentosAula")) {
             return construirCriterioComJoinInstrumentosParaAula(builder, query, root);
+        } else if (Objects.equals(criterio.getKey(), "cidade")) {
+            return construirCriterioComJoinEndereco(builder, query, root);
         } else {
             return construirCriterioSemJoin(root, builder);
         }
@@ -101,6 +103,19 @@ public class ProfessorSpecification implements Specification<Professor> {
 
         subquery.select(builder.count(joinAula))
                 .where(possuiOMesmoId, ensinaOInstrumento);
+
+        return builder.greaterThanOrEqualTo(subquery, 1L);
+    }
+
+    public Predicate construirCriterioComJoinEndereco(CriteriaBuilder builder, CriteriaQuery<?> query, Root<Professor> root) {
+        Subquery<Long> subquery = query.subquery(Long.class);
+        Root<Professor> subRoot = subquery.from(Professor.class);
+        Join<Professor, Endereco> joinEndereco = subRoot.join("endereco", JoinType.INNER);
+        Predicate possuiOMesmoId = builder.equal(subRoot.get("id"), root.get("id"));
+        Predicate possuiOMesmaCidade = builder.equal(joinEndereco.get("cidade"), criterio.getValue());
+
+        subquery.select(builder.count(joinEndereco))
+                .where(possuiOMesmoId, possuiOMesmaCidade);
 
         return builder.greaterThanOrEqualTo(subquery, 1L);
     }

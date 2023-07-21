@@ -62,6 +62,15 @@ public class EnderecoController {
         return ResponseEntity.status(200).body(enderecoAtualizado);
     }
 
+    @GetMapping("/cidades")
+    public ResponseEntity<List<String>> listarCidades() {
+        List<String> ltCidades = this.enderecoService.listarCidades();
 
+        if (ltCidades.isEmpty()){
+            return ResponseEntity.status(204).build();
+        }
+
+        return ResponseEntity.status(200).body(ltCidades);
+    }
 
 }

@@ -36,5 +36,8 @@ public class EnderecoService {
         return enderecoRepository.findById(id).orElseThrow(() -> new RuntimeException("Endereço não encontrado"));
     }
 
+    public List<String> listarCidades() {
+        	return this.enderecoRepository.listarCidades();
+    }
 
 }

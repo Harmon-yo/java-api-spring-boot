@@ -151,7 +151,6 @@ public class ProfessorService {
                     String estado = endereco.getEstado();
                     Double distancia = 0.0;
                     List<InstrumentoExibicaoDto> instrumentosConhecidos = this.listarInstrumentos(professor.getId());
-                    List<AulaExibicaoDto> aulas = this.aulaService.buscarAulasPorIdProfessor(professor.getId());
                     Integer qtdAvaliacoes = this.obterQuantidadeAvaliacoes(professor.getId());
                     return ProfessorMapper.of(professor,
                             instrumentosConhecidos,
@@ -163,8 +162,7 @@ public class ProfessorService {
                             distancia,
                             bairro,
                             cidade,
-                            estado,
-                            aulas);
+                            estado);
                 }
         ).toList();
     }
@@ -395,18 +393,7 @@ public class ProfessorService {
 
     public List<ProfessorPopularDto> buscarProfessoresPopulares() {
         List<Professor> professores = this.professorRepository.buscarProfessoresPopulares();
-        List<ProfessorPopularDto> professoresPopulares = new ArrayList<>();
-        for(Professor p : professores){
-            ProfessorPopularDto professorPopularDto = new ProfessorPopularDto();
-            professorPopularDto.setId(p.getId());
-            professorPopularDto.setNome(p.getNome());
-            professorPopularDto.setMediaAvaliacao(this.obterMediaAvaliacao(p.getId()));
-            professorPopularDto.setLocalizacao(p.getEndereco().getBairro());
-            professorPopularDto.setUltimaVezOnline(p.getUltimaVezOnline());
-            professoresPopulares.add(professorPopularDto);
 
-        }
-
-        return professoresPopulares;
+        return professores.stream().map(p -> ProfessorMapper.ofPopular(p, this.obterMediaAvaliacao(p.getId()))).toList();
     }
 }

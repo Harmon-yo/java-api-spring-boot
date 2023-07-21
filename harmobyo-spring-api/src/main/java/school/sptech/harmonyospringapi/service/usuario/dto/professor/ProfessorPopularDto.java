@@ -11,21 +11,13 @@ public class ProfessorPopularDto {
 
     private String nome;
 
-
     private String localizacao;
 
     private Double mediaAvaliacao;
 
     private LocalDateTime ultimaVezOnline;
 
-    public ProfessorPopularDto(Integer id, String nome,  String localizacao, Double mediaAvaliacao, LocalDateTime ultimaVezOnline) {
-        this.id = id;
-        this.nome = nome;
-
-        this.localizacao = localizacao;
-        this.mediaAvaliacao = mediaAvaliacao;
-        this.ultimaVezOnline = ultimaVezOnline;
-    }
+    private List<String> instrumentos;
 
     public ProfessorPopularDto() {
 
@@ -69,5 +61,13 @@ public class ProfessorPopularDto {
 
     public void setUltimaVezOnline(LocalDateTime ultimaVezOnline) {
         this.ultimaVezOnline = ultimaVezOnline;
+    }
+
+    public List<String> getInstrumentos() {
+        return instrumentos;
+    }
+
+    public void setInstrumentos(List<String> instrumentos) {
+        this.instrumentos = instrumentos;
     }
 }

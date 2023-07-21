@@ -22,16 +22,14 @@ public class ProfessorMapper {
                                                   double distancia,
                                                   String bairro,
                                                   String cidade,
-                                                  String estado,
-                                                  List<AulaExibicaoDto> aulas){
+                                                  String estado){
         ProfessorExibicaoResumidoDto dto = new ProfessorExibicaoResumidoDto();
 
         Integer idade = Period.between(p.getDataNasc(), LocalDate.now()).getYears();
 
         dto.setId(p.getId());
         dto.setNome(p.getNome());
-        dto.setInstrumentosConhecidos(instrumentos);
-        dto.setAulasPossiveis(aulas);
+        dto.setInstrumentos(instrumentos);
         dto.setValorMinimo(valorMinimo);
         dto.setValorMaximo(valorMaximo);
         dto.setDistancia(distancia);
@@ -42,6 +40,18 @@ public class ProfessorMapper {
         dto.setEmprestaInstrumento(empresaInstrumento);
         dto.setMediaAvaliacao(mediaAvaliacao);
         dto.setQtdeAvaliacoes(qtdeAvaliacoes);
+
+        return dto;
+    }
+
+    public static ProfessorPopularDto ofPopular(Professor p, Double mediaAvaiacao) {
+        ProfessorPopularDto dto = new ProfessorPopularDto();
+
+        dto.setId(p.getId());
+        dto.setNome(p.getNome());
+        dto.setLocalizacao(p.getEndereco().getBairro());
+        dto.setMediaAvaliacao(mediaAvaiacao);
+        dto.setUltimaVezOnline(p.getUltimaVezOnline());
 
         return dto;
     }

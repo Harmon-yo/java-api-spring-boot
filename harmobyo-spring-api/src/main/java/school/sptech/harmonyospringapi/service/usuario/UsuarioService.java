@@ -235,4 +235,20 @@ public class UsuarioService {
 
         throw new EntitadeNaoEncontradaException("ID de Usuário invalido. Usuário não encontrado !");
     }
+
+    /* ================ UTILIDADE ===============*/
+
+    public FiltroMinimoMaximo filtroMinimoMaximo() {
+        Double precoMinimo = this.usuarioRepository.obterPrecoMinimo();
+        Double precoMaximo = this.usuarioRepository.obterPrecoMaximo();
+
+        FiltroMinimoMaximo filtroMinimoMaximo = new FiltroMinimoMaximo();
+
+        filtroMinimoMaximo.setPrecoMinimo(precoMinimo);
+        filtroMinimoMaximo.setPrecoMaximo(precoMaximo);
+        filtroMinimoMaximo.setDistanciaMinima(0.0);
+        filtroMinimoMaximo.setDistanciaMaxima(100.0);
+
+        return filtroMinimoMaximo;
+    }
 }

@@ -31,13 +31,15 @@ public class ProfessorSpecificationBuilder {
             }
 
             if (values.isEmpty()) values.add((String) value);
-            System.out.println("=====================================");
+
+            /*System.out.println("=====================================");
             System.out.println("Filtro: " + key);
             System.out.println("Operação: " + op + " Operador: " + operation);
             System.out.println("Valores: " + values);
-            System.out.println("=====================================");
+            System.out.println("=====================================");*/
 
-            for (String valueSeparated : values) {
+            for (int i = 0; i < values.size(); i++) {
+                String valueSeparated = values.get(i);
                 boolean startWithAsterisk = (valueSeparated).startsWith("*");
                 boolean endWithAsterisk = (valueSeparated).endsWith("*");
 
@@ -51,8 +53,13 @@ public class ProfessorSpecificationBuilder {
                     op = OperacoesDePesquisa.INICIA_COM;
                     valueSeparated = (valueSeparated).substring(0, (valueSeparated).length() - 1);
                 }
+                values.set(i, valueSeparated);
+            }
 
-                this.parametros.add(new CriteriosDePesquisa(isOrPredicate, key, op, valueSeparated));
+            if (values.size() == 1) {
+                this.parametros.add(new CriteriosDePesquisa(isOrPredicate, key, op, values.get(0)));
+            } else {
+                this.parametros.add(new CriteriosDePesquisa(isOrPredicate, key, op, values.get(0), values.get(1)));
             }
         }
         return;
