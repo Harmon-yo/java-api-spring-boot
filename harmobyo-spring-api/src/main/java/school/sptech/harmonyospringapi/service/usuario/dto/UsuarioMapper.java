@@ -102,13 +102,14 @@ public class UsuarioMapper {
         return usuarioTokenDto;
     }
 
-    public static UsuarioDadosPerfilDto ofDadosPerfilUsuario(Usuario usuario, List<ExperienciaResumidaDto> experiencias){
+    public static UsuarioDadosPerfilDto ofDadosPerfilUsuario(Usuario usuario, List<ExperienciaResumidaDto> experiencias, Double mediaAvaliacao){
 
         UsuarioDadosPerfilDto usuarioDadosPerfilDto = new UsuarioDadosPerfilDto();
 
         usuarioDadosPerfilDto.setId(usuario.getId());
         usuarioDadosPerfilDto.setNome(usuario.getNome());
         usuarioDadosPerfilDto.setEmail(usuario.getEmail());
+        usuarioDadosPerfilDto.setAvaliacaoMedia(mediaAvaliacao);
         usuarioDadosPerfilDto.setCpf(usuario.getCpf());
         usuarioDadosPerfilDto.setSexo(usuario.getSexo());
         usuarioDadosPerfilDto.setDataNasc(usuario.getDataNasc());

@@ -225,11 +225,13 @@ public class UsuarioService {
 
             List<ExperienciaResumidaDto> experiencias = new ArrayList<>();
 
+            Double avaliacaoMedia = this.avaliacaoRepository.getMediaAvaliacaoUsuario(id).orElse(0.0);
+
             if (usuarioEncontrado instanceof Professor){
                 experiencias = this.experienciaRepository.findAllByProfessorId(id).stream().map(ExperienciaMapper::of).toList();
             }
 
-            return UsuarioMapper.ofDadosPerfilUsuario(usuarioEncontrado, experiencias);
+            return UsuarioMapper.ofDadosPerfilUsuario(usuarioEncontrado, experiencias, avaliacaoMedia);
 
         }
 

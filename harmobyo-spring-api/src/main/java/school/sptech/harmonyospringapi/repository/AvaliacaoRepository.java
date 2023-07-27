@@ -8,6 +8,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AvaliacaoRepository extends JpaRepository<Avaliacao, Integer> {
+
+    @Query("SELECT AVG(a.valor) AS Avaliacao_media FROM Avaliacao AS a WHERE a.usuarioAvaliado.id = :idUsuario")
+    Optional<Double> getMediaAvaliacaoUsuario(Integer idUsuario);
+
+
     @Query("SELECT AVG(a.valor) AS Avaliacao_media FROM Avaliacao AS a WHERE a.usuarioAvaliado.id = :idProfessor")
     Optional<Double> getMediaAvaliacaoProfessor(Integer idProfessor);
 

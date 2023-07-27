@@ -15,6 +15,8 @@ public class UsuarioDadosPerfilDto {
 
     private String email;
 
+    private Double avaliacaoMedia;
+
     private String cpf;
 
     private String sexo;
@@ -49,6 +51,14 @@ public class UsuarioDadosPerfilDto {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Double getAvaliacaoMedia() {
+        return avaliacaoMedia;
+    }
+
+    public void setAvaliacaoMedia(Double avaliacaoMedia) {
+        this.avaliacaoMedia = avaliacaoMedia;
     }
 
     public String getCpf() {
