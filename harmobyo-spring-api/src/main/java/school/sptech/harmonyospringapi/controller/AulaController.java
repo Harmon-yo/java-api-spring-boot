@@ -17,6 +17,8 @@ import school.sptech.harmonyospringapi.service.aula.dto.AulaAtualizacaoDto;
 import school.sptech.harmonyospringapi.service.aula.dto.AulaCriacaoDto;
 import school.sptech.harmonyospringapi.service.aula.dto.AulaExibicaoDto;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -103,4 +105,6 @@ public class AulaController {
         if (ltAulas.isEmpty()) return ResponseEntity.noContent().build();
         return ResponseEntity.ok(ltAulas);
     }
+
+
 }

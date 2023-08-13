@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import school.sptech.harmonyospringapi.domain.Aula;
 import school.sptech.harmonyospringapi.service.aula.dto.AulaGraficoInformacoesDashboardDto;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;

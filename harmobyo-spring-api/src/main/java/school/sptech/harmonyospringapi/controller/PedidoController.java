@@ -1,19 +1,24 @@
 package school.sptech.harmonyospringapi.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import school.sptech.harmonyospringapi.service.pedido.PedidoService;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoCriacaoDto;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoDto;
-import school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoPilhaDto;
 import school.sptech.harmonyospringapi.utils.PilhaObj;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
@@ -133,7 +138,47 @@ public class PedidoController {
         return ResponseEntity.ok(pedidoExibicaoDto);
     }
 
+    @GetMapping("/pedidos-por-data-id-usuario")
+    @Operation(summary = "Obtém uma lista de todos os pedidos confirmados de um professor pelo dia", description = "")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Aulas encontradss."),
+            @ApiResponse(responseCode = "204", description = "Este professor não possui aulas cadastradas.", content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "404", description = "ID do Professor inválido !", content = @Content(schema = @Schema(hidden = true)))
+    })
+    public ResponseEntity<List<PedidoExibicaoDto>> buscarAulasPorIdUsuarioEDataAula(@RequestParam int fkUsuario,
+                                                                                    @RequestParam String data) {
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    LocalDateTime localDateTime = LocalDateTime.parse(data + " 00:00:00", formatter);
+        List<PedidoExibicaoDto> ltAulas = this.pedidoService.buscarAulasPorIdUsuarioEDataAula(fkUsuario, localDateTime);
+
+        if (ltAulas.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(ltAulas);
+    }
+
+    @GetMapping("/pedidos-por-mes-id-usuario")
+    @Operation(summary = "Obtém uma lista de todos os pedidos confirmados de um professor pelo dia", description = "")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Aulas encontradss."),
+            @ApiResponse(responseCode = "204", description = "Este professor não possui aulas cadastradas.", content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "404", description = "ID do Professor inválido !", content = @Content(schema = @Schema(hidden = true)))
+    })
+    public ResponseEntity<List<PedidoExibicaoDto>> buscarAulasPorIdUsuarioEMesAula(@RequestParam int fkUsuario,
+                                                                                    @RequestParam String data) {
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime localDateTime = LocalDateTime.parse(data + " 00:00:00", formatter);
+        List<PedidoExibicaoDto> ltAulas = this.pedidoService.buscarAulasPorIdUsuarioEDataAula(fkUsuario, localDateTime);
+
+        if (ltAulas.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(ltAulas);
+    }
 
 
 

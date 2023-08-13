@@ -15,6 +15,7 @@ import school.sptech.harmonyospringapi.service.instrumento.InstrumentoService;
 import school.sptech.harmonyospringapi.service.usuario.ProfessorService;
 import school.sptech.harmonyospringapi.service.usuario.UsuarioService;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -93,4 +94,6 @@ public class AulaService {
             throw new EntitadeNaoEncontradaException("ID de Aula Inválido. Aula não encontrada !");
         }
     }
+
+
 }

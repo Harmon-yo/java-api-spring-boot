@@ -5,9 +5,9 @@ import org.springframework.data.jpa.repository.Query;
 import school.sptech.harmonyospringapi.domain.Pedido;
 import school.sptech.harmonyospringapi.service.aula.dto.AulaGraficoInformacoesDashboardDto;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 public interface PedidoRepository extends JpaRepository<Pedido, Integer> {
     @Query("SELECT p FROM Pedido p WHERE p.aluno.id = :usuarioId OR p.aula.professor.id = :usuarioId")
@@ -22,4 +22,7 @@ public interface PedidoRepository extends JpaRepository<Pedido, Integer> {
             "FROM Pedido p " +
             "WHERE p.professor.id = :id AND p.horaCriacao BETWEEN :comeco AND :fim")
     AulaGraficoInformacoesDashboardDto getDadosAulasPeriodoPorIdProfessor(int id, LocalDateTime comeco, LocalDateTime fim);
+
+    @Query(value = "SELECT p from Pedido p where (p.professor.id = :fkUsuario or p.aluno.id = :fkUsuario) and (p.status.descricao = 'Confirmado' or p.status.descricao = 'Concluído')  and CAST(p.dataAula AS DATE ) = CAST(:data AS DATE)")
+    List<Pedido> findAllByUsuarioIdAndAulaData(int fkUsuario, LocalDateTime data);
 }

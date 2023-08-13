@@ -8,7 +8,6 @@ import school.sptech.harmonyospringapi.service.aula.AulaService;
 import school.sptech.harmonyospringapi.service.exceptions.EntitadeNaoEncontradaException;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoCriacaoDto;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoDto;
-import school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoPilhaDto;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoMapper;
 import school.sptech.harmonyospringapi.service.status.StatusService;
 import school.sptech.harmonyospringapi.service.usuario.AlunoService;
@@ -16,9 +15,9 @@ import school.sptech.harmonyospringapi.service.usuario.ProfessorService;
 import school.sptech.harmonyospringapi.service.usuario.UsuarioService;
 import school.sptech.harmonyospringapi.utils.PilhaObj;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class PedidoService {
@@ -144,5 +143,11 @@ public class PedidoService {
         pedido.setHoraResposta(LocalDateTime.now());
 //      Colocar para salvar mudança de status
         return this.repository.save(pedido);
+    }
+
+    public List<PedidoExibicaoDto> buscarAulasPorIdUsuarioEDataAula(int fkProfessor, LocalDateTime data) {
+        List<Pedido> aulas = repository.findAllByUsuarioIdAndAulaData(fkProfessor, data);
+        List<PedidoExibicaoDto> pedidos = aulas.stream().map(a -> PedidoMapper.ofPedidoExibicaoDto(a)).toList();
+        return pedidos;
     }
 }
