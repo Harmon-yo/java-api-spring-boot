@@ -17,6 +17,7 @@ import school.sptech.harmonyospringapi.service.endereco.dto.EnderecoAtualizacaoD
 import school.sptech.harmonyospringapi.service.experiencia.ExperienciaMapper;
 import school.sptech.harmonyospringapi.service.experiencia.ExperienciaResumidaDto;
 import school.sptech.harmonyospringapi.service.pedido.PedidoService;
+import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioAtulizarDadosPessoaisDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioDadosPerfilDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.avaliacao.AvaliacaoCriacaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.avaliacao.AvaliacaoExibicaoDto;
@@ -252,5 +253,17 @@ public class UsuarioService {
         filtroMinimoMaximo.setDistanciaMaxima(100.0);
 
         return filtroMinimoMaximo;
+    }
+
+    /* ================ ATUALIZAR DADOS PESSOAIS ===============*/
+
+    public void atualizarDadosPessoais(int id, UsuarioAtulizarDadosPessoaisDto dadosUsuario){
+
+         if (usuarioRepository.existsById(id)){
+             usuarioRepository.atualizarDadosPessoais(id, dadosUsuario.getNome(), dadosUsuario.getEmail(), dadosUsuario.getDataNasc(), dadosUsuario.getSexo());
+         }
+         else {
+             throw new EntitadeNaoEncontradaException("ID de Usuário Inválido!");
+         }
     }
 }

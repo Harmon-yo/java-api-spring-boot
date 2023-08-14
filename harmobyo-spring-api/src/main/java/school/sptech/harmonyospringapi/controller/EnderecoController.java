@@ -73,4 +73,11 @@ public class EnderecoController {
         return ResponseEntity.status(200).body(ltCidades);
     }
 
+    @PutMapping("/atualiza-endereco-usuario/{idUsuario}")
+    public ResponseEntity<Void> atualizarDadosEnderecoDeUsuario(@PathVariable int idUsuario, @RequestBody @Valid Endereco novoEndereco){
+        this.enderecoService.atualizarDadosEnderecoDeUsuario(idUsuario, novoEndereco);
+
+        return ResponseEntity.ok().build();
+    }
+
 }

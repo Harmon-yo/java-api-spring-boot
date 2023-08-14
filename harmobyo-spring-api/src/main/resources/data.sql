@@ -2,7 +2,7 @@ INSERT INTO endereco (logradouro, numero, complemento, cidade, bairro, estado, c
 VALUES ('Rua A', '100', 'Apto 101', 'São Paulo', 'Vila Madalena', 'SP', '05410-001'),
        ('Rua B', '200', NULL, 'Belo Horizonte', 'Savassi', 'MG', '30140-010'),
        ('Avenida C', '500', 'Sala 501', 'Rio de Janeiro', 'Copacabana', 'RJ', '22020-001'),
-       ('Rua D', '300', NULL, 'Porto Alegre', 'Moinhos de Vento', 'RS', '90430-090'),
+       ('Rua D', '300', 'Apto-101', 'Porto Alegre', 'Moinhos de Vento', 'RS', '90430-090'),
        ('Rua E', '150', NULL, 'Fortaleza', 'Aldeota', 'CE', '60140-160'),
        ('Rua F', '400', 'Casa 1', 'Curitiba', 'Batel', 'PR', '80240-000');
 

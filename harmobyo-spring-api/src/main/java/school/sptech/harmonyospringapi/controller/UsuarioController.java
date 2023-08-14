@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import school.sptech.harmonyospringapi.domain.FiltroMinimoMaximo;
 import school.sptech.harmonyospringapi.service.usuario.UsuarioService;
 import school.sptech.harmonyospringapi.service.usuario.autenticacao.dto.UsuarioLoginDto;
 import school.sptech.harmonyospringapi.service.usuario.autenticacao.dto.UsuarioTokenDto;
+import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioAtulizarDadosPessoaisDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioDadosPerfilDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.avaliacao.AvaliacaoCriacaoDto;
@@ -129,5 +131,12 @@ public class UsuarioController {
         FiltroMinimoMaximo filtroMinimoMaximo = this.usuarioService.filtroMinimoMaximo();
 
         return ResponseEntity.ok(filtroMinimoMaximo);
+    }
+
+    @PutMapping("atualiza-dados-pessoais/{id}")
+    @Transactional
+    public ResponseEntity<Void> atualizarDadosPessoais(@PathVariable int id, @RequestBody @Valid UsuarioAtulizarDadosPessoaisDto dadosUsuario){
+        this.usuarioService.atualizarDadosPessoais(id, dadosUsuario);
+        return ResponseEntity.status(200).build();
     }
 }

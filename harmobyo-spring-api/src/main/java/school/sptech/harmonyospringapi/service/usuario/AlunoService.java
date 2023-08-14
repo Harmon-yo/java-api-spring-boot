@@ -190,5 +190,6 @@ public class AlunoService {
         return instrumentos.stream().map(InstrumentoMapper::ofInstrumentoExibicao).toList();
     }
 
-    /* ============= ENCONTRAR PROFESSORES ================ */
+    /* ============= EDITAR PERFIL ================ */
+
 }

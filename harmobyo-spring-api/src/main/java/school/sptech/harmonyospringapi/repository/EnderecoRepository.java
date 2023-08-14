@@ -11,4 +11,5 @@ public interface EnderecoRepository extends JpaRepository<Endereco, Integer> {
 
     @Query("SELECT DISTINCT E.cidade FROM Endereco E join Professor P on P.endereco.id = E.id")
     List<String> listarCidades();
+
 }
