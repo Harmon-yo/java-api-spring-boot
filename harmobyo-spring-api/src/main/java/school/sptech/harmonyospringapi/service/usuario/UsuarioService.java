@@ -266,4 +266,13 @@ public class UsuarioService {
              throw new EntitadeNaoEncontradaException("ID de Usuário Inválido!");
          }
     }
+
+    public void atualizarBibliografia(int id, String bibliografia){
+        if (usuarioRepository.existsById(id)){
+            this.usuarioRepository.atualizarBibliografia(id, bibliografia);
+        }
+        else {
+            throw new EntitadeNaoEncontradaException("ID de Usuário Inválido!");
+        }
+    }
 }

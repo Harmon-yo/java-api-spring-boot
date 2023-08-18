@@ -28,6 +28,8 @@ public class UsuarioMapper {
 
         novoAluno.setEndereco(usuarioCriacaoDto.getEndereco());
 
+        novoAluno.setBibliografia("");
+
         novoAluno.setAtivo(true);
 
         novoAluno.setUltimaVezOnline(LocalDateTime.now());
@@ -50,6 +52,8 @@ public class UsuarioMapper {
         novoProfessor.setSenha(usuarioCriacaoDto.getSenha()) ;
 
         novoProfessor.setEndereco(usuarioCriacaoDto.getEndereco());
+
+        novoProfessor.setBibliografia("");
 
         novoProfessor.setAtivo(true);
 
