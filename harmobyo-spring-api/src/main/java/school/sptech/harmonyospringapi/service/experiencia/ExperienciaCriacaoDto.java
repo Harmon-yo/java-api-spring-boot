@@ -1,20 +1,12 @@
 package school.sptech.harmonyospringapi.service.experiencia;
 
-public class ExperienciaResumidaDto {
-
-    private Integer id;
+public class ExperienciaCriacaoDto {
 
     private String titulo;
 
     private String descricao;
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    private Integer idProfessor;
 
     public String getTitulo() {
         return titulo;
@@ -30,5 +22,13 @@ public class ExperienciaResumidaDto {
 
     public void setDescricao(String descricao) {
         this.descricao = descricao;
+    }
+
+    public Integer getIdProfessor() {
+        return idProfessor;
+    }
+
+    public void setIdProfessor(Integer idProfessor) {
+        this.idProfessor = idProfessor;
     }
 }

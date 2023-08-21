@@ -7,7 +7,7 @@ public class Experiencia {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     private String titulo;
 
@@ -17,11 +17,11 @@ public class Experiencia {
     @JoinColumn(name = "professor_fk")
     private Professor professor;
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

@@ -1,6 +1,7 @@
 package school.sptech.harmonyospringapi.service.experiencia;
 
 import school.sptech.harmonyospringapi.domain.Experiencia;
+import school.sptech.harmonyospringapi.domain.Professor;
 
 public abstract class ExperienciaMapper {
 
@@ -13,5 +14,16 @@ public abstract class ExperienciaMapper {
         experienciaResumidaDto.setDescricao(experiencia.getDescricao());
 
         return experienciaResumidaDto;
+    }
+
+    public static Experiencia of(ExperienciaCriacaoDto experienciaCriacaoDto, Professor professor){
+
+        Experiencia novaExperiencia = new Experiencia();
+
+        novaExperiencia.setTitulo(experienciaCriacaoDto.getTitulo());
+        novaExperiencia.setDescricao(experienciaCriacaoDto.getDescricao());
+        novaExperiencia.setProfessor(professor);
+
+        return novaExperiencia;
     }
 }
