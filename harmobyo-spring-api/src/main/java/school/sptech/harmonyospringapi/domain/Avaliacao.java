@@ -7,8 +7,9 @@ import java.time.LocalDate;
 @Entity
 public class Avaliacao {
 
-    @EmbeddedId
-    private AvaliacaoKey id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     private Double valor;
 
@@ -31,11 +32,11 @@ public class Avaliacao {
     @JoinColumn(name = "pedido_fk")
     private Pedido pedido;
 
-    public AvaliacaoKey getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(AvaliacaoKey id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

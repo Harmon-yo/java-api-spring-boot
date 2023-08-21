@@ -1,12 +1,11 @@
 package school.sptech.harmonyospringapi.service.usuario.dto.aluno_instrumento;
 
-import school.sptech.harmonyospringapi.domain.AlunoInstrumentoKey;
 import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioExibicaoDto;
 
 public class AlunoInstrumentoExibicaoDto {
 
-    private AlunoInstrumentoKey id;
+    private Integer id;
 
     private UsuarioExibicaoDto aluno;
 
@@ -14,11 +13,11 @@ public class AlunoInstrumentoExibicaoDto {
 
     private String nivelConhecimento;
 
-    public AlunoInstrumentoKey getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(AlunoInstrumentoKey id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

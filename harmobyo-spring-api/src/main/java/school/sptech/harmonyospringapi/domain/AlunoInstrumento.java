@@ -5,8 +5,9 @@ import jakarta.persistence.*;
 @Entity
 public class AlunoInstrumento {
 
-    @EmbeddedId
-    private AlunoInstrumentoKey id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     @ManyToOne
     @MapsId("alunoFk")
@@ -20,11 +21,11 @@ public class AlunoInstrumento {
 
     private String nivelConhecimento;
 
-    public AlunoInstrumentoKey getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(AlunoInstrumentoKey id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

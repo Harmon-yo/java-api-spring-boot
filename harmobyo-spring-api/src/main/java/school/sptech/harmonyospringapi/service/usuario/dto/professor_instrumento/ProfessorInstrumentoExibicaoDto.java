@@ -1,12 +1,11 @@
 package school.sptech.harmonyospringapi.service.usuario.dto.professor_instrumento;
 
-import school.sptech.harmonyospringapi.domain.ProfessorInstrumentoKey;
 import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioExibicaoDto;
 
 public class ProfessorInstrumentoExibicaoDto {
 
-    private ProfessorInstrumentoKey id;
+    private Integer id;
 
     private UsuarioExibicaoDto professor;
 
@@ -20,11 +19,11 @@ public class ProfessorInstrumentoExibicaoDto {
 
     private Integer qtdeAvaliacoes;
 
-    public ProfessorInstrumentoKey getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(ProfessorInstrumentoKey id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

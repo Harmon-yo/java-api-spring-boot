@@ -1,6 +1,5 @@
 package school.sptech.harmonyospringapi.service.usuario;
 
-import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
@@ -14,8 +13,8 @@ import school.sptech.harmonyospringapi.configuration.security.jwt.GerenciadorTok
 import school.sptech.harmonyospringapi.domain.*;
 import school.sptech.harmonyospringapi.repository.*;
 import school.sptech.harmonyospringapi.service.endereco.dto.EnderecoAtualizacaoDto;
-import school.sptech.harmonyospringapi.service.experiencia.ExperienciaMapper;
-import school.sptech.harmonyospringapi.service.experiencia.ExperienciaResumidaDto;
+import school.sptech.harmonyospringapi.service.experiencia.dto.ExperienciaMapper;
+import school.sptech.harmonyospringapi.service.experiencia.dto.ExperienciaExibicaoDto;
 import school.sptech.harmonyospringapi.service.pedido.PedidoService;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioAtulizarDadosPessoaisDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioDadosPerfilDto;
@@ -183,7 +182,7 @@ public class UsuarioService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Não é possível avaliar a si mesmo");
         } else if (!Objects.equals(pedido.getStatus().getDescricao(), "Concluído")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pedido não foi concluído");
-        } else if (avaliacaoRepository.existsAvaliacaoByIdPedido(pedido.getId())) {
+        } else if (avaliacaoRepository.existsAvaliacaoByPedidoId(pedido.getId())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pedido já foi avaliado");
         } else if ((!pedido.getAluno().getId().equals(receptor.getId())) && (!pedido.getProfessor().getId().equals(receptor.getId()))) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pedido não pertence ao usuário receptor");
@@ -211,7 +210,7 @@ public class UsuarioService {
     public List<AvaliacaoExibicaoDto> listarAvaliacoesPorUsuario(Integer idUsuario) {
         Usuario usuario = buscarPorId(idUsuario);
 
-        List<Avaliacao> avaliacoes = this.avaliacaoRepository.findAllById_UsuarioAvaliadoFk(usuario.getId());
+        List<Avaliacao> avaliacoes = this.avaliacaoRepository.findByUsuarioAvaliadoId(usuario.getId());
 
         return avaliacoes.stream().map(AvaliacaoMapper::ofAvaliacaoExibicao).toList();
     }
@@ -224,7 +223,7 @@ public class UsuarioService {
 
             Usuario usuarioEncontrado = usuario.get();
 
-            List<ExperienciaResumidaDto> experiencias = new ArrayList<>();
+            List<ExperienciaExibicaoDto> experiencias = new ArrayList<>();
 
             Double avaliacaoMedia = this.avaliacaoRepository.getMediaAvaliacaoUsuario(id).orElse(0.0);
 

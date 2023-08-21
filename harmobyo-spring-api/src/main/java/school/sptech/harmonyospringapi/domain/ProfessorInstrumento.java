@@ -5,8 +5,9 @@ import jakarta.persistence.*;
 @Entity
 public class ProfessorInstrumento {
 
-    @EmbeddedId
-    private ProfessorInstrumentoKey id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     @ManyToOne
     @MapsId("professorFk")
@@ -22,11 +23,11 @@ public class ProfessorInstrumento {
 
     private boolean emprestaInstrumento;
 
-    public ProfessorInstrumentoKey getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(ProfessorInstrumentoKey id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

@@ -5,9 +5,13 @@ import org.springframework.stereotype.Service;
 import school.sptech.harmonyospringapi.domain.Experiencia;
 import school.sptech.harmonyospringapi.domain.Professor;
 import school.sptech.harmonyospringapi.repository.ExperienciaRepository;
-import school.sptech.harmonyospringapi.repository.ProfessorRepository;
 import school.sptech.harmonyospringapi.service.exceptions.EntitadeNaoEncontradaException;
+import school.sptech.harmonyospringapi.service.experiencia.dto.ExperienciaCriacaoDto;
+import school.sptech.harmonyospringapi.service.experiencia.dto.ExperienciaExibicaoDto;
+import school.sptech.harmonyospringapi.service.experiencia.dto.ExperienciaMapper;
+import school.sptech.harmonyospringapi.service.usuario.ProfessorService;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -17,42 +21,47 @@ public class ExperienciaService {
     private ExperienciaRepository experienciaRepository;
 
     @Autowired
-    private ProfessorRepository professorRepository;
+    private ProfessorService professorService;
 
-    public void atualizarExperienciaPorId(int id, String titulo, String descricao){
-        System.out.println("Crachei aq na service antes do if");
-        if (experienciaRepository.existsById(id)){
-            System.out.println("Crachei aq");
-           experienciaRepository.atualizarExperienciaPorId(id, titulo, descricao);
-        }
-        else{
-            throw new EntitadeNaoEncontradaException("ID de Experiência Inválido!");
-        }
+    public ExperienciaExibicaoDto cadastrarExp(ExperienciaCriacaoDto novaExperiencia) {
+
+        Integer professorId = novaExperiencia.getIdProfessor();
+        Professor professor = this.professorService.buscarPorId(professorId);
+
+        Experiencia experiencia = ExperienciaMapper.of(novaExperiencia, professor);
+
+        Experiencia experienciaCadastrada = this.experienciaRepository.save(experiencia);
+
+        return ExperienciaMapper.of(experienciaCadastrada);
     }
 
-    public void cadastrarExp(ExperienciaCriacaoDto novaExperiencia){
+    public Experiencia buscarPorId(Integer id) {
+        return experienciaRepository.findById(id).orElseThrow(
+                () -> new EntitadeNaoEncontradaException("Experiência não encontrada")
+        );
+    }
 
-        Optional<Professor> professorEncontrado = this.professorRepository.findById(novaExperiencia.getIdProfessor());
+    public List<ExperienciaExibicaoDto> buscarExperienciasPorIdProfessor(Integer idProfessor) {
+        List<Experiencia> experiencias = this.experienciaRepository.findAllByProfessorId(idProfessor);
 
-        if (professorEncontrado.isPresent()){
+        return experiencias.stream().map(ExperienciaMapper::of).toList();
+    }
 
-           Professor professor  = professorEncontrado.get();
+    public ExperienciaExibicaoDto atualizarExperienciaPorId(int id, String titulo, String descricao) {
+        Experiencia experiencia = this.buscarPorId(id);
 
-            Experiencia experiencia = ExperienciaMapper.of(novaExperiencia, professor);
+        experiencia.setTitulo(titulo);
+        experiencia.setDescricao(descricao);
 
-            this.experienciaRepository.save(experiencia);
-        }
-        else{
-            throw new EntitadeNaoEncontradaException("ID de Professor Inválido!");
-        }
+        Experiencia experienciaCadastrada = this.experienciaRepository.save(experiencia);
+
+        return ExperienciaMapper.of(experienciaCadastrada);
     }
 
     public void deletarExperienciaPorId(int id){
-
         if (this.experienciaRepository.existsById(id)){
             this.experienciaRepository.deleteById(id);
-        }
-        else{
+        } else{
             throw new EntitadeNaoEncontradaException("ID de Experiência Inválido!");
         }
     }

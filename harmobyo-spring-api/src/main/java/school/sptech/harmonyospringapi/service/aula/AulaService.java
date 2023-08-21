@@ -38,11 +38,11 @@ public class AulaService {
                 .toList();
     }
 
-    public AulaExibicaoDto criar(AulaCriacaoDto aulaCriacaoDto) {
+    public AulaExibicaoDto cadastrarAula(AulaCriacaoDto aulaCriacaoDto) {
+        Integer professorId = aulaCriacaoDto.getProfessorId();
+        Integer instrumentoId = aulaCriacaoDto.getInstrumentoId();
 
-        if (this.aulaRepository.existsByProfessorIdAndInstrumentoId(aulaCriacaoDto.getProfessorId(), aulaCriacaoDto.getInstrumentoId())) {
-            throw new EntidadeConflitanteException("Aula já cadastrada !");
-        }
+        if (this.aulaExiste(professorId, instrumentoId)) throw new EntidadeConflitanteException("Aula já cadastrada !");
 
         Professor professor = this.professorService.buscarPorId(aulaCriacaoDto.getProfessorId());
         Instrumento instrumento = this.instrumentoService.buscarPorId(aulaCriacaoDto.getInstrumentoId());
@@ -50,7 +50,6 @@ public class AulaService {
         Aula aula = AulaMapper.of(aulaCriacaoDto, professor, instrumento);
 
         Aula aulaCadastrada = this.aulaRepository.save(aula);
-
 
         return AulaMapper.ofAulaExibicaoDto(aulaCadastrada);
     }
@@ -69,30 +68,26 @@ public class AulaService {
 
     public AulaExibicaoDto atualizarAulaPorId(int idAula, AulaAtualizacaoDto aulaAtualizacaoDto) {
 
-        Optional<Aula> aulaOpt = this.aulaRepository.findById(idAula);
+        Aula aula = this.buscarPorId(idAula);
 
-        if (aulaOpt.isPresent()) {
+        Double novoValorAula = aulaAtualizacaoDto.getValorAula();
+        aula.setValorAula(novoValorAula);
 
-            aulaOpt.get().setValorAula(aulaAtualizacaoDto.getValorAula());
+        Aula aulaAtualizada = this.aulaRepository.save(aula);
 
-            Aula aulaAtualizada = this.aulaRepository.save(aulaOpt.get());
-
-            return AulaMapper.ofAulaExibicaoDto(aulaAtualizada);
-        }
-
-        throw new EntitadeNaoEncontradaException("ID de Aula Inválido. Aula não encontrada !");
+        return AulaMapper.ofAulaExibicaoDto(aulaAtualizada);
     }
 
-
     public void deletarAulaPorId(Integer id) {
-
         if (this.aulaRepository.existsById(id)){
-
             this.aulaRepository.deleteById(id);
-        }
-        else {
+        } else {
             throw new EntitadeNaoEncontradaException("ID de Aula Inválido. Aula não encontrada !");
         }
+    }
+
+    public Boolean aulaExiste(int idProfessor, int idInstrumento) {
+        return this.aulaRepository.existsByProfessorIdAndInstrumentoId(idProfessor, idInstrumento);
     }
 
 

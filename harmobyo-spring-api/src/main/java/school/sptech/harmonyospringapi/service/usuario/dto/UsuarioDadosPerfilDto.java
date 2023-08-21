@@ -1,8 +1,7 @@
 package school.sptech.harmonyospringapi.service.usuario.dto;
 
 import school.sptech.harmonyospringapi.domain.Endereco;
-import school.sptech.harmonyospringapi.domain.Experiencia;
-import school.sptech.harmonyospringapi.service.experiencia.ExperienciaResumidaDto;
+import school.sptech.harmonyospringapi.service.experiencia.dto.ExperienciaExibicaoDto;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -27,7 +26,7 @@ public class UsuarioDadosPerfilDto {
 
     private Endereco Endereco;
 
-    private List<ExperienciaResumidaDto> experiencia;
+    private List<ExperienciaExibicaoDto> experiencia;
 
     public Integer getId() {
         return id;
@@ -101,11 +100,11 @@ public class UsuarioDadosPerfilDto {
         Endereco = endereco;
     }
 
-    public List<ExperienciaResumidaDto> getExperiencia() {
+    public List<ExperienciaExibicaoDto> getExperiencia() {
         return experiencia;
     }
 
-    public void setExperiencia(List<ExperienciaResumidaDto> experiencia) {
+    public void setExperiencia(List<ExperienciaExibicaoDto> experiencia) {
         this.experiencia = experiencia;
     }
 }

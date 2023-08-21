@@ -4,10 +4,12 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import school.sptech.harmonyospringapi.repository.ExperienciaRepository;
-import school.sptech.harmonyospringapi.service.experiencia.ExperienciaAtualizacaoDto;
-import school.sptech.harmonyospringapi.service.experiencia.ExperienciaCriacaoDto;
+import school.sptech.harmonyospringapi.service.experiencia.dto.ExperienciaAtualizacaoDto;
+import school.sptech.harmonyospringapi.service.experiencia.dto.ExperienciaCriacaoDto;
 import school.sptech.harmonyospringapi.service.experiencia.ExperienciaService;
+import school.sptech.harmonyospringapi.service.experiencia.dto.ExperienciaExibicaoDto;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/experiencias")
@@ -18,21 +20,25 @@ public class ExperienciaController {
 
     @Transactional
     @PutMapping("/atualiza-exp/{id}")
-    private ResponseEntity<Void>  atualizarExperienciaPorId(@PathVariable int id, @RequestBody ExperienciaAtualizacaoDto experiencia){
-        System.out.println("Crachei na controller antes de chamar a service");
-        this.experienciaService.atualizarExperienciaPorId(id, experiencia.getTitulo(), experiencia.getDescricao());
-        System.out.println("Crachei na controller depois de chamar a service");
-        return ResponseEntity.ok().build();
+    public ResponseEntity<ExperienciaExibicaoDto> atualizarExperienciaPorId(@PathVariable int id, @RequestBody ExperienciaAtualizacaoDto experiencia){
+        ExperienciaExibicaoDto expExibicao = this.experienciaService.atualizarExperienciaPorId(id, experiencia.getTitulo(), experiencia.getDescricao());
+        return ResponseEntity.ok().body(expExibicao);
     }
 
     @PostMapping
-    private ResponseEntity<Void>  cadastrarExp(@RequestBody ExperienciaCriacaoDto novaExperiencia){
-        this.experienciaService.cadastrarExp(novaExperiencia);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<ExperienciaExibicaoDto>  cadastrarExp(@RequestBody ExperienciaCriacaoDto novaExperiencia){
+        ExperienciaExibicaoDto expExibicao = this.experienciaService.cadastrarExp(novaExperiencia);
+        return ResponseEntity.ok().body(expExibicao);
+    }
+
+    @GetMapping("/professor/{id}")
+    public ResponseEntity<List<ExperienciaExibicaoDto>> buscarPorId(@PathVariable int id){
+        List<ExperienciaExibicaoDto> listExpExibicao = this.experienciaService.buscarExperienciasPorIdProfessor(id);
+        return ResponseEntity.ok().body(listExpExibicao);
     }
 
     @DeleteMapping("/{id}")
-    private ResponseEntity<Void>  deletarExperienciaPorId(@PathVariable int id){
+    public ResponseEntity<Void>  deletarExperienciaPorId(@PathVariable int id){
         this.experienciaService.deletarExperienciaPorId(id);
         return ResponseEntity.ok().build();
     }
