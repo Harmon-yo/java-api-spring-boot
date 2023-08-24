@@ -1,13 +1,12 @@
 package school.sptech.harmonyospringapi.service.usuario.dto.avaliacao;
 
-import school.sptech.harmonyospringapi.domain.AvaliacaoKey;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioExibicaoDto;
 
 import java.time.LocalDate;
 
 public class AvaliacaoExibicaoDto {
-    private AvaliacaoKey id;
+    private Integer id;
 
     private Double valor;
 
@@ -19,11 +18,11 @@ public class AvaliacaoExibicaoDto {
 
     private PedidoExibicaoDto pedidoAula;
 
-    public AvaliacaoKey getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(AvaliacaoKey id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

@@ -33,4 +33,8 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
                                 "u.dataNasc = :dataNasc, " +
                                 "u.sexo = :sexo WHERE u.id = :id")
     void atualizarDadosPessoais(int id, String nome, String email, LocalDate dataNasc, String sexo);
+
+    @Modifying
+    @Query("UPDATE Usuario u SET u.bibliografia = :bibliografia WHERE u.id = :id")
+    void atualizarBibliografia(int id, String bibliografia);
 }

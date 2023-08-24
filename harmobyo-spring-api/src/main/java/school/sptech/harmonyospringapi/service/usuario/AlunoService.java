@@ -165,8 +165,7 @@ public class AlunoService {
         Aluno aluno = buscarPorId(alunoId);
         Instrumento instrumento = this.instrumentoService.buscarPorId(instrumentoId);
 
-        if (this.alunoInstrumentoRepository.existsById(
-                new AlunoInstrumentoKey(alunoId, alunoInstrumentoCriacaoDto.getInstrumentoId()))){
+        if (this.alunoInstrumentoRepository.existsAlunoInstrumentoByAluno_idAndInstrumento_id(instrumentoId, alunoId)) {
             throw new EntidadeConflitanteException(
                     String.format(
                             "Professor com o id %d já possui o instrumento com o id %d cadastrado !",

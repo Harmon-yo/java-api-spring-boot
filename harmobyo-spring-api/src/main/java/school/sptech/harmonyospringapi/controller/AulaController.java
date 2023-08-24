@@ -39,7 +39,7 @@ public class AulaController {
     @SecurityRequirement(name = "Bearer")
     @PostMapping
     public ResponseEntity<AulaExibicaoDto> cadastrar(@RequestBody @Valid AulaCriacaoDto aulaCriacaoDto) {
-        AulaExibicaoDto aulaCriada = this.aulaService.criar(aulaCriacaoDto);
+        AulaExibicaoDto aulaCriada = this.aulaService.cadastrarAula(aulaCriacaoDto);
 
         return ResponseEntity.ok(aulaCriada);
     }

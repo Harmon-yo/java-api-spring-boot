@@ -1,18 +1,18 @@
-package school.sptech.harmonyospringapi.service.experiencia;
+package school.sptech.harmonyospringapi.service.experiencia.dto;
 
-public class ExperienciaResumidaDto {
+public class ExperienciaExibicaoDto {
 
-    private Long id;
+    private Integer id;
 
     private String titulo;
 
     private String descricao;
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

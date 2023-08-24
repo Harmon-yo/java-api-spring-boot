@@ -17,6 +17,7 @@ import school.sptech.harmonyospringapi.service.usuario.UsuarioService;
 import school.sptech.harmonyospringapi.service.usuario.autenticacao.dto.UsuarioLoginDto;
 import school.sptech.harmonyospringapi.service.usuario.autenticacao.dto.UsuarioTokenDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioAtulizarDadosPessoaisDto;
+import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioBibliografiaDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioDadosPerfilDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.avaliacao.AvaliacaoCriacaoDto;
@@ -137,6 +138,13 @@ public class UsuarioController {
     @Transactional
     public ResponseEntity<Void> atualizarDadosPessoais(@PathVariable int id, @RequestBody @Valid UsuarioAtulizarDadosPessoaisDto dadosUsuario){
         this.usuarioService.atualizarDadosPessoais(id, dadosUsuario);
+        return ResponseEntity.status(200).build();
+    }
+
+    @PutMapping("atualiza-sobre-mim/{id}")
+    @Transactional
+    public ResponseEntity<Void> atualizarDadosPessoais(@PathVariable int id, @RequestBody @Valid UsuarioBibliografiaDto usuarioBibliografia){
+        this.usuarioService.atualizarBibliografia(id, usuarioBibliografia.getBibliografia());
         return ResponseEntity.status(200).build();
     }
 }

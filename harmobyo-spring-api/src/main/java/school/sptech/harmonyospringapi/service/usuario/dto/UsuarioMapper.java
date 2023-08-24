@@ -1,10 +1,9 @@
 package school.sptech.harmonyospringapi.service.usuario.dto;
 
 import school.sptech.harmonyospringapi.domain.Aluno;
-import school.sptech.harmonyospringapi.domain.Experiencia;
 import school.sptech.harmonyospringapi.domain.Professor;
 import school.sptech.harmonyospringapi.domain.Usuario;
-import school.sptech.harmonyospringapi.service.experiencia.ExperienciaResumidaDto;
+import school.sptech.harmonyospringapi.service.experiencia.dto.ExperienciaExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.autenticacao.dto.UsuarioTokenDto;
 
 import java.time.LocalDateTime;
@@ -28,6 +27,8 @@ public class UsuarioMapper {
 
         novoAluno.setEndereco(usuarioCriacaoDto.getEndereco());
 
+        novoAluno.setBibliografia("");
+
         novoAluno.setAtivo(true);
 
         novoAluno.setUltimaVezOnline(LocalDateTime.now());
@@ -50,6 +51,8 @@ public class UsuarioMapper {
         novoProfessor.setSenha(usuarioCriacaoDto.getSenha()) ;
 
         novoProfessor.setEndereco(usuarioCriacaoDto.getEndereco());
+
+        novoProfessor.setBibliografia("");
 
         novoProfessor.setAtivo(true);
 
@@ -102,7 +105,7 @@ public class UsuarioMapper {
         return usuarioTokenDto;
     }
 
-    public static UsuarioDadosPerfilDto ofDadosPerfilUsuario(Usuario usuario, List<ExperienciaResumidaDto> experiencias, Double mediaAvaliacao, String categoriaUsuario){
+    public static UsuarioDadosPerfilDto ofDadosPerfilUsuario(Usuario usuario, List<ExperienciaExibicaoDto> experiencias, Double mediaAvaliacao, String categoriaUsuario){
 
         UsuarioDadosPerfilDto usuarioDadosPerfilDto = new UsuarioDadosPerfilDto();
 

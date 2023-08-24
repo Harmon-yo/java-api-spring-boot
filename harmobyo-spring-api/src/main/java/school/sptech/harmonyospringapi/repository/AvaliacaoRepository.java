@@ -16,11 +16,11 @@ public interface AvaliacaoRepository extends JpaRepository<Avaliacao, Integer> {
     @Query("SELECT AVG(a.valor) AS Avaliacao_media FROM Avaliacao AS a WHERE a.usuarioAvaliado.id = :idProfessor")
     Optional<Double> getMediaAvaliacaoProfessor(Integer idProfessor);
 
-    List<Avaliacao> findAllById_UsuarioAvaliadoFk(Integer idProfessor);
+    List<Avaliacao> findByUsuarioAvaliadoId(Integer id);
 
     @Query("SELECT COUNT(a.valor) FROM Avaliacao AS a WHERE a.usuarioAvaliado.id = :id")
     Optional<Integer> getQuantidadeAvaliacoes(Integer id);
 
-    boolean existsAvaliacaoByIdPedido(Integer idPedido);
+    boolean existsAvaliacaoByPedidoId(Integer idPedido);
 
 }
