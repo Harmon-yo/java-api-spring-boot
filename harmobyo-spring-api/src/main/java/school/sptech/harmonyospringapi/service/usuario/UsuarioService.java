@@ -232,7 +232,9 @@ public class UsuarioService {
                 experiencias = this.experienciaRepository.findAllByProfessorId(id).stream().map(ExperienciaMapper::of).toList();
             }
 
-            return UsuarioMapper.ofDadosPerfilUsuario(usuarioEncontrado, experiencias, avaliacaoMedia);
+            String categoriaUsuario = usuarioEncontrado instanceof Professor ? "Professor": "Aluno";
+
+            return UsuarioMapper.ofDadosPerfilUsuario(usuarioEncontrado, experiencias, avaliacaoMedia, categoriaUsuario);
 
         }
 

@@ -102,7 +102,7 @@ public class UsuarioMapper {
         return usuarioTokenDto;
     }
 
-    public static UsuarioDadosPerfilDto ofDadosPerfilUsuario(Usuario usuario, List<ExperienciaResumidaDto> experiencias, Double mediaAvaliacao){
+    public static UsuarioDadosPerfilDto ofDadosPerfilUsuario(Usuario usuario, List<ExperienciaResumidaDto> experiencias, Double mediaAvaliacao, String categoriaUsuario){
 
         UsuarioDadosPerfilDto usuarioDadosPerfilDto = new UsuarioDadosPerfilDto();
 
@@ -116,7 +116,7 @@ public class UsuarioMapper {
         usuarioDadosPerfilDto.setBibliografia(usuario.getBibliografia());
         usuarioDadosPerfilDto.setEndereco(usuario.getEndereco());
         usuarioDadosPerfilDto.setExperiencia(experiencias);
-
+        usuarioDadosPerfilDto.setCategoriaUsuario(categoriaUsuario);
         return usuarioDadosPerfilDto;
     }
 }

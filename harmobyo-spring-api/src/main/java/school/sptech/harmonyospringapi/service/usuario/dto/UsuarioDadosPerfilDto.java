@@ -29,6 +29,16 @@ public class UsuarioDadosPerfilDto {
 
     private List<ExperienciaResumidaDto> experiencia;
 
+    private String categoriaUsuario;
+
+    public String getCategoriaUsuario() {
+        return categoriaUsuario;
+    }
+
+    public void setCategoriaUsuario(String categoriaUsuario) {
+        this.categoriaUsuario = categoriaUsuario;
+    }
+
     public Integer getId() {
         return id;
     }
