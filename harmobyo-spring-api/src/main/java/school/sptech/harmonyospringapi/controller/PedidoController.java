@@ -121,7 +121,7 @@ public class PedidoController {
     public ResponseEntity<List<PedidoExibicaoDto>> buscarPorUsuarioId(@PathVariable Integer id){
         List<PedidoExibicaoDto> pedidoExibicaoDto = this.pedidoService.buscarPorUsuarioId(id);
 
-        if(pedidoExibicaoDto.isEmpty()) return ResponseEntity.notFound().build();
+        if(pedidoExibicaoDto.isEmpty()) return ResponseEntity.noContent().build();
         return ResponseEntity.ok(pedidoExibicaoDto);
     }
 
@@ -134,7 +134,7 @@ public class PedidoController {
     public ResponseEntity<PedidoExibicaoDto> buscarPorId(@PathVariable Integer id){
         PedidoExibicaoDto pedidoExibicaoDto = this.pedidoService.buscarPorIdParaExibicao(id);
 
-        if(pedidoExibicaoDto == null) return ResponseEntity.notFound().build();
+        if(pedidoExibicaoDto == null) return ResponseEntity.noContent().build();
         return ResponseEntity.ok(pedidoExibicaoDto);
     }
 
