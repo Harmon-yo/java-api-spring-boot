@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import school.sptech.harmonyospringapi.domain.Professor;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoDashboardDto;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoHistoricoDto;
+import school.sptech.harmonyospringapi.service.pedido.dto.PedidosMes;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,7 +35,7 @@ public interface ProfessorRepository extends JpaRepository<Professor, Integer>, 
     @Query("SELECT pi.emprestaInstrumento FROM ProfessorInstrumento pi WHERE pi.professor.id = :idProfessor AND pi.emprestaInstrumento = TRUE ORDER BY pi.emprestaInstrumento LIMIT 1")
     Optional<Boolean> emprestaInstrumento(Integer idProfessor);
 
-    @Query("SELECT SUM(a.valorAula) FROM Aula a INNER JOIN Pedido p ON p.aula.id = a.id WHERE p.professor.id = :idProfessor AND p.dataAula BETWEEN :comeco AND :fim")
+    @Query("SELECT SUM(a.valorAula) FROM Aula a INNER JOIN Pedido p ON p.aula.id = a.id WHERE p.professor.id = :idProfessor AND p.dataAula BETWEEN :comeco AND :fim AND p.status.descricao = 'Concluído'")
     Optional<Double> getRendimentoPorPeriodo(int idProfessor, LocalDateTime comeco, LocalDateTime fim);
 
     @Query("SELECT COUNT(DISTINCT (p.aluno.id)) FROM Pedido p WHERE p.professor.id = :id AND p.status.descricao = 'Concluído' AND p.dataAula BETWEEN :comeco AND :fim")
@@ -52,5 +53,17 @@ public interface ProfessorRepository extends JpaRepository<Professor, Integer>, 
     @Query("SELECT new school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoDashboardDto(p.aula.instrumento.id, p.aula.instrumento.nome, COUNT(p.id), SUM(p.aula.valorAula)) FROM Pedido p WHERE p.professor.id = :id AND p.status.descricao = 'Concluído' AND p.dataAula BETWEEN :comeco AND :fim  GROUP BY p.aula.instrumento.id")
     List<PedidoExibicaoDashboardDto> getAulasRealizadasAgrupadasPorInstrumentoMesAtual(int id, LocalDateTime comeco, LocalDateTime fim);
 
+
+    @Query("SELECT new school.sptech.harmonyospringapi.service.pedido.dto.PedidosMes(" +
+            "FUNCTION('MONTHNAME', p.dataAula), " +
+            "SUM(CASE WHEN p.status.descricao = 'Cancelado' THEN 1 ELSE 0 END), " +
+            "SUM(CASE WHEN p.status.descricao = 'Recusado' THEN 1 ELSE 0 END), " +
+            "SUM(CASE WHEN p.status.descricao = 'Concluído' THEN 1 ELSE 0 END)) " +
+            "FROM Pedido p " +
+            "WHERE p.professor.id = :id AND p.status.descricao IN ('Cancelado', 'Recusado', 'Concluído') " +
+            "AND p.dataAula BETWEEN :comeco AND :fim " +
+            "GROUP BY FUNCTION('MONTHNAME', p.dataAula), MONTH(p.dataAula)"+
+            "ORDER BY FUNCTION('MONTH', p.dataAula)")
+    List<PedidosMes> getAulasAgrupadasPorMes(int id, LocalDateTime comeco, LocalDateTime fim);
 
 }

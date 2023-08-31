@@ -2,14 +2,14 @@ package school.sptech.harmonyospringapi.service.aula.dto;
 
 public class AulaGraficoInformacoesDashboardDto {
 
-    private int aulasSolicitadas;
+    private int aulasRecusadas;
 
     private int aulasCanceladas;
 
     private int aulasRealizadas;
 
-    public AulaGraficoInformacoesDashboardDto(Long aulasSolicitadas, Long aulasCanceladas, Long aulasRealizadas) {
-        this.aulasSolicitadas = aulasSolicitadas.intValue();
+    public AulaGraficoInformacoesDashboardDto(Long aulasRecusadas, Long aulasCanceladas, Long aulasRealizadas) {
+        this.aulasRecusadas = aulasRecusadas.intValue();
         this.aulasCanceladas = aulasCanceladas.intValue();
         this.aulasRealizadas = aulasRealizadas.intValue();
     }
@@ -17,12 +17,12 @@ public class AulaGraficoInformacoesDashboardDto {
     public AulaGraficoInformacoesDashboardDto() {
     }
 
-    public int getAulasSolicitadas() {
-        return aulasSolicitadas;
+    public int getAulasRecusadas() {
+        return aulasRecusadas;
     }
 
-    public void setAulasSolicitadas(int aulasSolicitadas) {
-        this.aulasSolicitadas = aulasSolicitadas;
+    public void setAulasRecusadas(int aulasRecusadas) {
+        this.aulasRecusadas = aulasRecusadas;
     }
 
     public int getAulasCanceladas() {

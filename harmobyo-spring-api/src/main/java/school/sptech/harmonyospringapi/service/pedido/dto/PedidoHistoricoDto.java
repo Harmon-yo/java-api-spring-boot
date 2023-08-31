@@ -11,7 +11,7 @@ public class PedidoHistoricoDto {
         this.qtdAulasSolicitadas = qtdAulasSolicitadas.intValue();
         this.qtdAulasRealizadas = qtdAulasRealizadas.intValue();
     }
-    private String traduzirNomeMes(String mes){
+    public static String traduzirNomeMes(String mes){
         switch (mes){
             case "January":
                 return "Janeiro";

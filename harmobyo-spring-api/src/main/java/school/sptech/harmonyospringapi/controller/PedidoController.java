@@ -121,7 +121,7 @@ public class PedidoController {
     public ResponseEntity<List<PedidoExibicaoDto>> buscarPorUsuarioId(@PathVariable Integer id){
         List<PedidoExibicaoDto> pedidoExibicaoDto = this.pedidoService.buscarPorUsuarioId(id);
 
-        if(pedidoExibicaoDto.isEmpty()) return ResponseEntity.notFound().build();
+        if(pedidoExibicaoDto.isEmpty()) return ResponseEntity.noContent().build();
         return ResponseEntity.ok(pedidoExibicaoDto);
     }
 
@@ -134,7 +134,7 @@ public class PedidoController {
     public ResponseEntity<PedidoExibicaoDto> buscarPorId(@PathVariable Integer id){
         PedidoExibicaoDto pedidoExibicaoDto = this.pedidoService.buscarPorIdParaExibicao(id);
 
-        if(pedidoExibicaoDto == null) return ResponseEntity.notFound().build();
+        if(pedidoExibicaoDto == null) return ResponseEntity.noContent().build();
         return ResponseEntity.ok(pedidoExibicaoDto);
     }
 
@@ -171,7 +171,7 @@ public class PedidoController {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime localDateTime = LocalDateTime.parse(data + " 00:00:00", formatter);
-        List<PedidoExibicaoDto> ltAulas = this.pedidoService.buscarAulasPorIdUsuarioEDataAula(fkUsuario, localDateTime);
+        List<PedidoExibicaoDto> ltAulas = this.pedidoService.buscarAulasPorIdUsuarioEMesAula(fkUsuario, localDateTime);
 
         if (ltAulas.isEmpty()){
             return ResponseEntity.noContent().build();

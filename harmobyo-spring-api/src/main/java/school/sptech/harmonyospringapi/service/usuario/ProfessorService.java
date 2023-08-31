@@ -18,6 +18,7 @@ import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoExibic
 import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoMapper;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoDashboardDto;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoHistoricoDto;
+import school.sptech.harmonyospringapi.service.pedido.dto.PedidosMes;
 import school.sptech.harmonyospringapi.service.usuario.dto.avaliacao.AvaliacaoCriacaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.avaliacao.AvaliacaoExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.professor.ProfessorExibicaoResumidoDto;
@@ -341,7 +342,7 @@ public class ProfessorService {
 
     /* ========================= DASHBOARD ======================= */
 
-    //ÚLTIMAS 24 HORAS
+
 
     public Double getRendimentoMesAtual(int idProfessor){
 
@@ -369,8 +370,9 @@ public class ProfessorService {
     }
 
     public Long getMediaTempoResposta(int id) {
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
         List<Pedido> pedidos = this.pedidoRepository.buscarPorUsuarioId(id);
-        Long somaTempoResposta = pedidos.stream().mapToLong(p -> Duration.between(p.getHoraCriacao(), p.getHoraResposta()).toMinutes()).sum();
+        Long somaTempoResposta = pedidos.stream().filter(p -> p.getHoraCriacao().getMonth() == now.getMonth()).mapToLong(p -> Duration.between(p.getHoraCriacao(), p.getHoraResposta()).toMinutes()).sum();
         Long mediaTempoResposta = somaTempoResposta / pedidos.size();
         return mediaTempoResposta;
     }
@@ -381,9 +383,17 @@ public class ProfessorService {
         return pedidos;
     }
 
-    public List<PedidoExibicaoDashboardDto> getAulasRealizadas(int id){
+    public List<PedidoExibicaoDashboardDto> getAulasRealizadasMensal(int id){
         LocalDateTime now = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
         LocalDateTime comeco = LocalDateTime.of(now.getYear(), now.getMonth().getValue(),1,0,0);
+        LocalDateTime fim = LocalDateTime.of(now.getYear(), now.getMonth().getValue(),30,23,59);
+
+        List<PedidoExibicaoDashboardDto> pedidos = this.professorRepository.getAulasRealizadasAgrupadasPorInstrumentoMesAtual(id, comeco, fim);
+        return pedidos;
+    }
+    public List<PedidoExibicaoDashboardDto> getAulasRealizadasAnual(int id){
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
+        LocalDateTime comeco = LocalDateTime.of(now.getYear(), 1,1,0,0);
         LocalDateTime fim = LocalDateTime.of(now.getYear(), now.getMonth().getValue(),30,23,59);
 
         List<PedidoExibicaoDashboardDto> pedidos = this.professorRepository.getAulasRealizadasAgrupadasPorInstrumentoMesAtual(id, comeco, fim);
@@ -405,5 +415,49 @@ public class ProfessorService {
         return professores.stream().map(p -> ProfessorMapper.ofPopular(p, this.obterMediaAvaliacao(p.getId()))).toList();
     }
 
+<<<<<<< HEAD
 
+=======
+    public Long getMediaTempoRespostaAnual(int id) {
+
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
+
+        List<Pedido> pedidos = this.pedidoRepository.buscarPorUsuarioId(id);
+        Long somaTempoResposta = pedidos.stream().filter(p -> p.getHoraCriacao().getYear() == now.getYear() ).mapToLong(p -> Duration.between(p.getHoraCriacao(), p.getHoraResposta()).toMinutes()).sum();
+        Long mediaTempoResposta = somaTempoResposta / pedidos.size();
+        return mediaTempoResposta;
+    }
+
+    public Double getRendimentoAnual(int id) {
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
+        LocalDateTime comeco = LocalDateTime.of(now.getYear(), 1,1,0,0);
+        LocalDateTime fim = LocalDateTime.of(now.getYear(), now.getMonth().getValue(),30,23,59);
+        Double rendimento = this.professorRepository.getRendimentoPorPeriodo(id,comeco, fim).orElse(0d);
+        return rendimento;
+    }
+
+    public Integer getQuantidadeAlunosAnual(int id) {
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
+        LocalDateTime comeco = LocalDateTime.of(now.getYear(), 1,1,0,0);
+        LocalDateTime fim = LocalDateTime.of(now.getYear(), now.getMonth().getValue(),30,23,59);
+        Integer quantidadeAlunos = this.professorRepository.getQuantidadeAlunosPorPeriodo(id,comeco, fim).orElse(0);
+        return quantidadeAlunos;
+    }
+
+    public Integer getQuantidadeAulasAnual(int id) {
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
+        LocalDateTime comeco = LocalDateTime.of(now.getYear(), 1,1,0,0);
+        LocalDateTime fim = LocalDateTime.of(now.getYear(), now.getMonth().getValue(),30,23,59);
+        Integer quantidadeAulas = this.professorRepository.getQuantidadeAulasPorPeriodo(id,comeco, fim).orElse(0);
+        return quantidadeAulas;
+    }
+
+    public List<PedidosMes> dadosAulasAnual(int id) {
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
+        LocalDateTime comeco = LocalDateTime.of(now.getYear(), 1,1,0,0);
+        LocalDateTime fim = LocalDateTime.of(now.getYear(), now.getMonth().getValue(),30,23,59);
+        List<PedidosMes> pedidos = this.professorRepository.getAulasAgrupadasPorMes(id, comeco, fim);
+        return pedidos;
+    }
+>>>>>>> 568287d70a6fff6c9be65e82197a18aa1a49ceb9
 }

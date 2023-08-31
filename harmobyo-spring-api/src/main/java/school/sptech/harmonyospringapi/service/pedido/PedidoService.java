@@ -162,4 +162,10 @@ public class PedidoService {
         List<PedidoExibicaoDto> pedidos = aulas.stream().map(a -> PedidoMapper.ofPedidoExibicaoDto(a)).toList();
         return pedidos;
     }
+
+    public List<PedidoExibicaoDto> buscarAulasPorIdUsuarioEMesAula(int fkUsuario, LocalDateTime localDateTime) {
+        List<Pedido> aulas = repository.findAllByUsuarioIdAndAulaDataMes(fkUsuario, localDateTime);
+        List<PedidoExibicaoDto> pedidos = aulas.stream().map(a -> PedidoMapper.ofPedidoExibicaoDto(a)).toList();
+        return pedidos;
+    }
 }
