@@ -180,6 +180,13 @@ public class PedidoController {
         return ResponseEntity.ok(ltAulas);
     }
 
+    @GetMapping("/usuario/{id}/confirmado")
+    public ResponseEntity<List<PedidoExibicaoDto>> buscarPorUsuarioIdConcluido(@PathVariable Integer id){
+        List<PedidoExibicaoDto> pedidoExibicaoDto = this.pedidoService.buscarPorUsuarioIdConfirmado(id);
+
+        if(pedidoExibicaoDto.isEmpty()) return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(pedidoExibicaoDto);
+    }
 
 
 }

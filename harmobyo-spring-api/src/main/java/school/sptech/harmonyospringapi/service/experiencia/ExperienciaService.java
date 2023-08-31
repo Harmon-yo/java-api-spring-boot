@@ -59,7 +59,7 @@ public class ExperienciaService {
     }
 
     public void deletarExperienciaPorId(int id){
-        if (this.experienciaRepository.existsById(id)){
+        if (this.experienciaRepository.existsById(id)) {
             this.experienciaRepository.deleteById(id);
         } else{
             throw new EntitadeNaoEncontradaException("ID de Experiência Inválido!");

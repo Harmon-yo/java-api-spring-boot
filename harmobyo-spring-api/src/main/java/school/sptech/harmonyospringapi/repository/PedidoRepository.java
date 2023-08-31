@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import school.sptech.harmonyospringapi.domain.Pedido;
 import school.sptech.harmonyospringapi.service.aula.dto.AulaGraficoInformacoesDashboardDto;
+import school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoDto;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -25,4 +26,7 @@ public interface PedidoRepository extends JpaRepository<Pedido, Integer> {
 
     @Query(value = "SELECT p from Pedido p where (p.professor.id = :fkUsuario or p.aluno.id = :fkUsuario) and (p.status.descricao = 'Confirmado' or p.status.descricao = 'Concluído')  and CAST(p.dataAula AS DATE ) = CAST(:data AS DATE)")
     List<Pedido> findAllByUsuarioIdAndAulaData(int fkUsuario, LocalDateTime data);
+
+    @Query(value = "SELECT p FROM Pedido p WHERE (p.professor.id = :usuarioId OR p.aluno.id = :usuarioId) AND p.status.descricao = 'Confirmado'")
+    List<Pedido> buscarPorUsuarioIdConfirmado(Integer usuarioId);
 }

@@ -52,11 +52,6 @@ public class UsuarioController {
         return ResponseEntity.status(200).body(ltUsuariosExibicao);
     }
 
-
-    /*
-        Recomendo adicionar mais status.
-        Ass. João
-    */
     @Operation(summary = "Entra em uma conta", description = "")
     @ApiResponses( value= {
             @ApiResponse(responseCode= "200", description = "Login realizado."),

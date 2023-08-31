@@ -8,10 +8,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import school.sptech.harmonyospringapi.domain.Professor;
+import school.sptech.harmonyospringapi.service.aula.dto.AulaExibicaoDto;
 import school.sptech.harmonyospringapi.service.aula.dto.AulaGraficoInformacoesDashboardDto;
 import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoExibicaoDto;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoDashboardDto;
@@ -70,7 +72,7 @@ public class ProfessorController {
     })
     @SecurityRequirement(name = "Bearer")
     @GetMapping("/{id}")
-    public ResponseEntity<UsuarioExibicaoDto> buscarPorId(@RequestParam Integer id) {
+    public ResponseEntity<UsuarioExibicaoDto> buscarPorId(@PathVariable Integer id) {
 
         return ResponseEntity.status(200).body(this.professorService.buscarPorIdParaExibicao(id));
     }
@@ -138,6 +140,14 @@ public class ProfessorController {
                 : ResponseEntity.status(200).body(instrumentos);
     }
 
+    @GetMapping("/{id}/aulas")
+    public ResponseEntity<List<AulaExibicaoDto>> listarAulas(@PathVariable int id) {
+        List<AulaExibicaoDto> aulas = this.professorService.listarAulasDosInstrumentos(id);
+        return aulas.isEmpty() ? ResponseEntity.status(204).build()
+                : ResponseEntity.status(200).body(aulas);
+    }
+
+
     @Operation(summary = "Adiciona Professor a partir do ID", description = "")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Professor adicionado. ")
@@ -149,6 +159,7 @@ public class ProfessorController {
 
         return ResponseEntity.status(201).body(professorInstrumentoExibicaoDto);
     }
+
 
     @Operation(summary = "Filtra e Lista os professores com os preços(valor/aula) mais altos da plataforma ", description = "")
     @ApiResponses(value = {

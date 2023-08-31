@@ -12,6 +12,7 @@ import school.sptech.harmonyospringapi.repository.*;
 import school.sptech.harmonyospringapi.service.aula.AulaService;
 import school.sptech.harmonyospringapi.service.aula.dto.AulaExibicaoDto;
 import school.sptech.harmonyospringapi.service.aula.dto.AulaGraficoInformacoesDashboardDto;
+import school.sptech.harmonyospringapi.service.aula.dto.AulaMapper;
 import school.sptech.harmonyospringapi.service.instrumento.InstrumentoService;
 import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoExibicaoDto;
 import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoMapper;
@@ -150,7 +151,7 @@ public class ProfessorService {
                     String cidade = endereco.getCidade();
                     String estado = endereco.getEstado();
                     Double distancia = 0.0;
-                    List<InstrumentoExibicaoDto> instrumentosConhecidos = this.listarInstrumentos(professor.getId());
+                    List<InstrumentoExibicaoDto> instrumentosConhecidos = this.listarAulasDosInstrumentos(professor.getId()).stream().map(AulaMapper::ofInstrumentoExibicao).toList();
                     Integer qtdAvaliacoes = this.obterQuantidadeAvaliacoes(professor.getId());
                     return ProfessorMapper.of(professor,
                             instrumentosConhecidos,
@@ -285,6 +286,14 @@ public class ProfessorService {
         return instrumentos.stream().map(InstrumentoMapper::ofInstrumentoExibicao).toList();
     }
 
+    public List<AulaExibicaoDto> listarAulasDosInstrumentos(int professorId) {
+        List<AulaExibicaoDto> aulasComInstrumentosInsinados = this.aulaService.buscarAulasPorIdProfessor(professorId);
+
+        if (aulasComInstrumentosInsinados.isEmpty()) throw new EntitadeNaoEncontradaException("Professor não possui aulas cadastradas !");
+
+        return aulasComInstrumentosInsinados;
+    }
+
     public ProfessorInstrumentoExibicaoDto criar(Integer professorId, ProfessorInstrumentoCriacaoDto professorInstrumentoCriacaoDto) {
         Professor professor = buscarPorId(professorId);
         Instrumento instrumento = this.instrumentoService.buscarPorId(professorInstrumentoCriacaoDto.getInstrumentoId());
@@ -395,4 +404,6 @@ public class ProfessorService {
 
         return professores.stream().map(p -> ProfessorMapper.ofPopular(p, this.obterMediaAvaliacao(p.getId()))).toList();
     }
+
+
 }

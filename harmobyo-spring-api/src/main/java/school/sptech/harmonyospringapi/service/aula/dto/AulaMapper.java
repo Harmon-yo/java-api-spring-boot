@@ -1,6 +1,7 @@
 package school.sptech.harmonyospringapi.service.aula.dto;
 
 import school.sptech.harmonyospringapi.domain.*;
+import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoExibicaoDto;
 import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoMapper;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioMapper;
 
@@ -24,6 +25,10 @@ public class AulaMapper {
         aulaExibicaoDto.setInstrumento(InstrumentoMapper.ofInstrumentoExibicao(aula.getInstrumento()));
 
         return aulaExibicaoDto;
+    }
+
+    public static InstrumentoExibicaoDto ofInstrumentoExibicao(AulaExibicaoDto aulaExibicaoDto) {
+        return aulaExibicaoDto.getInstrumento();
     }
 
 }

@@ -66,6 +66,8 @@ public class PedidoService {
         Aula aula = this.aulaService.buscarPorId(pedidoCriacaoDto.getAulaId());
         Status status = this.statusService.buscarPorDescricao("Pendente");
 
+        pedidoCriacaoDto.setDataAula(pedidoCriacaoDto.getDataAula().withSecond(0));
+
         return PedidoMapper.ofPedidoExibicaoDto(this.repository.save(
                 PedidoMapper.of(pedidoCriacaoDto, aluno, professor, status, aula)
         ));
@@ -78,6 +80,16 @@ public class PedidoService {
         return repository.findById(integer)
                 .orElseThrow(() -> new EntitadeNaoEncontradaException("Pedido não encontrado"));
     }
+
+    public List<PedidoExibicaoDto> buscarPorUsuarioIdConfirmado(Integer id) {
+        Usuario usuario = usuarioService.buscarPorId(id);
+
+        List<Pedido> pedidos = this.repository.buscarPorUsuarioIdConfirmado(usuario.getId());
+
+        return pedidos.stream().map(PedidoMapper::ofPedidoExibicaoDto).toList();
+    }
+
+    /* ============= ACEITAR E RECUSAR ============== */
 
 
     public PedidoExibicaoDto aceitarPedido(Pedido pedidoPendente){

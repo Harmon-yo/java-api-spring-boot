@@ -37,17 +37,10 @@ public class AlunoService {
     private AlunoRepository alunoRepository;
 
     @Autowired
-    private ProfessorRepository professorRepository;
-    @Autowired
     private UsuarioService usuarioService;
-    @Autowired
-    private ProfessorService professorService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private AulaService aulaService;
 
     @Autowired
     private AlunoInstrumentoRepository alunoInstrumentoRepository;
@@ -56,7 +49,6 @@ public class AlunoService {
     private InstrumentoService instrumentoService;
 
     /* ============= ALUNO ================ */
-
 
     public UsuarioExibicaoDto cadastrar(UsuarioCriacaoDto novoAlunoDto) {
         if (this.usuarioService.existeUsuarioPorEmail((novoAlunoDto.getEmail()))) throw new EntidadeConflitanteException("Erro ao cadastrar. Email já cadastrado !");
