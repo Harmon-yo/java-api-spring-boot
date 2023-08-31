@@ -415,49 +415,40 @@ public class ProfessorService {
         return professores.stream().map(p -> ProfessorMapper.ofPopular(p, this.obterMediaAvaliacao(p.getId()))).toList();
     }
 
-<<<<<<< HEAD
-
-=======
     public Long getMediaTempoRespostaAnual(int id) {
 
         LocalDateTime now = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
 
         List<Pedido> pedidos = this.pedidoRepository.buscarPorUsuarioId(id);
         Long somaTempoResposta = pedidos.stream().filter(p -> p.getHoraCriacao().getYear() == now.getYear() ).mapToLong(p -> Duration.between(p.getHoraCriacao(), p.getHoraResposta()).toMinutes()).sum();
-        Long mediaTempoResposta = somaTempoResposta / pedidos.size();
-        return mediaTempoResposta;
+        return somaTempoResposta / pedidos.size();
     }
 
     public Double getRendimentoAnual(int id) {
         LocalDateTime now = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
         LocalDateTime comeco = LocalDateTime.of(now.getYear(), 1,1,0,0);
         LocalDateTime fim = LocalDateTime.of(now.getYear(), now.getMonth().getValue(),30,23,59);
-        Double rendimento = this.professorRepository.getRendimentoPorPeriodo(id,comeco, fim).orElse(0d);
-        return rendimento;
+        return this.professorRepository.getRendimentoPorPeriodo(id,comeco, fim).orElse(0d);
     }
 
     public Integer getQuantidadeAlunosAnual(int id) {
         LocalDateTime now = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
         LocalDateTime comeco = LocalDateTime.of(now.getYear(), 1,1,0,0);
         LocalDateTime fim = LocalDateTime.of(now.getYear(), now.getMonth().getValue(),30,23,59);
-        Integer quantidadeAlunos = this.professorRepository.getQuantidadeAlunosPorPeriodo(id,comeco, fim).orElse(0);
-        return quantidadeAlunos;
+        return this.professorRepository.getQuantidadeAlunosPorPeriodo(id,comeco, fim).orElse(0);
     }
 
     public Integer getQuantidadeAulasAnual(int id) {
         LocalDateTime now = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
         LocalDateTime comeco = LocalDateTime.of(now.getYear(), 1,1,0,0);
         LocalDateTime fim = LocalDateTime.of(now.getYear(), now.getMonth().getValue(),30,23,59);
-        Integer quantidadeAulas = this.professorRepository.getQuantidadeAulasPorPeriodo(id,comeco, fim).orElse(0);
-        return quantidadeAulas;
+        return this.professorRepository.getQuantidadeAulasPorPeriodo(id,comeco, fim).orElse(0);
     }
 
     public List<PedidosMes> dadosAulasAnual(int id) {
         LocalDateTime now = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
         LocalDateTime comeco = LocalDateTime.of(now.getYear(), 1,1,0,0);
         LocalDateTime fim = LocalDateTime.of(now.getYear(), now.getMonth().getValue(),30,23,59);
-        List<PedidosMes> pedidos = this.professorRepository.getAulasAgrupadasPorMes(id, comeco, fim);
-        return pedidos;
+        return this.professorRepository.getAulasAgrupadasPorMes(id, comeco, fim);
     }
->>>>>>> 568287d70a6fff6c9be65e82197a18aa1a49ceb9
 }
