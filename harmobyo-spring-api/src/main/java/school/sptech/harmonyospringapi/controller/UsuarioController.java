@@ -112,7 +112,6 @@ public class UsuarioController {
 
         if (ltAvaliacaoExibicaoDto.isEmpty()) return ResponseEntity.noContent().build();
 
-
         return ResponseEntity.ok(ltAvaliacaoExibicaoDto);
     }
 

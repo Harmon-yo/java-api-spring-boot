@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import school.sptech.harmonyospringapi.domain.*;
 import school.sptech.harmonyospringapi.repository.*;
 import school.sptech.harmonyospringapi.service.aula.AulaService;
+import school.sptech.harmonyospringapi.service.exceptions.EntidadeConflitanteException;
 import school.sptech.harmonyospringapi.service.exceptions.EntitadeNaoEncontradaException;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoCriacaoDto;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoDto;
@@ -90,26 +91,6 @@ public class PedidoService {
     }
 
     /* ============= ACEITAR E RECUSAR ============== */
-
-
-    public PedidoExibicaoDto aceitarPedido(Pedido pedidoPendente){
-        Pedido pedidoEncontradoNoBanco = this.buscarPorId(pedidoPendente.getId());
-
-        pedidoEncontradoNoBanco.setStatus(statusService.buscarPorDescricao("Confirmado")); //Status - Confirmado é de ID 2
-        pedidoEncontradoNoBanco.setHoraResposta(LocalDateTime.now());
-
-        return PedidoMapper.ofPedidoExibicaoDto(repository.save(pedidoEncontradoNoBanco));
-    }
-
-    public PedidoExibicaoDto recusarPedido(Pedido pedidoPendente){
-        Pedido pedidoEncontradoNoBanco = this.buscarPorId(pedidoPendente.getId());
-
-        pedidoEncontradoNoBanco.setStatus(statusService.buscarPorDescricao("Recusado")); //Status - Recusado é de ID 4
-        pedidoEncontradoNoBanco.setHoraResposta(LocalDateTime.now());
-
-        return PedidoMapper.ofPedidoExibicaoDto(repository.save(pedidoEncontradoNoBanco));
-    }
-
     public List<PedidoExibicaoDto> buscarPorUsuarioId(Integer id) {
         Usuario usuario = usuarioService.buscarPorId(id);
 
@@ -124,33 +105,69 @@ public class PedidoService {
         return PedidoMapper.ofPedidoExibicaoDto(pedido);
     }
 
-    /* ============= MUDAR STATUS ============== */
+    /* ============= ACEITAR / RECUSAR / CANCELAR / CONCLUIR ============== */
     public PedidoExibicaoDto aceitarPropostaDoAluno(Integer id) {
         Pedido pedido = this.buscarPorId(id);
-        Status status = this.statusService.buscarPorDescricao("Aguardando Pagamento");
-        pedido = atualizarStatus(pedido, status);
+
+        switch (pedido.getStatus().getDescricao()) {
+            case "Confirmado" -> throw new EntitadeNaoEncontradaException("Pedido já confirmado");
+            case "Recusado" -> throw new EntitadeNaoEncontradaException("Pedido já recusado");
+            case "Cancelado" -> throw new EntitadeNaoEncontradaException("Pedido já cancelado");
+            case "Aguardando Pagamento" -> throw new EntitadeNaoEncontradaException("Pedido já está aguardando pagamento");
+        }
+
+        pedido = atualizarStatus(pedido, "Aguardando Pagamento");
 
         return PedidoMapper.ofPedidoExibicaoDto(pedido);
     }
 
     public PedidoExibicaoDto recusarPropostaDoAluno(Integer id) {
         Pedido pedido = this.buscarPorId(id);
-        Status status = this.statusService.buscarPorDescricao("Recusado");
-        pedido = atualizarStatus(pedido, status);
+
+        switch (pedido.getStatus().getDescricao()) {
+            case "Recusado" -> throw new EntidadeConflitanteException("Pedido já recusado");
+            case "Cancelado" -> throw new EntidadeConflitanteException("Pedido já cancelado");
+            case "Aguardando Pagamento" ->
+                    throw new EntidadeConflitanteException("Pedido já está aguardando pagamento");
+        }
+
+        pedido = atualizarStatus(pedido, "Recusado");
 
         return PedidoMapper.ofPedidoExibicaoDto(pedido);
     }
 
     public PedidoExibicaoDto cancelarPedido(Integer id){
         Pedido pedido = this.buscarPorId(id);
-        Status status = this.statusService.buscarPorDescricao("Cancelado");
-        pedido = atualizarStatus(pedido, status);
+
+        if (this.buscarPorId(id).getStatus().getDescricao().equals("Cancelado")) {
+            throw new EntidadeConflitanteException("Pedido já cancelado");
+        } else if (this.buscarPorId(id).getStatus().getDescricao().equals("Recusado")) {
+            throw new EntidadeConflitanteException("Pedido já recusado");
+        }
+        pedido = atualizarStatus(pedido, "Cancelado");
 
         return PedidoMapper.ofPedidoExibicaoDto(pedido);
-
     }
 
-    public Pedido atualizarStatus(Pedido pedido, Status status) {
+    public PedidoExibicaoDto concluirPedidoPorId(Integer id) {
+        Pedido pedido = this.buscarPorId(id);
+
+        if (this.buscarPorId(id).getStatus().getDescricao().equals("Concluído")) {
+            throw new EntidadeConflitanteException("Pedido já concluído");
+        } else if (this.buscarPorId(id).getStatus().getDescricao().equals("Cancelado")) {
+            throw new EntidadeConflitanteException("Pedido já cancelado");
+        } else if (this.buscarPorId(id).getStatus().getDescricao().equals("Recusado")) {
+            throw new EntidadeConflitanteException("Pedido já recusado");
+        }
+
+        pedido = atualizarStatus(pedido, "Concluído");
+
+        return PedidoMapper.ofPedidoExibicaoDto(pedido);
+    }
+
+    public Pedido atualizarStatus(Pedido pedido, String nomeStatus) {
+        Status status = this.statusService.buscarPorDescricao(nomeStatus);
+
         pedido.setStatus(status);
         pedido.setHoraResposta(LocalDateTime.now());
 //      Colocar para salvar mudança de status

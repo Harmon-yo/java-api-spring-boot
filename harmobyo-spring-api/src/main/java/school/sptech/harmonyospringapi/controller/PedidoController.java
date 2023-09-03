@@ -75,7 +75,7 @@ public class PedidoController {
 
 
 
-    @PostMapping("/aceita-pedido/{id}")
+    @PutMapping("/aceita-pedido/{id}")
     @Operation(summary = "Aceita a proposta do aluno")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Proposta aceita com sucesso"),
@@ -87,19 +87,17 @@ public class PedidoController {
         return ResponseEntity.ok(pedido);
     }
 
-    @PostMapping("/recusa-pedido/{id}")
+    @PutMapping("/recusa-pedido/{id}")
     @Operation(summary = "Recusa a proposta do aluno")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Proposta recusada com sucesso"),
             @ApiResponse(responseCode = "400", description = "Erro de validação")
     })
     public ResponseEntity<PedidoExibicaoDto> recusarPropostaDoAluno(@PathVariable Integer id){
-        PedidoExibicaoDto pedido = this.pedidoService.recusarPropostaDoAluno(id);
-
-        return ResponseEntity.ok(pedido);
+        return ResponseEntity.ok(this.pedidoService.recusarPropostaDoAluno(id));
     }
 
-    @PatchMapping("/cancela-pedido/{id}")
+    @PutMapping("/cancela-pedido/{id}")
     @Operation(summary = "Cancela o pedido")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Pedido cancelado com sucesso"),
@@ -107,11 +105,15 @@ public class PedidoController {
     })
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<PedidoExibicaoDto> cancelarPedidoPorId(@PathVariable Integer id){
-        PedidoExibicaoDto pedido = pedidoService.cancelarPedido(id);
-
-        return ResponseEntity.ok(pedido);
-
+        return ResponseEntity.ok(pedidoService.cancelarPedido(id));
     }
+
+    @PutMapping("/conclui-pedido/{id}")
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<PedidoExibicaoDto> concluirPedidoPorId(@PathVariable Integer id){
+        return ResponseEntity.ok(pedidoService.concluirPedidoPorId(id));
+    }
+
     @GetMapping("/usuario/{id}")
     @Operation(summary = "Lista todos os pedidos cadastrados por usuario")
     @ApiResponses({

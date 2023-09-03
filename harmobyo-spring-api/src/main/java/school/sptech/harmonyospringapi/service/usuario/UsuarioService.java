@@ -178,6 +178,8 @@ public class UsuarioService {
         Usuario autor = buscarPorId(avaliacaoCriacaoDto.getUsuarioAvaliadorId());
         Pedido pedido = pedidoService.buscarPorId(avaliacaoCriacaoDto.getPedidoId());
 
+
+
         if (receptor.getId().equals(autor.getId())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Não é possível avaliar a si mesmo");
         } else if (!Objects.equals(pedido.getStatus().getDescricao(), "Concluído")) {
@@ -199,11 +201,14 @@ public class UsuarioService {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pedido não pertence ao usuário autor");
             }
         }
-
+        System.out.println("Avaliação criada");
         Avaliacao avaliacao = AvaliacaoMapper.of(avaliacaoCriacaoDto, receptor, autor, pedido);
 
         Avaliacao avaliacaoCadastrada = this.avaliacaoRepository.save(avaliacao);
-
+        System.out.println("Avaliação autor: " + avaliacaoCadastrada.getUsuarioAvaliador().getNome());
+        System.out.println("Avaliação receptor: " + avaliacaoCadastrada.getUsuarioAvaliado().getNome());
+        System.out.println("Avaliação pedido: " + avaliacaoCadastrada.getPedidoAula().getId());
+        System.out.println("Avaliação cadastrada");
         return AvaliacaoMapper.ofAvaliacaoExibicao(avaliacaoCadastrada);
     }
 

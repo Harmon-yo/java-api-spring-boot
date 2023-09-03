@@ -16,19 +16,16 @@ public class Avaliacao {
     private String comentario;
 
     @ManyToOne
-    @MapsId("usuarioAvaliadoFk")
     @JoinColumn(name = "usuario_avaliado_fk")
     private Usuario usuarioAvaliado;
 
     private LocalDate dataAvaliacao;
 
     @ManyToOne
-    @MapsId("usuarioAvaliadorFk")
     @JoinColumn(name = "usuario_avaliador_fk")
     private Usuario usuarioAvaliador;
 
     @ManyToOne
-    @MapsId("pedidoFk")
     @JoinColumn(name = "pedido_fk")
     private Pedido pedido;
 

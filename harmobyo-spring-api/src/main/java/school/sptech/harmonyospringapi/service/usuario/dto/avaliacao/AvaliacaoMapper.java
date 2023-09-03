@@ -12,6 +12,7 @@ public class AvaliacaoMapper {
 
     public static Avaliacao of(AvaliacaoCriacaoDto avaliacaoCriacaoDto, Usuario usuarioAvaliado,
                                Usuario usuarioAvaliador, Pedido pedido) {
+
         Avaliacao avaliacao = new Avaliacao();
         avaliacao.setValor(avaliacaoCriacaoDto.getValor());
         avaliacao.setComentario(avaliacaoCriacaoDto.getComentario());
