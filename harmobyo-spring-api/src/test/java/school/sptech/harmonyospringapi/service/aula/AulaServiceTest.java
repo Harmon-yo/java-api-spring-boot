@@ -124,7 +124,7 @@ class AulaServiceTest {
         Mockito.when(repository.existsByProfessorIdAndInstrumentoId(Mockito.anyInt(), Mockito.anyInt()))
                 .thenReturn(false);
 
-        AulaExibicaoDto resultado = service.criar(dto);
+        AulaExibicaoDto resultado = service.cadastrarAula(dto);
 
         assertNotNull(resultado);
         assertEquals(aula.getId(), resultado.getId());

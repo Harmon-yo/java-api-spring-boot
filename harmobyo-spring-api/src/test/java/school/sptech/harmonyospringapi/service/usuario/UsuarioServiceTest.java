@@ -675,7 +675,7 @@ class UsuarioServiceTest {
                 .thenReturn(Optional.of(aluno));
         Mockito.when(pedidoService.buscarPorId(idGeral))
                 .thenReturn(pedido);
-        Mockito.when(avaliacaoRepository.existsAvaliacaoByIdPedido(Mockito.anyInt()))
+        Mockito.when(avaliacaoRepository.existsAvaliacaoByPedidoId(Mockito.anyInt()))
                 .thenReturn(true);
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class,
@@ -812,7 +812,7 @@ class UsuarioServiceTest {
 
         Mockito.when(usuarioRepository.findById(usuario.getId()))
                         .thenReturn(Optional.of(usuario));
-        Mockito.when(avaliacaoRepository.findAllById_UsuarioAvaliadoFk(id))
+        Mockito.when(avaliacaoRepository.findByUsuarioAvaliadoId(id))
                 .thenReturn(Collections.emptyList());
 
         List<AvaliacaoExibicaoDto> avaliacoes = usuarioService.listarAvaliacoesPorUsuario(id);
@@ -886,7 +886,7 @@ class UsuarioServiceTest {
 
         Mockito.when(usuarioRepository.findById(professor.getId()))
                 .thenReturn(Optional.of(professor));
-        Mockito.when(avaliacaoRepository.findAllById_UsuarioAvaliadoFk(idProfessor))
+        Mockito.when(avaliacaoRepository.findByUsuarioAvaliadoId(idProfessor))
                 .thenReturn(avaliacoes);
 
         List<AvaliacaoExibicaoDto> resultado = usuarioService.listarAvaliacoesPorUsuario(idProfessor);

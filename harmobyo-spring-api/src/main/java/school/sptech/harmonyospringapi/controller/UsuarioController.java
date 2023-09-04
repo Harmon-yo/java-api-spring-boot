@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import school.sptech.harmonyospringapi.domain.FiltroMinimoMaximo;
+import school.sptech.harmonyospringapi.domain.Pedido;
 import school.sptech.harmonyospringapi.service.usuario.UsuarioService;
 import school.sptech.harmonyospringapi.service.usuario.autenticacao.dto.UsuarioLoginDto;
 import school.sptech.harmonyospringapi.service.usuario.autenticacao.dto.UsuarioTokenDto;
@@ -98,6 +99,15 @@ public class UsuarioController {
         AvaliacaoExibicaoDto avaliacaoExibicaoDto = this.usuarioService.criarAvaliacao(id, avaliacaoCriacaoDto);
 
         return ResponseEntity.created(null).body(avaliacaoExibicaoDto);
+    }
+
+    @Operation(summary = "Verifica se pedido já foi avaliado pelo usuário", description = "")
+    @SecurityRequirement(name = "Bearer")
+    @GetMapping("/{idPedido}/{idUsuarioAutor}")
+    public ResponseEntity<Boolean> valicacaoAvaliacao(@PathVariable int idPedido, @PathVariable int idUsuarioAutor) {
+        Boolean validacao = this.usuarioService.existeAvaliacaoNoPedidoPorUsuarioAutor(idPedido, idUsuarioAutor);
+
+        return ResponseEntity.ok(validacao);
     }
 
     @Operation(summary = "Listar avaliações de um usuário")

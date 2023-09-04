@@ -173,6 +173,12 @@ public class UsuarioService {
 
     /* ================ AVALIAÇÃO ================ */
 
+    public boolean existeAvaliacaoNoPedidoPorUsuarioAutor(Integer idPedido, Integer idUsuarioAutor){
+        Usuario autor = buscarPorId(idUsuarioAutor);
+
+        return avaliacaoRepository.existsAvaliacaoByPedidoIdAndUsuarioAvaliador(idPedido, autor);
+    }
+
     public AvaliacaoExibicaoDto criarAvaliacao(Integer idAvaliado, AvaliacaoCriacaoDto avaliacaoCriacaoDto) {
         Usuario receptor = buscarPorId(idAvaliado);
         Usuario autor = buscarPorId(avaliacaoCriacaoDto.getUsuarioAvaliadorId());
@@ -184,7 +190,7 @@ public class UsuarioService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Não é possível avaliar a si mesmo");
         } else if (!Objects.equals(pedido.getStatus().getDescricao(), "Concluído")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pedido não foi concluído");
-        } else if (avaliacaoRepository.existsAvaliacaoByPedidoId(pedido.getId())) {
+        } else if (avaliacaoRepository.existsAvaliacaoByPedidoIdAndUsuarioAvaliador(pedido.getId(), autor)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pedido já foi avaliado");
         } else if ((!pedido.getAluno().getId().equals(receptor.getId())) && (!pedido.getProfessor().getId().equals(receptor.getId()))) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pedido não pertence ao usuário receptor");
