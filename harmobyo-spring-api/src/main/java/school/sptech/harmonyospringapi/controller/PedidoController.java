@@ -11,9 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import school.sptech.harmonyospringapi.domain.Pedido;
 import school.sptech.harmonyospringapi.service.pedido.PedidoService;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoCriacaoDto;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoDto;
+import school.sptech.harmonyospringapi.service.pedido.hashing.HashTableService;
 import school.sptech.harmonyospringapi.utils.PilhaObj;
 
 import java.time.LocalDate;
@@ -27,6 +29,8 @@ public class PedidoController {
 
     @Autowired
     private PedidoService pedidoService;
+    @Autowired
+    private HashTableService hashTableService;
 
     @GetMapping
     @Operation(summary = "Lista todos os pedidos cadastrados")
@@ -190,6 +194,20 @@ public class PedidoController {
         return ResponseEntity.ok(pedidoExibicaoDto);
     }
 
+    // ------------------------------- HashingTable ------------------------------- //
 
+    @GetMapping("/hashing")
+    public ResponseEntity<Void> adicionarPedidosNaHashing(){
+        this.hashTableService.adicionarBanco();
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/usuario/hashing/{id}")
+    public ResponseEntity<List<PedidoExibicaoDto>> buscarPedidosPorUsuarioIdEStatusHashing(@PathVariable Integer id, @RequestParam String status){
+        List<PedidoExibicaoDto> pedidoExibicaoDto = this.hashTableService.buscarPedidosPorIdEStatus(id, status);
+
+        if(pedidoExibicaoDto.isEmpty()) return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(pedidoExibicaoDto);
+    }
 }
 

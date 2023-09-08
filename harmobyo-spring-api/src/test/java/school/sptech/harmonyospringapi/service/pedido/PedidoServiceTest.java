@@ -201,7 +201,7 @@ class PedidoServiceTest {
         Mockito.when(repository.save(Mockito.any()))
                 .thenReturn(pedido);
 
-        PedidoExibicaoDto resultado = service.aceitarPedido(pedido);
+        PedidoExibicaoDto resultado = service.aceitarPropostaDoAluno(pedido.getId());
 
         assertNotNull(resultado);
         assertEquals(pedido.getId(), resultado.getId());
@@ -214,7 +214,7 @@ class PedidoServiceTest {
         Pedido pedido = PedidoBuilder.pedido();
 
         EntitadeNaoEncontradaException exception = assertThrows(EntitadeNaoEncontradaException.class, ()
-                -> service.aceitarPedido(pedido));
+                -> service.aceitarPropostaDoAluno(pedido.getId()));
 
         assertEquals("Pedido não encontrado", exception.getMessage());
     }
@@ -236,7 +236,7 @@ class PedidoServiceTest {
         Mockito.when(repository.save(Mockito.any()))
                 .thenReturn(pedido);
 
-        PedidoExibicaoDto resultado = service.recusarPedido(pedido);
+        PedidoExibicaoDto resultado = service.recusarPropostaDoAluno(pedido.getId());
 
         assertNotNull(resultado);
         assertEquals(pedido.getId(), resultado.getId());
@@ -249,7 +249,7 @@ class PedidoServiceTest {
         Pedido pedido = PedidoBuilder.pedido();
 
         EntitadeNaoEncontradaException exception = assertThrows(EntitadeNaoEncontradaException.class, ()
-                -> service.recusarPedido(pedido));
+                -> service.recusarPropostaDoAluno(pedido.getId()));
 
         assertEquals("Pedido não encontrado", exception.getMessage());
     }
@@ -310,9 +310,7 @@ class PedidoServiceTest {
     void retornarPedidoAtualizadoQuandoAcionadoAtualizarStatus(){
         Pedido pedido = PedidoBuilder.pedido();
 
-        Status status = new Status();
-        status.setId(5);
-        status.setDescricao("Aguardando Pagamento");
+        String status = "Aguardando Pagamento";
 
         Mockito.when(repository.save(pedido))
                 .thenReturn(pedido);
