@@ -18,11 +18,11 @@ public interface PedidoRepository extends JpaRepository<Pedido, Integer> {
     List<Pedido> encontrarPedidosPendentesPorIdProfessor(int idProfessor);
 
     @Query("SELECT new school.sptech.harmonyospringapi.service.aula.dto.AulaGraficoInformacoesDashboardDto( " +
-            "COUNT(CASE WHEN p.status.descricao = 'Cancelado' THEN 1 END), " +
-            "COUNT(CASE WHEN p.status.descricao = 'Concluído' THEN 1 END), " +
-            "COUNT(CASE WHEN p.status.descricao = 'Recusado' THEN 1 END)) " +
+            "SUM(CASE WHEN p.status.descricao = 'Cancelado' THEN 1 ELSE 0 END), " +
+            "SUM(CASE WHEN p.status.descricao = 'Recusado' THEN 1 ELSE 0 END), " +
+            "SUM(CASE WHEN p.status.descricao = 'Concluído' THEN 1 ELSE 0 END))" +
             "FROM Pedido p " +
-            "WHERE p.professor.id = :id AND p.horaCriacao BETWEEN :comeco AND :fim")
+            "WHERE p.professor.id = :id AND p.horaCriacao BETWEEN :comeco AND :fim AND p.status.descricao IN ('Cancelado', 'Recusado', 'Concluído') ")
     AulaGraficoInformacoesDashboardDto getDadosAulasPeriodoPorIdProfessor(int id, LocalDateTime comeco, LocalDateTime fim);
 
     @Query(value = "SELECT p from Pedido p where (p.professor.id = :fkUsuario or p.aluno.id = :fkUsuario) and (p.status.descricao = 'Confirmado' or p.status.descricao = 'Concluído')  and CAST(p.dataAula AS DATE ) = CAST(:data AS DATE)")
@@ -31,6 +31,6 @@ public interface PedidoRepository extends JpaRepository<Pedido, Integer> {
     @Query(value = "SELECT p FROM Pedido p WHERE (p.professor.id = :usuarioId OR p.aluno.id = :usuarioId) AND p.status.descricao = 'Confirmado'")
     List<Pedido> buscarPorUsuarioIdConfirmado(Integer usuarioId);
 
-    @Query(value = "SELECT p from Pedido p where (p.professor.id = :fkUsuario or p.aluno.id = :fkUsuario) and  MONTH(CAST(p.dataAula as DATE)) = MONTH(CAST(:localDateTime AS DATE))")
+    @Query(value = "SELECT p from Pedido p where (p.professor.id = :fkUsuario or p.aluno.id = :fkUsuario) and (p.status.descricao = 'Confirmado' or p.status.descricao = 'Concluído') and  MONTH(CAST(p.dataAula as DATE)) = MONTH(CAST(:localDateTime AS DATE))")
     List<Pedido> findAllByUsuarioIdAndAulaDataMes(int fkUsuario, LocalDateTime localDateTime);
 }
