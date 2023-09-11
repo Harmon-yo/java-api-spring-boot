@@ -10,6 +10,7 @@ import school.sptech.harmonyospringapi.service.exceptions.EntitadeNaoEncontradaE
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoCriacaoDto;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoDto;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoMapper;
+import school.sptech.harmonyospringapi.service.pedido.hashing.HashTableService;
 import school.sptech.harmonyospringapi.service.status.StatusService;
 import school.sptech.harmonyospringapi.service.usuario.AlunoService;
 import school.sptech.harmonyospringapi.service.usuario.ProfessorService;
@@ -40,6 +41,9 @@ public class PedidoService {
 
     @Autowired
     private StatusService statusService;
+
+    @Autowired
+    private HashTableService hashTableService;
 
     public List<PedidoExibicaoDto> obterTodos() {
 
@@ -116,6 +120,7 @@ public class PedidoService {
             case "Aguardando Pagamento" -> throw new EntitadeNaoEncontradaException("Pedido já está aguardando pagamento");
         }
 
+        this.hashTableService.atualizarStatusPedidoPorId(id, pedido, "Aguardando Pagamento");
         pedido = atualizarStatus(pedido, "Aguardando Pagamento");
 
         return PedidoMapper.ofPedidoExibicaoDto(pedido);
@@ -131,6 +136,7 @@ public class PedidoService {
                     throw new EntidadeConflitanteException("Pedido já está aguardando pagamento");
         }
 
+        this.hashTableService.atualizarStatusPedidoPorId(id, pedido, "Recusado");
         pedido = atualizarStatus(pedido, "Recusado");
 
         return PedidoMapper.ofPedidoExibicaoDto(pedido);
@@ -144,6 +150,7 @@ public class PedidoService {
         } else if (this.buscarPorId(id).getStatus().getDescricao().equals("Recusado")) {
             throw new EntidadeConflitanteException("Pedido já recusado");
         }
+        this.hashTableService.atualizarStatusPedidoPorId(id, pedido, "Cancelado");
         pedido = atualizarStatus(pedido, "Cancelado");
 
         return PedidoMapper.ofPedidoExibicaoDto(pedido);
@@ -160,6 +167,7 @@ public class PedidoService {
             throw new EntidadeConflitanteException("Pedido já recusado");
         }
 
+        this.hashTableService.atualizarStatusPedidoPorId(id, pedido, "Concluído");
         pedido = atualizarStatus(pedido, "Concluído");
 
         return PedidoMapper.ofPedidoExibicaoDto(pedido);

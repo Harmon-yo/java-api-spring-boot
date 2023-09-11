@@ -74,6 +74,7 @@ public class PedidoController {
     public ResponseEntity<PedidoExibicaoDto> adicionarPedido(@RequestBody @Valid
                                                              PedidoCriacaoDto pedidoCriacaoDto){
         PedidoExibicaoDto pedidoExibicaoDto = this.pedidoService.criar(pedidoCriacaoDto);
+        hashTableService.insere(pedidoExibicaoDto);
         return ResponseEntity.created(null).body(pedidoExibicaoDto);
     }
 
@@ -87,7 +88,6 @@ public class PedidoController {
     })
     public ResponseEntity<PedidoExibicaoDto> aceitarPropostaDoAluno(@PathVariable Integer id){
         PedidoExibicaoDto pedido = this.pedidoService.aceitarPropostaDoAluno(id);
-
         return ResponseEntity.ok(pedido);
     }
 

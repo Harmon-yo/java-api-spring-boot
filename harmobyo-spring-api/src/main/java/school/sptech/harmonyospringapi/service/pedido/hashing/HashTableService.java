@@ -61,20 +61,32 @@ public class HashTableService {
         return false;
     }
 
-    public List<PedidoExibicaoDto> buscarPedidosPorIdEStatus(int id, String status){
+    public List<PedidoExibicaoDto> buscarPedidosPorIdEStatus(int idUsuario, String status){
         int lista = funcaoHash(status);
         List<PedidoExibicaoDto> pedidoExibicaoDto = new ArrayList<>();
 
         System.out.println(hashTable.getTab()[lista].getTamanho());
 
         for (int i = 0; i < hashTable.getTab()[lista].getTamanho(); i++){
-            PedidoExibicaoDto pedido = hashTable.getTab()[lista].getElemento(i).getPedido();
-            if (id == pedido.getProfessor().getId() || id == pedido.getAluno().getId()){
+            PedidoExibicaoDto pedido = hashTable.getTab()[lista].getElementoRecursivo(i).getPedido();
+            if (idUsuario == pedido.getProfessor().getId() || idUsuario == pedido.getAluno().getId()){
                 pedidoExibicaoDto.add(pedido);
             }
         }
 
         return pedidoExibicaoDto;
+    }
+
+    public PedidoExibicaoDto atualizarStatusPedidoPorId(int id, Pedido pedido, String status){
+        int lista = funcaoHash(pedido.getStatus().getDescricao());
+        for (int j = 0; j < hashTable.getTab()[lista].getTamanho(); j++){
+            PedidoExibicaoDto pedidoExibicaoDto = hashTable.getTab()[lista].getElementoRecursivo(j).getPedido();
+            if (id == pedidoExibicaoDto.getId()){
+                pedidoExibicaoDto.getStatus().setDescricao(status);
+                return pedidoExibicaoDto;
+            }
+        }
+        return null;
     }
 
     public boolean remove(PedidoExibicaoDto pedidoExibicaoDto){
