@@ -12,9 +12,11 @@ import school.sptech.harmonyospringapi.service.aula.dto.AulaMapper;
 import school.sptech.harmonyospringapi.service.exceptions.EntidadeConflitanteException;
 import school.sptech.harmonyospringapi.service.exceptions.EntitadeNaoEncontradaException;
 import school.sptech.harmonyospringapi.service.instrumento.InstrumentoService;
+import school.sptech.harmonyospringapi.service.usuario.AlunoService;
 import school.sptech.harmonyospringapi.service.usuario.ProfessorService;
 import school.sptech.harmonyospringapi.service.usuario.UsuarioService;
 
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -31,11 +33,23 @@ public class AulaService {
     @Autowired
     private InstrumentoService instrumentoService;
 
+    @Autowired
+    private AlunoService alunoService;
+
+
     public List<AulaExibicaoDto> obterTodos() {
         return this.aulaRepository.findAll()
                 .stream()
                 .map(AulaMapper::ofAulaExibicaoDto)
                 .toList();
+    }
+
+    public Integer obterQuantidadeAulasCadastradas() {
+        return Math.toIntExact(this.aulaRepository.count());
+    }
+
+    public Double quantidadeUsuariosPorAluno() {
+        return Double.parseDouble(new DecimalFormat("#.##").format(((double) this.aulaRepository.count()) / this.alunoService.obterQuantidadeAlunos()).replace(',', '.'));
     }
 
     public AulaExibicaoDto cadastrarAula(AulaCriacaoDto aulaCriacaoDto) {

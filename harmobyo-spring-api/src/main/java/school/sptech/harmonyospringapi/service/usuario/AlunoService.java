@@ -59,6 +59,10 @@ public class AlunoService {
         novoAlunoDto.setSenha(senhaCriptofrada);
 
         final Aluno novoAluno = UsuarioMapper.ofAlunoCriacao(novoAlunoDto);
+
+        novoAluno.setDataCriacao(LocalDateTime.now());
+
+
         Aluno alunoCadastrado = this.alunoRepository.save(novoAluno);
 
         return UsuarioMapper.ofUsuarioExibicao(alunoCadastrado);
@@ -69,6 +73,10 @@ public class AlunoService {
         List<Aluno> ltAlunos = this.alunoRepository.findAll();
 
         return ltAlunos.stream().map(UsuarioMapper::ofUsuarioExibicao).toList();
+    }
+
+    public Integer obterQuantidadeAlunos() {
+        return (int) this.alunoRepository.count();
     }
 
     /* ============= PESQUISA ================ */

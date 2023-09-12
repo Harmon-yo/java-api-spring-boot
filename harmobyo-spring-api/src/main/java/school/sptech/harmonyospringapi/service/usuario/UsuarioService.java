@@ -31,10 +31,8 @@ import school.sptech.harmonyospringapi.service.usuario.autenticacao.dto.UsuarioT
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioMapper;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Service
 public class UsuarioService {
@@ -112,6 +110,10 @@ public class UsuarioService {
         }
 
         return ltUsuarios.stream().map(UsuarioMapper::ofUsuarioExibicao).toList();
+    }
+
+    public Integer quantidadeUsuarios() {
+        return this.usuarioRepository.obterQuantidadeUsuario();
     }
 
     /* ================ PESQUISA ================ */
@@ -269,7 +271,7 @@ public class UsuarioService {
 
     /* ================ ATUALIZAR DADOS PESSOAIS ===============*/
 
-    public void atualizarDadosPessoais(int id, UsuarioAtulizarDadosPessoaisDto dadosUsuario){
+    public void atualizarDadosPessoais(int id, UsuarioAtulizarDadosPessoaisDto dadosUsuario) {
 
          if (usuarioRepository.existsById(id)){
              usuarioRepository.atualizarDadosPessoais(id, dadosUsuario.getNome(), dadosUsuario.getEmail(), dadosUsuario.getDataNasc(), dadosUsuario.getSexo());
@@ -279,12 +281,72 @@ public class UsuarioService {
          }
     }
 
-    public void atualizarBibliografia(int id, String bibliografia){
+    public void atualizarBibliografia(int id, String bibliografia) {
         if (usuarioRepository.existsById(id)){
             this.usuarioRepository.atualizarBibliografia(id, bibliografia);
         }
         else {
             throw new EntitadeNaoEncontradaException("ID de Usuário Inválido!");
         }
+    }
+
+    /* ================ METRICAS DASHBOARD ADMIN ===============*/
+
+    public List<Integer> obterUsuariosCadastradosSemana() {
+        List<Integer> ltQtdUsuario = new ArrayList<>();
+
+        Calendar c = Calendar.getInstance();
+
+        c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+
+        LocalDateTime diaInicial = c.getTime().toInstant().atZone(c.getTimeZone().toZoneId()).toLocalDateTime();
+
+        diaInicial = diaInicial.withHour(0).withMinute(0).withSecond(0);
+
+        LocalDateTime diaFinal = diaInicial.withHour(23).withMinute(59).withSecond(59);
+
+        for (int i = 0; i < 7; i++) {
+
+            ltQtdUsuario.add(this.usuarioRepository.obterQuantidadeUsuariosCadastradosEntre(diaInicial, diaFinal));
+
+            c.add(Calendar.DATE, 1);
+
+            diaInicial = c.getTime().toInstant().atZone(c.getTimeZone().toZoneId()).toLocalDateTime();
+
+            diaInicial = diaInicial.withHour(0).withMinute(0).withSecond(0);
+
+            diaFinal = diaInicial.withHour(23).withMinute(59).withSecond(59);
+        }
+
+        return ltQtdUsuario;
+    }
+
+    public List<Integer> obterQuantidadeUsuariosRetidosEntre() {
+        List<Integer> ltQtdUsuario = new ArrayList<>();
+
+        Calendar c = Calendar.getInstance();
+
+        c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+
+        LocalDateTime diaInicial = c.getTime().toInstant().atZone(c.getTimeZone().toZoneId()).toLocalDateTime();
+
+        diaInicial = diaInicial.withHour(0).withMinute(0).withSecond(0);
+
+        LocalDateTime diaFinal = diaInicial.withHour(23).withMinute(59).withSecond(59);
+
+        for (int i = 0; i < 7; i++) {
+
+            ltQtdUsuario.add(this.usuarioRepository.obterQuantidadeUsuariosRetidosEntre(diaInicial, diaFinal));
+
+            c.add(Calendar.DATE, 1);
+
+            diaInicial = c.getTime().toInstant().atZone(c.getTimeZone().toZoneId()).toLocalDateTime();
+
+            diaInicial = diaInicial.withHour(0).withMinute(0).withSecond(0);
+
+            diaFinal = diaInicial.withHour(23).withMinute(59).withSecond(59);
+        }
+
+        return ltQtdUsuario;
     }
 }

@@ -19,6 +19,8 @@ import school.sptech.harmonyospringapi.utils.PilhaObj;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 @Service
@@ -184,13 +186,140 @@ public class PedidoService {
 
     public List<PedidoExibicaoDto> buscarAulasPorIdUsuarioEDataAula(int fkProfessor, LocalDateTime data) {
         List<Pedido> aulas = repository.findAllByUsuarioIdAndAulaData(fkProfessor, data);
-        List<PedidoExibicaoDto> pedidos = aulas.stream().map(a -> PedidoMapper.ofPedidoExibicaoDto(a)).toList();
-        return pedidos;
+        return aulas.stream().map(PedidoMapper::ofPedidoExibicaoDto).toList();
     }
 
     public List<PedidoExibicaoDto> buscarAulasPorIdUsuarioEMesAula(int fkUsuario, LocalDateTime localDateTime) {
         List<Pedido> aulas = repository.findAllByUsuarioIdAndAulaDataMes(fkUsuario, localDateTime);
-        List<PedidoExibicaoDto> pedidos = aulas.stream().map(a -> PedidoMapper.ofPedidoExibicaoDto(a)).toList();
-        return pedidos;
+        return aulas.stream().map(PedidoMapper::ofPedidoExibicaoDto).toList();
+    }
+
+    /* ============= METRICAS ADMIN ================ */
+
+    public List<Integer> obterQuantidadePedidosRealizadosSemana() {
+        List<Integer> valoresDaSemana = new ArrayList<>();
+        Calendar c = Calendar.getInstance();
+
+        c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+
+        LocalDateTime diaInicial = c.getTime().toInstant().atZone(c.getTimeZone().toZoneId()).toLocalDateTime();
+        diaInicial = diaInicial.withHour(0).withMinute(0).withSecond(0);
+        LocalDateTime diaFinal = diaInicial.withHour(23).withMinute(59).withSecond(59);
+        for (int i = 0; i < 7; i++) {
+
+            valoresDaSemana.add(this.repository.obterQuantidadePedidosRealizadosDuranteDatas(diaInicial, diaFinal));
+            c.add(Calendar.DATE, 1);
+            diaInicial = c.getTime().toInstant().atZone(c.getTimeZone().toZoneId()).toLocalDateTime();
+            diaInicial = diaInicial.withHour(0).withMinute(0).withSecond(0);
+            diaFinal = diaInicial.withHour(23).withMinute(59).withSecond(59);
+        }
+
+        return valoresDaSemana;
+    }
+
+    public List<Integer> obterQuantidadePedidosPendentesSemana() {
+        List<Integer> valoresDaSemana = new ArrayList<>();
+
+        Calendar c = Calendar.getInstance();
+
+        c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+
+        LocalDateTime diaInicial = c.getTime().toInstant().atZone(c.getTimeZone().toZoneId()).toLocalDateTime();
+
+        diaInicial = diaInicial.withHour(0).withMinute(0).withSecond(0);
+
+        LocalDateTime diaFinal = diaInicial.withHour(23).withMinute(59).withSecond(59);
+
+        for (int i = 0; i < 7; i++) {
+
+            valoresDaSemana.add(this.repository.obterQuantidadePedidosPendentesDuranteDatas(diaInicial, diaFinal));
+
+            c.add(Calendar.DATE, 1);
+
+            diaInicial = c.getTime().toInstant().atZone(c.getTimeZone().toZoneId()).toLocalDateTime();
+
+            diaInicial = diaInicial.withHour(0).withMinute(0).withSecond(0);
+
+            diaFinal = diaInicial.withHour(23).withMinute(59).withSecond(59);
+        }
+
+        return valoresDaSemana;
+    }
+
+    public List<Integer> obterQuantidadePedidosCanceladosSemana() {
+        List<Integer> valoresDaSemana = new ArrayList<>();
+
+        Calendar c = Calendar.getInstance();
+
+        c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+
+        LocalDateTime diaInicial = c.getTime().toInstant().atZone(c.getTimeZone().toZoneId()).toLocalDateTime();
+
+        diaInicial = diaInicial.withHour(0).withMinute(0).withSecond(0);
+
+        LocalDateTime diaFinal = diaInicial.withHour(23).withMinute(59).withSecond(59);
+
+        for (int i = 0; i < 7; i++) {
+
+            valoresDaSemana.add(this.repository.obterQuantidadePedidosCanceladosDuranteDatas(diaInicial, diaFinal));
+
+            c.add(Calendar.DATE, 1);
+
+            diaInicial = c.getTime().toInstant().atZone(c.getTimeZone().toZoneId()).toLocalDateTime();
+
+            diaInicial = diaInicial.withHour(0).withMinute(0).withSecond(0);
+
+            diaFinal = diaInicial.withHour(23).withMinute(59).withSecond(59);
+        }
+
+        return valoresDaSemana;
+    }
+
+    public Integer obterPedidosRealizadosMes() {
+        Calendar c = Calendar.getInstance();
+
+        c.set(Calendar.DAY_OF_MONTH, 1);
+
+        LocalDateTime diaInicial = c.getTime().toInstant().atZone(c.getTimeZone().toZoneId()).toLocalDateTime();
+
+        diaInicial = diaInicial.withHour(0).withMinute(0).withSecond(0);
+
+        c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
+
+        LocalDateTime diaFinal = diaInicial.withHour(23).withMinute(59).withSecond(59);
+
+        return this.repository.obterQuantidadePedidosRealizadosDuranteDatas(diaInicial, diaFinal);
+    }
+
+    public Integer obterPedidosPendentesMes() {
+        Calendar c = Calendar.getInstance();
+
+        c.set(Calendar.DAY_OF_MONTH, 1);
+
+        LocalDateTime diaInicial = c.getTime().toInstant().atZone(c.getTimeZone().toZoneId()).toLocalDateTime();
+
+        diaInicial = diaInicial.withHour(0).withMinute(0).withSecond(0);
+
+        c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
+
+        LocalDateTime diaFinal = diaInicial.withHour(23).withMinute(59).withSecond(59);
+
+        return this.repository.obterQuantidadePedidosPendentesDuranteDatas(diaInicial, diaFinal);
+    }
+
+    public Integer obterPedidosCanceladosMes() {
+        Calendar c = Calendar.getInstance();
+
+        c.set(Calendar.DAY_OF_MONTH, 1);
+
+        LocalDateTime diaInicial = c.getTime().toInstant().atZone(c.getTimeZone().toZoneId()).toLocalDateTime();
+
+        diaInicial = diaInicial.withHour(0).withMinute(0).withSecond(0);
+
+        c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
+
+        LocalDateTime diaFinal = diaInicial.withHour(23).withMinute(59).withSecond(59);
+
+        return this.repository.obterQuantidadePedidosCanceladosDuranteDatas(diaInicial, diaFinal);
     }
 }

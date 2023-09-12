@@ -52,6 +52,8 @@ public abstract class Usuario {
 
     private LocalDateTime ultimaVezOnline;
 
+    private LocalDateTime dataCriacao;
+
     public Endereco getEndereco() {
         return endereco;
     }
@@ -164,5 +166,11 @@ public abstract class Usuario {
         this.ultimaVezOnline = ultimaVezOnline;
     }
 
+    public LocalDateTime getDataCriacao() {
+        return dataCriacao;
+    }
 
+    public void setDataCriacao(LocalDateTime dataCriacao) {
+        this.dataCriacao = dataCriacao;
+    }
 }

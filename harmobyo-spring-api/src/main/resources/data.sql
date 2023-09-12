@@ -7,24 +7,29 @@ VALUES ('Rua A', '100', 'Apto 101', 'São Paulo', 'Vila Madalena', 'SP', '05410-
        ('Rua F', '400', 'Casa 1', 'Curitiba', 'Batel', 'PR', '80240-000');
 
 -- Inserts para usuários com categoria "Aluno"
-INSERT INTO usuario (nome, email, cpf, sexo, senha, data_nasc, telefone, endereco_id, categoria, bibliografia, ativo, autenticado, ultima_vez_online)
-VALUES ('João Silva', 'joao.silva@gmail.com', '123.456.789-10', 'Masculino', '$2a$10$/5q27KS5Pq3BsrEFoxwPbuVE2v0PZJg.c6MCi2yKu8j574oR63YqG', '1999-01-01', '(11) 99999-9999', 1, 'Aluno', '', true, true, CURRENT_TIMESTAMP),
-       ('Maria Souza', 'maria.souza@hotmail.com', '987.654.321-10', 'Feminino', '$2a$10$/5q27KS5Pq3BsrEFoxwPbuVE2v0PZJg.c6MCi2yKu8j574oR63YqG', '1998-05-20', '(11) 99999-9999', 2, 'Aluno', '', true, true, CURRENT_TIMESTAMP),
-       ('Pedro Santos', 'pedro.santos@yahoo.com.br', '456.789.123-10', 'Masculino', '$2a$10$/5q27KS5Pq3BsrEFoxwPbuVE2v0PZJg.c6MCi2yKu8j574oR63YqG', '2000-10-15', '(11) 99999-9999', 3, 'Aluno', '', true, true, CURRENT_TIMESTAMP);
+INSERT INTO usuario (nome, email, cpf, sexo, senha, data_nasc, telefone, endereco_id, categoria, bibliografia, ativo, autenticado, ultima_vez_online, data_criacao)
+VALUES ('João Silva', 'joao.silva@gmail.com', '123.456.789-10', 'Masculino', '$2a$10$/5q27KS5Pq3BsrEFoxwPbuVE2v0PZJg.c6MCi2yKu8j574oR63YqG', '1999-01-01', '(11) 99999-9999', 1, 'Aluno', '', true, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('Maria Souza', 'maria.souza@hotmail.com', '987.654.321-10', 'Feminino', '$2a$10$/5q27KS5Pq3BsrEFoxwPbuVE2v0PZJg.c6MCi2yKu8j574oR63YqG', '1998-05-20', '(11) 99999-9999', 2, 'Aluno', '', true, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('Pedro Santos', 'pedro.santos@yahoo.com.br', '456.789.123-10', 'Masculino', '$2a$10$/5q27KS5Pq3BsrEFoxwPbuVE2v0PZJg.c6MCi2yKu8j574oR63YqG', '2000-10-15', '(11) 99999-9999', 3, 'Aluno', '', true, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 
 -- Inserts para usuários com categoria "Professor"
+INSERT INTO usuario (nome, email, cpf, sexo, senha, data_nasc, telefone, endereco_id, categoria, bibliografia, ativo, autenticado, ultima_vez_online, data_criacao)
+VALUES
+    ('Luciana Lima', 'luciana.lima@gmail.com', '471.380.628-50', 'Feminino', '$2a$10$/5q27KS5Pq3BsrEFoxwPbuVE2v0PZJg.c6MCi2yKu8j574oR63YqG', '1985-03-10', '(11) 99999-9999', 4, 'Professor', '', true, true,TIMESTAMPADD(MINUTE, -10, CURRENT_TIMESTAMP), CURRENT_TIMESTAMP),
+    ('Carlos Silva', 'carlos.silva@hotmail.com', '260.973.558-82', 'Masculino', '$2a$10$/5q27KS5Pq3BsrEFoxwPbuVE2v0PZJg.c6MCi2yKu8j574oR63YqG', '1978-12-31', '(11) 99999-9999', 5, 'Professor', '', true, true, TIMESTAMPADD(HOUR, -3, CURRENT_TIMESTAMP), CURRENT_TIMESTAMP),
+    ('Patrícia Almeida', 'patricia.almeida@yahoo.com.br', '999.888.777-66', 'Feminino', '$2a$10$/5q27KS5Pq3BsrEFoxwPbuVE2v0PZJg.c6MCi2yKu8j574oR63YqG', '1980-07-05', '(11) 99999-9999', 6, 'Professor', '', true, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+
+-- Inserts para usuários com categoria "Administrador"
 INSERT INTO usuario (nome, email, cpf, sexo, senha, data_nasc, telefone, endereco_id, categoria, bibliografia, ativo, autenticado, ultima_vez_online)
 VALUES
-    ('Luciana Lima', 'luciana.lima@gmail.com', '471.380.628-50', 'Feminino', '$2a$10$/5q27KS5Pq3BsrEFoxwPbuVE2v0PZJg.c6MCi2yKu8j574oR63YqG', '1985-03-10', '(11) 99999-9999', 4, 'Professor', '', true, true,TIMESTAMPADD(MINUTE, -10, CURRENT_TIMESTAMP)),
-       ('Carlos Silva', 'carlos.silva@hotmail.com', '260.973.558-82', 'Masculino', '$2a$10$/5q27KS5Pq3BsrEFoxwPbuVE2v0PZJg.c6MCi2yKu8j574oR63YqG', '1978-12-31', '(11) 99999-9999', 5, 'Professor', '', true, true, TIMESTAMPADD(HOUR, -3, CURRENT_TIMESTAMP)),
-       ('Patrícia Almeida', 'patricia.almeida@yahoo.com.br', '999.888.777-66', 'Feminino', '$2a$10$/5q27KS5Pq3BsrEFoxwPbuVE2v0PZJg.c6MCi2yKu8j574oR63YqG', '1980-09-05', '(11) 99999-9999', 6, 'Professor', '', true, true, CURRENT_TIMESTAMP);
-
+    ('Administrador', 'admin@gmail.com', '123.456.789-00', 'Masculino', '$2a$10$/5q27KS5Pq3BsrEFoxwPbuVE2v0PZJg.c6MCi2yKu8j574oR63YqG', '1999-01-01', '(11) 99999-9999', 1, 'Administrador', '', true, true, CURRENT_TIMESTAMP);
 
 -- Inserts para Experiencias --
 INSERT INTO experiencia (titulo, descricao, professor_fk)
 VALUES ('Violinista - Orquestra Harmonyo', 'Violinista da orquestra Harmonyo de 2021 a 2023', 4),
-        ('Violinista - Orquestra Harmonyo 2.0', 'Violinista da orquestra Harmonyo de 2021 a 2023', 4);
+       ('Violinista - Orquestra Harmonyo 2.0', 'Violinista da orquestra Harmonyo de 2021 a 2023', 4);
 
 -- Inserts para naipe --
 INSERT INTO naipe (descricao)
@@ -55,13 +60,13 @@ INSERT INTO professor_instrumento (professor_fk, instrumento_fk, nivel_conhecime
 VALUES
     (4,
      2, 'Avançado', false),
-       (4, 3, 'Intermediário', false),
-       (4, 7, 'Intermediário', true),
-       (5, 4, 'Intermediário', true),
-       (5, 1, 'Avançado', true),
-       (5, 12, 'Avançado', false),
-       (6, 11, 'Avançado', true),
-       (6, 10, 'Intermediário', false);
+    (4, 3, 'Intermediário', false),
+    (4, 7, 'Intermediário', true),
+    (5, 4, 'Intermediário', true),
+    (5, 1, 'Avançado', true),
+    (5, 12, 'Avançado', false),
+    (6, 11, 'Avançado', true),
+    (6, 10, 'Intermediário', false);
 
 -- Insert para os intrumentos do aluno --
 INSERT INTO aluno_instrumento (aluno_fk, instrumento_fk, nivel_conhecimento)
@@ -92,18 +97,18 @@ VALUES
 
 INSERT INTO Pedido (aluno_fk, professor_fk, status_fk, aula_fk, hora_criacao, hora_resposta, data_aula)
 VALUES
-    (1, 4, 5, 1, '2023-08-10 10:00:00', '2023-08-10 15:00:00', '2023-08-20 10:00:00'),
-    (1, 4, 5, 1, '2023-08-10 10:00:00', '2023-08-10 15:00:00', '2023-08-27 20:00:00'),
-    (1, 5, 4, 2, '2023-08-10 10:00:00', '2023-08-10 15:00:00', '2023-08-20 10:00:00'),
-    (1, 5, 5, 2, '2023-08-10 10:00:00', '2023-08-10 15:00:00', '2023-08-27 20:00:00'),
-    (1, 6, 4, 3, '2023-08-10 10:00:00', '2023-08-10 15:00:00', '2023-08-20 10:00:00'),
-    (1,4, 5, 1, '2023-08-01 10:00:00', '2023-08-01 15:00:00', '2023-08-15 10:00:00'),
-    (1, 4, 3, 1, '2023-09-03 10:00:00', '2023-09-03 15:00:00', '2023-09-18 10:00:00'),
-    (1,4,4, 2, '2023-09-05 10:00:00', '2023-09-05 15:00:00', '2023-09-20 10:00:00'),
-    (1,4,5, 2, '2023-09-09 10:00:00', '2023-09-09 15:00:00', '2023-09-25 20:00:00'),
-    (1,4, 3, 3, '2023-09-10 10:00:00', '2023-09-10 15:00:00', '2023-09-27 10:00:00'),
-    (1, 4, 4, 3, '2023-09-12 10:00:00', '2023-09-12 15:00:00', '2023-09-28 20:00:00'),
-    (1, 6, 5, 3, '2023-09-10 10:00:00', '2023-09-10 15:00:00', '2023-09-27 20:00:00');
+    (1, 4, 5, 1, '2023-07-10 10:00:00', '2023-07-10 15:00:00', '2023-07-20 10:00:00'),
+    (1, 4, 5, 1, '2023-07-10 10:00:00', '2023-07-10 15:00:00', '2023-07-27 20:00:00'),
+    (1, 5, 4, 2, '2023-07-10 10:00:00', '2023-07-10 15:00:00', '2023-07-20 10:00:00'),
+    (1, 5, 5, 2, '2023-07-10 10:00:00', '2023-07-10 15:00:00', '2023-07-27 20:00:00'),
+    (1, 6, 4, 3, '2023-07-10 10:00:00', '2023-07-10 15:00:00', '2023-07-20 10:00:00'),
+    (1, 4, 5, 1, '2023-08-01 10:00:00', '2023-08-01 15:00:00', '2023-08-15 10:00:00'),
+    (1, 4, 3, 1, '2023-08-03 10:00:00', '2023-08-03 15:00:00', '2023-08-18 10:00:00'),
+    (1, 4, 4, 2, '2023-08-05 10:00:00', '2023-08-05 15:00:00', '2023-08-20 10:00:00'),
+    (1, 4, 5, 2, '2023-08-08 10:00:00', '2023-08-08 15:00:00', '2023-08-25 20:00:00'),
+    (1, 4, 3, 3, '2023-08-10 10:00:00', '2023-08-10 15:00:00', '2023-08-27 10:00:00'),
+    (1, 4, 4, 3, '2023-08-12 10:00:00', '2023-08-12 15:00:00', '2023-08-28 20:00:00'),
+    (1, 6, 5, 3, '2023-07-10 10:00:00', '2023-07-10 15:00:00', '2023-07-27 20:00:00');
 
 INSERT
 INTO

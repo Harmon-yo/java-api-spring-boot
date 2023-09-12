@@ -1,6 +1,7 @@
 package school.sptech.harmonyospringapi.service.pedido.hashing;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import school.sptech.harmonyospringapi.domain.Pedido;
 import school.sptech.harmonyospringapi.domain.hashing.HashTable;
@@ -15,6 +16,7 @@ import java.util.List;
 public class HashTableService {
 
     @Autowired
+    @Lazy
     private PedidoService pedidoService;
 
 

@@ -124,8 +124,12 @@ public class ProfessorService {
     /* ================ PESQUISA ================ */
 
     public List<ProfessorExibicaoResumidoDto> buscarTodosFiltrado(String listaDeParametros) {
-        System.out.println("Lista de parâmetros: " + listaDeParametros);
-        List<String> listaDeParametrosSeparados = List.of(listaDeParametros.split(","));
+        List<String> listaDeParametrosSeparados;
+        if (listaDeParametros == null || listaDeParametros.isEmpty()) {
+            listaDeParametrosSeparados = new ArrayList<>();
+        } else {
+            listaDeParametrosSeparados = List.of(listaDeParametros.split(","));
+        }
 
         boolean compararDistancia = false;
         ProfessorSpecificationBuilder builder = new ProfessorSpecificationBuilder();

@@ -209,5 +209,35 @@ public class PedidoController {
         if(pedidoExibicaoDto.isEmpty()) return ResponseEntity.noContent().build();
         return ResponseEntity.ok(pedidoExibicaoDto);
     }
+
+    @GetMapping("/quantidade-realizadas-semana")
+    public ResponseEntity<List<Integer>> obterQuantidadePedidosRealizadosSemana(){
+        return ResponseEntity.ok(this.pedidoService.obterQuantidadePedidosRealizadosSemana());
+    }
+
+    @GetMapping("/quantidade-pendentes-semana")
+    public ResponseEntity<List<Integer>> obterQuantidadePedidosPendentes(){
+        return ResponseEntity.ok(this.pedidoService.obterQuantidadePedidosPendentesSemana());
+    }
+
+    @GetMapping("/quantidade-canceladas-semana")
+    public ResponseEntity<List<Integer>> obterQuantidadePedidosCancelados(){
+        return ResponseEntity.ok(this.pedidoService.obterQuantidadePedidosCanceladosSemana());
+    }
+
+    @GetMapping("/quantidade-realizadas-mes")
+    public ResponseEntity<Integer> obterQuantidadePedidosRealizadosMes(){
+        return ResponseEntity.ok(this.pedidoService.obterPedidosRealizadosMes());
+    }
+
+    @GetMapping("/quantidade-pendentes-mes")
+    public ResponseEntity<Integer> obterQuantidadePedidosPendentesMes(){
+        return ResponseEntity.ok(this.pedidoService.obterPedidosPendentesMes());
+    }
+
+    @GetMapping("/quantidade-canceladas-mes")
+    public ResponseEntity<Integer> obterQuantidadePedidosCanceladosMes(){
+        return ResponseEntity.ok(this.pedidoService.obterPedidosCanceladosMes());
+    }
 }
 

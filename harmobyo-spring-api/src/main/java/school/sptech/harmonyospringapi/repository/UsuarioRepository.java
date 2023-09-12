@@ -8,6 +8,7 @@ import school.sptech.harmonyospringapi.domain.Usuario;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioAtulizarDadosPessoaisDto;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,4 +38,13 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
     @Modifying
     @Query("UPDATE Usuario u SET u.bibliografia = :bibliografia WHERE u.id = :id")
     void atualizarBibliografia(int id, String bibliografia);
+
+    @Query("SELECT count(*) FROM Usuario u WHERE u.categoria != 'Administrador'")
+    Integer obterQuantidadeUsuario();
+
+    @Query("SELECT COUNT(u) FROM Usuario u WHERE u.dataCriacao BETWEEN :dataInicial AND :dataFinal")
+    Integer obterQuantidadeUsuariosCadastradosEntre(LocalDateTime dataInicial, LocalDateTime dataFinal);
+
+    @Query("SELECT COUNT(u) FROM Usuario u JOIN Pedido p ON p.aluno.id = u.id WHERE count(p) > 0 AND p.horaResposta BETWEEN :dataInicio AND :dataFim")
+    Integer obterQuantidadeUsuariosRetidosEntre(LocalDateTime dataInicio, LocalDateTime dataFim);
 }

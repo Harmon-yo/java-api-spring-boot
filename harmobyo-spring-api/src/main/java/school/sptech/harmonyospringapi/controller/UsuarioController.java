@@ -151,4 +151,19 @@ public class UsuarioController {
         this.usuarioService.atualizarBibliografia(id, usuarioBibliografia.getBibliografia());
         return ResponseEntity.status(200).build();
     }
+
+    @GetMapping("/quantidade")
+    public ResponseEntity<Integer> quantidadeUsuarios(){
+        return ResponseEntity.ok(this.usuarioService.quantidadeUsuarios());
+    }
+
+    @GetMapping("/quantidade-cadastrados-semana")
+    public ResponseEntity<List<Integer>> obterQuantidadeUsuariosCadastrados(){
+        return ResponseEntity.status(200).body(this.usuarioService.obterUsuariosCadastradosSemana());
+    }
+
+    @GetMapping("/quantidade-reditos-semana")
+    public ResponseEntity<List<Integer>> obterQuantidadeUsuariosReditos(){
+        return ResponseEntity.status(200).body(this.usuarioService.obterQuantidadeUsuariosRetidosEntre());
+    }
 }

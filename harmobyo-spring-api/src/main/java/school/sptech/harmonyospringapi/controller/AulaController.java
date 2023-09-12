@@ -106,5 +106,13 @@ public class AulaController {
         return ResponseEntity.ok(ltAulas);
     }
 
+    @GetMapping("/quantidade")
+    public ResponseEntity<Integer> obterQuantidadeAulasCadastradas() {
+        return ResponseEntity.ok(this.aulaService.obterQuantidadeAulasCadastradas());
+    }
 
+    @GetMapping("quantidade-por-aluno")
+    public ResponseEntity<Double> quantidadeUsuariosPorAluno(){
+        return ResponseEntity.ok(this.aulaService.quantidadeUsuariosPorAluno());
+    }
 }
