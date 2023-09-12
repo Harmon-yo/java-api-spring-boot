@@ -1,6 +1,7 @@
 package school.sptech.harmonyospringapi.service.usuario;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,6 +32,7 @@ import school.sptech.harmonyospringapi.service.usuario.autenticacao.dto.UsuarioT
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioMapper;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -292,61 +294,125 @@ public class UsuarioService {
 
     /* ================ METRICAS DASHBOARD ADMIN ===============*/
 
-    public List<Integer> obterUsuariosCadastradosSemana() {
+    public List<Integer> obterQuantidadeUsuariosCadastradosSemana() {
         List<Integer> ltQtdUsuario = new ArrayList<>();
 
-        Calendar c = Calendar.getInstance();
-
-        c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-
-        LocalDateTime diaInicial = c.getTime().toInstant().atZone(c.getTimeZone().toZoneId()).toLocalDateTime();
-
-        diaInicial = diaInicial.withHour(0).withMinute(0).withSecond(0);
-
-        LocalDateTime diaFinal = diaInicial.withHour(23).withMinute(59).withSecond(59);
+        LocalDateTime dataAtual = obterPrimeiroDiaSemana();
+        LocalDateTime dataInicialAux, dataFinalAux;
 
         for (int i = 0; i < 7; i++) {
+            dataInicialAux = dataAtual.withHour(0).withMinute(0).withSecond(0);
+            dataFinalAux = dataAtual.withHour(23).withMinute(59).withSecond(59);
 
-            ltQtdUsuario.add(this.usuarioRepository.obterQuantidadeUsuariosCadastradosEntre(diaInicial, diaFinal));
+            ltQtdUsuario.add(this.usuarioRepository.obterQuantidadeUsuariosCadastradosEntre(dataInicialAux, dataFinalAux));
 
-            c.add(Calendar.DATE, 1);
 
-            diaInicial = c.getTime().toInstant().atZone(c.getTimeZone().toZoneId()).toLocalDateTime();
-
-            diaInicial = diaInicial.withHour(0).withMinute(0).withSecond(0);
-
-            diaFinal = diaInicial.withHour(23).withMinute(59).withSecond(59);
+            dataAtual = dataAtual.plusDays(1);
         }
 
         return ltQtdUsuario;
     }
 
-    public List<Integer> obterQuantidadeUsuariosRetidosEntre() {
+    public List<Integer> obterQuantidadeUsuariosRetidosSemana() {
         List<Integer> ltQtdUsuario = new ArrayList<>();
 
+        LocalDateTime dataAtual = obterPrimeiroDiaSemana();
+        LocalDateTime dataInicialAux, dataFinalAux;
+
+        for (int i = 0; i < 7; i++) {
+            dataInicialAux = dataAtual.withHour(0).withMinute(0).withSecond(0);
+            dataFinalAux = dataAtual.withHour(23).withMinute(59).withSecond(59);
+
+            ltQtdUsuario.add(this.usuarioRepository.obterQuantidadeUsuariosRetidosEntre(dataInicialAux, dataFinalAux));
+
+
+            dataAtual = dataAtual.plusDays(1);
+        }
+
+        return ltQtdUsuario;
+    }
+
+    public List<Integer> obterUsuariosCadastradosMes() {
+        LocalDateTime dataInicial = obterPrimeiroDiaMes();
+        LocalDateTime dataAtual = dataInicial;
+        LocalDateTime dataFinal = obterUltimoDiaMes();
+
+        List<Integer> ltQtdUsuario = new ArrayList<>();
+        int difencaDias = dataFinal.getDayOfMonth() - dataInicial.getDayOfMonth();
+
+        LocalDateTime dataInicialAux, dataFinalAux;
+
+        for(int i = 0; i <= difencaDias; i++) {
+            dataInicialAux = dataAtual.withHour(0).withMinute(0).withSecond(0);
+            dataFinalAux = dataAtual.withHour(23).withMinute(59).withSecond(59);
+
+            ltQtdUsuario.add(this.usuarioRepository.obterQuantidadeUsuariosCadastradosEntre(dataInicialAux, dataFinalAux));
+
+            dataAtual = dataAtual.plusDays(1);
+        }
+
+        return ltQtdUsuario;
+    }
+
+    public List<Integer> obterUsuariosCadastradosMesAnterior() {
+        LocalDateTime dataInicial = obterPrimeiroDiaMes().minusMonths(1);
+        LocalDateTime dataAtual = dataInicial;
+        LocalDateTime dataFinal = obterUltimoDiaMes().minusMonths(1);
+
+        List<Integer> ltQtdUsuario = new ArrayList<>();
+        int difencaDias = dataFinal.getDayOfMonth() - dataInicial.getDayOfMonth();
+
+        LocalDateTime dataInicialAux, dataFinalAux;
+
+        for(int i = 0; i <= difencaDias; i++) {
+            dataInicialAux = dataAtual.withHour(0).withMinute(0).withSecond(0);
+            dataFinalAux = dataAtual.withHour(23).withMinute(59).withSecond(59);
+
+            ltQtdUsuario.add(this.usuarioRepository.obterQuantidadeUsuariosCadastradosEntre(dataInicialAux, dataFinalAux));
+
+            dataAtual = dataAtual.plusDays(1);
+        }
+
+        return ltQtdUsuario;
+    }
+
+    private LocalDateTime obterPrimeiroDiaSemana() {
         Calendar c = Calendar.getInstance();
 
         c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
 
-        LocalDateTime diaInicial = c.getTime().toInstant().atZone(c.getTimeZone().toZoneId()).toLocalDateTime();
+        LocalDateTime dataInicial = c.getTime().toInstant().atZone(c.getTimeZone().toZoneId()).toLocalDateTime();
 
-        diaInicial = diaInicial.withHour(0).withMinute(0).withSecond(0);
+        dataInicial = dataInicial.withHour(0).withMinute(0).withSecond(0);
 
-        LocalDateTime diaFinal = diaInicial.withHour(23).withMinute(59).withSecond(59);
+        return dataInicial;
+    }
 
-        for (int i = 0; i < 7; i++) {
+    private LocalDateTime obterUltimoDiaSemana() {
+        LocalDateTime dataInicial = obterPrimeiroDiaSemana();
 
-            ltQtdUsuario.add(this.usuarioRepository.obterQuantidadeUsuariosRetidosEntre(diaInicial, diaFinal));
+        return dataInicial.plusDays(6).withHour(23).withMinute(59).withSecond(59);
+    }
 
-            c.add(Calendar.DATE, 1);
+    private LocalDateTime obterPrimeiroDiaMes() {
+        Calendar c = Calendar.getInstance();
 
-            diaInicial = c.getTime().toInstant().atZone(c.getTimeZone().toZoneId()).toLocalDateTime();
+        c.set(Calendar.DAY_OF_MONTH, 1);
 
-            diaInicial = diaInicial.withHour(0).withMinute(0).withSecond(0);
+        LocalDateTime dataInicial = c.getTime().toInstant().atZone(c.getTimeZone().toZoneId()).toLocalDateTime();
+        dataInicial = dataInicial.withHour(0).withMinute(0).withSecond(0);
 
-            diaFinal = diaInicial.withHour(23).withMinute(59).withSecond(59);
-        }
+        return dataInicial;
+    }
 
-        return ltQtdUsuario;
+    private LocalDateTime obterUltimoDiaMes() {
+        Calendar c = Calendar.getInstance();
+
+        c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
+
+        LocalDateTime dataFinal = c.getTime().toInstant().atZone(c.getTimeZone().toZoneId()).toLocalDateTime();
+        dataFinal = dataFinal.withHour(23).withMinute(59).withSecond(59);
+
+        return dataFinal;
     }
 }

@@ -225,19 +225,19 @@ public class PedidoController {
         return ResponseEntity.ok(this.pedidoService.obterQuantidadePedidosCanceladosSemana());
     }
 
-    @GetMapping("/quantidade-realizadas-mes")
-    public ResponseEntity<Integer> obterQuantidadePedidosRealizadosMes(){
-        return ResponseEntity.ok(this.pedidoService.obterPedidosRealizadosMes());
+    @GetMapping("/quantidade-realizadas-semana-total")
+    public ResponseEntity<Integer> obterQuantidadePedidosRealizadosTotalnaSemana(){
+        return ResponseEntity.ok(this.pedidoService.obterQuantidadePedidosRealizadosTotalnaSemana());
     }
 
-    @GetMapping("/quantidade-pendentes-mes")
-    public ResponseEntity<Integer> obterQuantidadePedidosPendentesMes(){
-        return ResponseEntity.ok(this.pedidoService.obterPedidosPendentesMes());
+    @GetMapping("/quantidade-pendentes-semana-total")
+    public ResponseEntity<Integer> obterQuantidadePedidosPendentesTotalnaSemana(){
+        return ResponseEntity.ok(this.pedidoService.obterQuantidadePedidosPendentesTotalnaSemana());
     }
 
-    @GetMapping("/quantidade-canceladas-mes")
-    public ResponseEntity<Integer> obterQuantidadePedidosCanceladosMes(){
-        return ResponseEntity.ok(this.pedidoService.obterPedidosCanceladosMes());
+    @GetMapping("/quantidade-canceladas-semana-total")
+    public ResponseEntity<Integer> obterQuantidadePedidosCanceladosTotalnaSemana(){
+        return ResponseEntity.ok(this.pedidoService.obterQuantidadePedidosCanceladosTotalnaSemana());
     }
 }
 

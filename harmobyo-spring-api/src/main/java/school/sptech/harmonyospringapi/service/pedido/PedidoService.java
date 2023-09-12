@@ -65,7 +65,6 @@ public class PedidoService {
         return pilhaPedidos;
     }
 
-
     public PedidoExibicaoDto criar(PedidoCriacaoDto pedidoCriacaoDto) {
 
         Aluno aluno = this.alunoService.buscarPorId(pedidoCriacaoDto.getAlunoId());
@@ -275,50 +274,43 @@ public class PedidoService {
         return valoresDaSemana;
     }
 
-    public Integer obterPedidosRealizadosMes() {
+    public Integer obterQuantidadePedidosRealizadosTotalnaSemana() {
         Calendar c = Calendar.getInstance();
 
-        c.set(Calendar.DAY_OF_MONTH, 1);
+        c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
 
         LocalDateTime diaInicial = c.getTime().toInstant().atZone(c.getTimeZone().toZoneId()).toLocalDateTime();
-
         diaInicial = diaInicial.withHour(0).withMinute(0).withSecond(0);
 
-        c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
-
-        LocalDateTime diaFinal = diaInicial.withHour(23).withMinute(59).withSecond(59);
+        LocalDateTime diaFinal = diaInicial.plusDays(6).withHour(23).withMinute(59).withSecond(59);
 
         return this.repository.obterQuantidadePedidosRealizadosDuranteDatas(diaInicial, diaFinal);
     }
 
-    public Integer obterPedidosPendentesMes() {
+    public Integer obterQuantidadePedidosPendentesTotalnaSemana() {
         Calendar c = Calendar.getInstance();
 
-        c.set(Calendar.DAY_OF_MONTH, 1);
+        c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
 
         LocalDateTime diaInicial = c.getTime().toInstant().atZone(c.getTimeZone().toZoneId()).toLocalDateTime();
-
         diaInicial = diaInicial.withHour(0).withMinute(0).withSecond(0);
 
-        c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
-
-        LocalDateTime diaFinal = diaInicial.withHour(23).withMinute(59).withSecond(59);
+        LocalDateTime diaFinal = diaInicial.plusDays(6).withHour(23).withMinute(59).withSecond(59);
 
         return this.repository.obterQuantidadePedidosPendentesDuranteDatas(diaInicial, diaFinal);
     }
 
-    public Integer obterPedidosCanceladosMes() {
+    public Integer obterQuantidadePedidosCanceladosTotalnaSemana() {
         Calendar c = Calendar.getInstance();
 
-        c.set(Calendar.DAY_OF_MONTH, 1);
+        c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
 
         LocalDateTime diaInicial = c.getTime().toInstant().atZone(c.getTimeZone().toZoneId()).toLocalDateTime();
-
         diaInicial = diaInicial.withHour(0).withMinute(0).withSecond(0);
 
-        c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
+        c.add(Calendar.DATE, 6);
 
-        LocalDateTime diaFinal = diaInicial.withHour(23).withMinute(59).withSecond(59);
+        LocalDateTime diaFinal = diaInicial.plusDays(6).withHour(23).withMinute(59).withSecond(59);
 
         return this.repository.obterQuantidadePedidosCanceladosDuranteDatas(diaInicial, diaFinal);
     }

@@ -159,11 +159,21 @@ public class UsuarioController {
 
     @GetMapping("/quantidade-cadastrados-semana")
     public ResponseEntity<List<Integer>> obterQuantidadeUsuariosCadastrados(){
-        return ResponseEntity.status(200).body(this.usuarioService.obterUsuariosCadastradosSemana());
+        return ResponseEntity.status(200).body(this.usuarioService.obterQuantidadeUsuariosCadastradosSemana());
     }
 
-    @GetMapping("/quantidade-reditos-semana")
+    @GetMapping("/quantidade-retidos-semana")
     public ResponseEntity<List<Integer>> obterQuantidadeUsuariosReditos(){
-        return ResponseEntity.status(200).body(this.usuarioService.obterQuantidadeUsuariosRetidosEntre());
+        return ResponseEntity.status(200).body(this.usuarioService.obterQuantidadeUsuariosRetidosSemana());
+    }
+
+    @GetMapping("/quantidade-cadastrados-mes")
+    public ResponseEntity<List<Integer>> obterQuantidadeUsuariosCadastradosMes(){
+        return ResponseEntity.status(200).body(this.usuarioService.obterUsuariosCadastradosMes());
+    }
+
+    @GetMapping("/quantidade-cadastrados-mes-anterior")
+    public ResponseEntity<List<Integer>> obterQuantidadeUsuariosCadastradosMesAnterior(){
+        return ResponseEntity.status(200).body(this.usuarioService.obterUsuariosCadastradosMesAnterior());
     }
 }

@@ -23,9 +23,10 @@ public class ProfessorSpecificationBuilder {
             List<String> values = new ArrayList<>();
             boolean isOrPredicate = false;
 
+//          - Para E e ; para OU
             if (value.toString().contains("-")) {
                 values = new ArrayList<>(List.of(((String) value).split("-")));
-            } else if (value.toString().contains(";")) {
+            } else if (value.toString().contains(";g")) {
                 values = new ArrayList<>(List.of(((String) value).split(";")));
                 isOrPredicate = true;
             }

@@ -33,7 +33,11 @@ public class AlunoController{
     private AlunoService alunoService;
 
     @Operation(summary = "Cadastra um aluno", description = "")
-    @ApiResponse(responseCode = "201", description = "Aluno cadastrado.")
+    @ApiResponses(value={
+            @ApiResponse(responseCode = "201", description = "Aluno cadastrado."),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos.", content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "409", description = "Já existe um aluno com este cpf ou email.", content = @Content(schema = @Schema(hidden = true)))
+    })
     @PostMapping("/cadastro")
     public ResponseEntity<UsuarioExibicaoDto> cadastrar(@RequestBody @Valid UsuarioCriacaoDto usuarioCriacaoDto){
 
@@ -63,6 +67,7 @@ public class AlunoController{
     @Operation(summary = "Obtém um aluno pelo seu id", description = "")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Aluno encontrado."),
+            @ApiResponse(responseCode = "400", description = "ID inválido.", content = @Content(schema = @Schema(hidden = true))),
             @ApiResponse(responseCode = "404", description = "Aluno não encontrado.")
     })
     @SecurityRequirement(name = "Bearer")
@@ -72,7 +77,11 @@ public class AlunoController{
     }
 
     @Operation(summary = "Obtém um aluno pelo seu nome", description = "")
-    @ApiResponse(responseCode = "200", description = "Aluno encontrado.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Aluno encontrado."),
+            @ApiResponse(responseCode = "400", description = "Nome inválido.", content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "404", description = "Aluno não encontrado.")
+    })
     @SecurityRequirement(name = "Bearer")
     @GetMapping("/nome")
     public ResponseEntity<UsuarioExibicaoDto> buscarPorNome(@RequestParam String nome){
@@ -103,6 +112,7 @@ public class AlunoController{
     @Operation(summary = "Deleta um aluno através do seu ID", description = "")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Aluno deletado do sistema"),
+            @ApiResponse(responseCode = "400", description = "ID Inválido. Aluno não encontrado"),
             @ApiResponse(responseCode = "404", description = "ID Inválido. Aluno não encontrado")
     })
     @SecurityRequirement(name = "Bearer")
@@ -128,8 +138,13 @@ public class AlunoController{
                 : ResponseEntity.status(200).body(instrumentos);
     }
 
-    @Operation(summary = "Cadastra um instrumetno para o aluno", description = "")
-    @ApiResponse(responseCode = "201", description = "Instrumento cadastrado no aluno.")
+    @Operation(summary = "Cadastra um instrumento para o aluno", description = "")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Instrumento cadastrado no aluno."),
+            @ApiResponse(responseCode = "400", description = "ID inválido.", content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "404", description = "Aluno não encontrado."),
+            @ApiResponse(responseCode = "409", description = "Instrumento já cadastrado para o aluno.")
+    })
     @SecurityRequirement(name = "Bearer")
     @PostMapping("/{id}/instrumentos")
     public ResponseEntity<AlunoInstrumentoExibicaoDto> cadastrarInstrumento(@PathVariable int id, @RequestBody @Valid AlunoInstrumentoCriacaoDto alunoInstrumentoCriacaoDto) {
@@ -139,7 +154,10 @@ public class AlunoController{
     }
 
     @Operation(summary = "Retorna o histórico de pedidos do aluno", description = "")
-    @ApiResponse(responseCode = "200", description = "Histórico retornado.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Histórico de pedidos do aluno encontrado."),
+            @ApiResponse(responseCode = "204", description = "Não há histórico de pedidos para esse aluno.", content = @Content(schema = @Schema(hidden = true)))
+    })
     @SecurityRequirement(name = "Bearer")
     @GetMapping("/getHistoricoPilha")
     public ResponseEntity<PilhaObj<PedidoExibicaoPilhaDto>> getPilha(){
