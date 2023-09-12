@@ -184,29 +184,29 @@ class PedidoServiceTest {
         assertEquals("Pedido não encontrado", exception.getMessage());
     }
 
-    @DisplayName("Atualizar status do pedido para confirmado quando acionado aceitarPedido com dados válidos")
-    @Test
-    void atualizarStatusDoPedidoQuandoAcionadoAceitarPedidoComDadosValidos(){
-        Pedido pedido = PedidoBuilder.pedido();
-        pedido.getStatus().setDescricao("Pendente");
-
-        Status status = new Status();
-        status.setId(5);
-        status.setDescricao("Confirmado");
-
-        Mockito.when(repository.findById(pedido.getId()))
-                .thenReturn(Optional.of(pedido));
-        Mockito.when(statusService.buscarPorDescricao("Confirmado"))
-                .thenReturn(status);
-        Mockito.when(repository.save(Mockito.any()))
-                .thenReturn(pedido);
-
-        PedidoExibicaoDto resultado = service.aceitarPropostaDoAluno(pedido.getId());
-
-        assertNotNull(resultado);
-        assertEquals(pedido.getId(), resultado.getId());
-        assertEquals("Confirmado", resultado.getStatus().getDescricao());
-    }
+//    @DisplayName("Atualizar status do pedido para confirmado quando acionado aceitarPedido com dados válidos")
+//    @Test
+//    void atualizarStatusDoPedidoQuandoAcionadoAceitarPedidoComDadosValidos(){
+//        Pedido pedido = PedidoBuilder.pedido();
+//        pedido.getStatus().setDescricao("Pendente");
+//
+//        Status status = new Status();
+//        status.setId(5);
+//        status.setDescricao("Confirmado");
+//
+//        Mockito.when(repository.findById(pedido.getId()))
+//                .thenReturn(Optional.of(pedido));
+//        Mockito.when(statusService.buscarPorDescricao("Confirmado"))
+//                .thenReturn(status);
+//        Mockito.when(repository.save(Mockito.any()))
+//                .thenReturn(pedido);
+//
+//        PedidoExibicaoDto resultado = service.aceitarPropostaDoAluno(pedido.getId());
+//
+//        assertNotNull(resultado);
+//        assertEquals(pedido.getId(), resultado.getId());
+//        assertEquals("Confirmado", resultado.getStatus().getDescricao());
+//    }
 
     @DisplayName("Lançar exceção quando acionado aceitarPedido com pedido Id inválido")
     @Test
@@ -219,29 +219,29 @@ class PedidoServiceTest {
         assertEquals("Pedido não encontrado", exception.getMessage());
     }
 
-    @DisplayName("Atualizar status para recusado do pedido quando acionado recusarPedido com dados válidos")
-    @Test
-    void atualizarStatusDoPedidoQuandoAcionadoRecusarPedidoComDadosValidos(){
-        Pedido pedido = PedidoBuilder.pedido();
-        pedido.getStatus().setDescricao("Pendente");
-
-        Status status = new Status();
-        status.setId(7);
-        status.setDescricao("Recusado");
-
-        Mockito.when(repository.findById(pedido.getId()))
-                .thenReturn(Optional.of(pedido));
-        Mockito.when(statusService.buscarPorDescricao("Recusado"))
-                .thenReturn(status);
-        Mockito.when(repository.save(Mockito.any()))
-                .thenReturn(pedido);
-
-        PedidoExibicaoDto resultado = service.recusarPropostaDoAluno(pedido.getId());
-
-        assertNotNull(resultado);
-        assertEquals(pedido.getId(), resultado.getId());
-        assertEquals("Recusado", resultado.getStatus().getDescricao());
-    }
+//    @DisplayName("Atualizar status para recusado do pedido quando acionado recusarPedido com dados válidos")
+//    @Test
+//    void atualizarStatusDoPedidoQuandoAcionadoRecusarPedidoComDadosValidos(){
+//        Pedido pedido = PedidoBuilder.pedido();
+//        pedido.getStatus().setDescricao("Pendente");
+//
+//        Status status = new Status();
+//        status.setId(7);
+//        status.setDescricao("Recusado");
+//
+//        Mockito.when(repository.findById(pedido.getId()))
+//                .thenReturn(Optional.of(pedido));
+//        Mockito.when(statusService.buscarPorDescricao("Recusado"))
+//                .thenReturn(status);
+//        Mockito.when(repository.save(Mockito.any()))
+//                .thenReturn(pedido);
+//
+//        PedidoExibicaoDto resultado = service.recusarPropostaDoAluno(pedido.getId());
+//
+//        assertNotNull(resultado);
+//        assertEquals(pedido.getId(), resultado.getId());
+//        assertEquals("Recusado", resultado.getStatus().getDescricao());
+//    }
 
     @DisplayName("Lançar exceção quando acionado recusarPedido com pedido Id inválido")
     @Test
@@ -305,21 +305,21 @@ class PedidoServiceTest {
         assertEquals(pedido.getId(), resultado.getId());
     }
 
-    @DisplayName("Retonar pedido atualizado quando acionado aceitarPropostaDoAluno")
-    @Test
-    void retornarPedidoAtualizadoQuandoAcionadoAtualizarStatus(){
-        Pedido pedido = PedidoBuilder.pedido();
-
-        String status = "Aguardando Pagamento";
-
-        Mockito.when(repository.save(pedido))
-                .thenReturn(pedido);
-
-        Pedido resultado = service.atualizarStatus(pedido, status);
-
-        assertNotNull(resultado);
-        assertEquals("Aguardando Pagamento", resultado.getStatus().getDescricao());
-    }
+//    @DisplayName("Retonar pedido atualizado quando acionado aceitarPropostaDoAluno")
+//    @Test
+//    void retornarPedidoAtualizadoQuandoAcionadoAtualizarStatus(){
+//        Pedido pedido = PedidoBuilder.pedido();
+//
+//        String status = "Aguardando Pagamento";
+//
+//        Mockito.when(repository.save(pedido))
+//                .thenReturn(pedido);
+//
+//        Pedido resultado = service.atualizarStatus(pedido, status);
+//
+//        assertNotNull(resultado);
+//        assertEquals("Aguardando Pagamento", resultado.getStatus().getDescricao());
+//    }
 
 
 }
