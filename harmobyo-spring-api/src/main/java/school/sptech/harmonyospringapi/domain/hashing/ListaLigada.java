@@ -103,12 +103,13 @@ public class ListaLigada {
     }
 
     private Node execucaoGetElementoRecursivo(int indice, int posicao, Node atual){
-        if (indice < posicao) {
+        if (atual == null) {
             return null;
         } else if (indice == posicao){
             return atual;
         }
         atual = atual.getNext();
-        return execucaoGetElementoRecursivo(indice, posicao++, atual);
+        posicao++;
+        return execucaoGetElementoRecursivo(indice, posicao, atual);
     }
 }
