@@ -1,6 +1,5 @@
 package school.sptech.harmonyospringapi.service.pedido;
 
-import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -8,22 +7,22 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.core.parameters.P;
 import school.sptech.harmonyospringapi.domain.*;
 import school.sptech.harmonyospringapi.repository.*;
 import school.sptech.harmonyospringapi.service.aula.AulaService;
 import school.sptech.harmonyospringapi.service.exceptions.EntitadeNaoEncontradaException;
-import school.sptech.harmonyospringapi.service.pedido.builder.PedidoBuilder;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoCriacaoDto;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoDto;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoMapper;
+import school.sptech.harmonyospringapi.service.pedido.hashing.HashTableService;
+import school.sptech.harmonyospringapi.service.status.StatusBuilder;
 import school.sptech.harmonyospringapi.service.status.StatusService;
 import school.sptech.harmonyospringapi.service.usuario.AlunoService;
+import school.sptech.harmonyospringapi.service.usuario.ProfessorBuilder;
 import school.sptech.harmonyospringapi.service.usuario.ProfessorService;
 import school.sptech.harmonyospringapi.service.usuario.UsuarioService;
 import school.sptech.harmonyospringapi.utils.PilhaObj;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -60,6 +59,8 @@ class PedidoServiceTest {
     private PedidoService pedidoService;
     @Mock
     private UsuarioService usuarioService;
+    @Mock
+    private HashTableService hashTableService;
 
     @InjectMocks
     private PedidoService service;
@@ -80,7 +81,7 @@ class PedidoServiceTest {
     @DisplayName("Deve retornar 3 pedidos quando acionado obterTodos")
     @Test
     void retornarTresPedidosQuandoAcionarObterTodos(){
-        Pedido pedido = PedidoBuilder.pedido();
+        Pedido pedido = PedidoBuilder.criarPedido(StatusBuilder.criarStatus());
 
         List<Pedido> pedidos = new ArrayList<>();
 
@@ -100,15 +101,13 @@ class PedidoServiceTest {
     @DisplayName("Retornar pilha vazia quando acionado obterPedidosPendentes e não há pedidos pendentes")
     @Test
     void retonarPilhaVaziaQuandoAcionadoObterPedidosPendentesSemPedidosPendentes(){
-        int idProfessor = 1;
 
-        Professor professor = new Professor();
-        professor.setId(idProfessor);
+        Professor professor = ProfessorBuilder.criarProfessor(1);
 
-        Mockito.when(repository.encontrarPedidosPendentesPorIdProfessor(idProfessor))
+        Mockito.when(repository.encontrarPedidosPendentesPorIdProfessor(Mockito.anyInt()))
                 .thenReturn(List.of());
 
-        PilhaObj<PedidoExibicaoDto> resultado = service.obterPedidosPendentes(idProfessor);
+        PilhaObj<PedidoExibicaoDto> resultado = service.obterPedidosPendentes(1);
 
         assertTrue(resultado.isEmpty());
     }
@@ -116,7 +115,7 @@ class PedidoServiceTest {
     @DisplayName("Retornar pilha com três pedidos quando acionado obterPedidos pendentes")
     @Test
     void retornarPilhaComTresPedidosQuandoAcionadoObterPedidosPendentes(){
-        Pedido pedido = PedidoBuilder.pedido();
+        Pedido pedido = PedidoBuilder.criarPedido(StatusBuilder.criarStatus());
 
         List<Pedido> pedidos = new ArrayList<>();
 
@@ -135,17 +134,13 @@ class PedidoServiceTest {
     @DisplayName("Criar pedido quando acionado criar quando PedidoCriacaoDto estiver válido")
     @Test
     void criarPedidoQuandoAcionadoCriarQuandoPedidoCriacaoDtoEstiverValido(){
-        LocalDateTime data = LocalDateTime.parse("2018-07-22 10:35:10",
-                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
-        Pedido pedido = PedidoBuilder.pedido();
+
+        Pedido pedido = PedidoBuilder.criarPedido(StatusBuilder.criarStatus());
         pedido.getStatus().setDescricao("Pendente");
 
-        PedidoCriacaoDto dto = new PedidoCriacaoDto();
-        dto.setAlunoId(1);
-        dto.setProfessorId(2);
-        dto.setAulaId(3);
-        dto.setDataAula(data);
+        PedidoCriacaoDto dto = PedidoBuilder.criarPedidoCriacaoDto();
+
 
         Mockito.when(repository.save(Mockito.any()))
                 .thenReturn(PedidoMapper.of(dto, pedido.getAluno(), pedido.getProfessor(), pedido.getStatus(), pedido.getAula()));
@@ -153,16 +148,16 @@ class PedidoServiceTest {
         PedidoExibicaoDto resultado = service.criar(dto);
 
         assertNotNull(resultado);
-        assertEquals(data, resultado.getDataAula());
-        assertEquals(2, resultado.getAluno().getId());
-        assertEquals(3, resultado.getProfessor().getId());
+        assertEquals(PedidoBuilder.getData(), resultado.getDataAula());
+        assertEquals(1, resultado.getAluno().getId());
+        assertEquals(2, resultado.getProfessor().getId());
         assertEquals(1, resultado.getAula().getId());
     }
 
     @DisplayName("Retornar pedido quando buscarPorId com Id válido")
     @Test
     void retornarPedidoQuandoBuscarPorIdComIdValido(){
-        Pedido pedido = PedidoBuilder.pedido();
+        Pedido pedido = PedidoBuilder.criarPedido(StatusBuilder.criarStatus());
 
         Mockito.when(repository.findById(pedido.getId()))
                 .thenReturn(Optional.of(pedido));
@@ -187,14 +182,11 @@ class PedidoServiceTest {
 //    @DisplayName("Atualizar status do pedido para confirmado quando acionado aceitarPedido com dados válidos")
 //    @Test
 //    void atualizarStatusDoPedidoQuandoAcionadoAceitarPedidoComDadosValidos(){
-//        Pedido pedido = PedidoBuilder.pedido();
-//        pedido.getStatus().setDescricao("Pendente");
+//        Pedido pedido = PedidoBuilder.criarPedido(StatusBuilder.criarStatus(1, "Pendente"));
 //
-//        Status status = new Status();
-//        status.setId(5);
-//        status.setDescricao("Confirmado");
+//        Status status = StatusBuilder.criarStatus(5, "Confirmado");
 //
-//        Mockito.when(repository.findById(pedido.getId()))
+//        Mockito.when(repository.findById(Mockito.anyInt()))
 //                .thenReturn(Optional.of(pedido));
 //        Mockito.when(statusService.buscarPorDescricao("Confirmado"))
 //                .thenReturn(status);
@@ -211,7 +203,7 @@ class PedidoServiceTest {
     @DisplayName("Lançar exceção quando acionado aceitarPedido com pedido Id inválido")
     @Test
     void lancarExcecaoQuandoAcionadoAceitarPedidoComPedidoIdInvalido(){
-        Pedido pedido = PedidoBuilder.pedido();
+        Pedido pedido = PedidoBuilder.criarPedido(StatusBuilder.criarStatus());
 
         EntitadeNaoEncontradaException exception = assertThrows(EntitadeNaoEncontradaException.class, ()
                 -> service.aceitarPropostaDoAluno(pedido.getId()));
@@ -222,7 +214,7 @@ class PedidoServiceTest {
 //    @DisplayName("Atualizar status para recusado do pedido quando acionado recusarPedido com dados válidos")
 //    @Test
 //    void atualizarStatusDoPedidoQuandoAcionadoRecusarPedidoComDadosValidos(){
-//        Pedido pedido = PedidoBuilder.pedido();
+//        Pedido pedido = PedidoBuilder.criarPedido(StatusBuilder.criarStatus());
 //        pedido.getStatus().setDescricao("Pendente");
 //
 //        Status status = new Status();
@@ -246,7 +238,7 @@ class PedidoServiceTest {
     @DisplayName("Lançar exceção quando acionado recusarPedido com pedido Id inválido")
     @Test
     void lancarExcecaoQuandoAcionadoRecusarPedidoComPedidoIdInvalido(){
-        Pedido pedido = PedidoBuilder.pedido();
+        Pedido pedido = PedidoBuilder.criarPedido(StatusBuilder.criarStatus());
 
         EntitadeNaoEncontradaException exception = assertThrows(EntitadeNaoEncontradaException.class, ()
                 -> service.recusarPropostaDoAluno(pedido.getId()));
@@ -273,7 +265,7 @@ class PedidoServiceTest {
     @DisplayName("Retonar lista com 3 pedidos quando acionado buscarPorUsuarioId quando usuário for válido")
     @Test
     void retonarListaComTresPedidosQuandoAcionadoBuscarPorUsuarioIdQuandoUsuarioForValido(){
-        Pedido pedido = PedidoBuilder.pedido();
+        Pedido pedido = PedidoBuilder.criarPedido(StatusBuilder.criarStatus());
         List<Pedido> pedidos = new ArrayList<>();
 
         pedidos.add(pedido);
@@ -294,7 +286,7 @@ class PedidoServiceTest {
     @DisplayName("Retornar PedidoExibicaoDto quando acionado buscarPorIdParaExibicao com Id válido")
     @Test
     void retornarPedidoExibicaoDtoQuandoAcionadoBuscarPorIdParaExibicaoComIdValido(){
-        Pedido pedido = PedidoBuilder.pedido();
+        Pedido pedido = PedidoBuilder.criarPedido(StatusBuilder.criarStatus());
 
         Mockito.when(repository.findById(Mockito.anyInt()))
                         .thenReturn(Optional.of(pedido));
@@ -308,7 +300,7 @@ class PedidoServiceTest {
 //    @DisplayName("Retonar pedido atualizado quando acionado aceitarPropostaDoAluno")
 //    @Test
 //    void retornarPedidoAtualizadoQuandoAcionadoAtualizarStatus(){
-//        Pedido pedido = PedidoBuilder.pedido();
+//        Pedido pedido = PedidoBuilder.criarPedido(StatusBuilder.criarStatus());
 //
 //        String status = "Aguardando Pagamento";
 //

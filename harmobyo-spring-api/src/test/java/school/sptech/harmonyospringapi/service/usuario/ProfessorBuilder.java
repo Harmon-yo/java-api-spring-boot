@@ -14,6 +14,13 @@ public class ProfessorBuilder {
         return professor;
     }
 
+    public static Professor criarProfessor(Integer id) {
+        Professor professor = new Professor();
+        professor.setId(id);
+        professor.setNome(NOME);
+        return professor;
+    }
+
     public static Integer getId() {
         return ID;
     }
