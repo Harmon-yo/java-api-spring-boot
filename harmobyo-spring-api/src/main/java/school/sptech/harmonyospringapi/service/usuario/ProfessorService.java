@@ -176,7 +176,7 @@ public class ProfessorService {
     public List<String> filtrarParametrosDeBusca(String parametros) {
         String operacao = "";
 
-        List<String> criteriosDePesquisa = List.of("><", ">:", "<:", ":", "<", ">");
+        List<String> criteriosDePesquisa = List.of("><", ">:", "<:", ":", "<", ">", "~");
 
         for (String criterio: criteriosDePesquisa) {
             if (parametros.contains(criterio)) {

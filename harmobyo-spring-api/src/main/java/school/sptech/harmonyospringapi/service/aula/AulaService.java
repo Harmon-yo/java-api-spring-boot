@@ -70,7 +70,7 @@ public class AulaService {
 
     public Aula buscarPorId(Integer id) {
         return aulaRepository.findById(id).orElseThrow(
-                () -> new EntitadeNaoEncontradaException("Aula não encontrada")
+                () -> new EntitadeNaoEncontradaException("Aula não encontrada!")
         );
     }
 

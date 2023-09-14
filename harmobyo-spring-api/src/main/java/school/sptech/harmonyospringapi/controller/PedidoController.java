@@ -78,6 +78,15 @@ public class PedidoController {
         return ResponseEntity.created(null).body(pedidoExibicaoDto);
     }
 
+    @PutMapping("/realiza-pagamento/{id}")
+    @Operation(summary = "Realiza o pagamento do pedido")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Pagamento realizado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Erro de validação")
+    })
+    public ResponseEntity<PedidoExibicaoDto> realizarPagamento(@PathVariable Integer id){
+        return ResponseEntity.ok(this.pedidoService.realizarPagamento(id));
+    }
 
 
     @PutMapping("/aceita-pedido/{id}")

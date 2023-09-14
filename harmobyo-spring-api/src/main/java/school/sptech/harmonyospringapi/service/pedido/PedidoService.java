@@ -157,6 +157,21 @@ public class PedidoService {
         return PedidoMapper.ofPedidoExibicaoDto(pedido);
     }
 
+    public PedidoExibicaoDto realizarPagamento(Integer id) {
+        Pedido pedido = this.buscarPorId(id);
+
+        if (this.buscarPorId(id).getStatus().getDescricao().equals("Cancelado")) {
+            throw new EntidadeConflitanteException("Pedido já cancelado");
+        } else if (this.buscarPorId(id).getStatus().getDescricao().equals("Recusado")) {
+            throw new EntidadeConflitanteException("Pedido já recusado");
+        }
+
+        this.hashTableService.atualizarStatusPedidoPorId(id, pedido, "Confirmado");
+        pedido = atualizarStatus(pedido, "Confirmado");
+
+        return PedidoMapper.ofPedidoExibicaoDto(pedido);
+    }
+
     public PedidoExibicaoDto concluirPedidoPorId(Integer id) {
         Pedido pedido = this.buscarPorId(id);
 
