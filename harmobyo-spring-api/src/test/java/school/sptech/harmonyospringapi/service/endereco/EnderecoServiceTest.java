@@ -22,36 +22,35 @@ class EnderecoServiceTest {
 
     @Test
     void salvarEnderecoValido(){
-        Mockito.when(enderecoRepository.save(Mockito.any())).thenReturn(new Endereco());
+        Mockito.when(enderecoRepository.save(Mockito.any())).thenReturn(EnderecoBuilder.criarEndereco());
         assertNotNull(enderecoService.cadastrarEndereco(new Endereco()));
-
     }
 
     @Test
     void salvarEnderecoInvalido(){
         Mockito.when(enderecoRepository.save(Mockito.any())).thenReturn(null);
-        assertNull(enderecoService.cadastrarEndereco(new Endereco()));
+        assertNull(enderecoService.cadastrarEndereco(EnderecoBuilder.criarEndereco()));
 
     }
 
     @Test
     void atualizarEnderecoValido(){
         Mockito.when(enderecoRepository.save(Mockito.any())).thenReturn(new Endereco());
-        assertNotNull(enderecoService.atualizarEndereco(new Endereco()));
+        assertNotNull(enderecoService.atualizarEndereco(EnderecoBuilder.criarEndereco()));
 
     }
 
     @Test
     void atualizarEnderecoInvalido(){
         Mockito.when(enderecoRepository.save(Mockito.any())).thenReturn(null);
-        assertNull(enderecoService.atualizarEndereco(new Endereco()));
+        assertNull(enderecoService.atualizarEndereco(EnderecoBuilder.criarEndereco()));
 
     }
 
     @Test
     void buscarEnderecoPorIdValido(){
 
-        Mockito.when(enderecoRepository.findById(Mockito.any())).thenReturn(java.util.Optional.of(new Endereco()));
+        Mockito.when(enderecoRepository.findById(Mockito.any())).thenReturn(java.util.Optional.of(EnderecoBuilder.criarEndereco()));
 
         assertNotNull(enderecoService.buscarPorId(1));
 
@@ -66,7 +65,7 @@ class EnderecoServiceTest {
 
     @Test
     void devolver3EnderecosQuandoListarEnderecos(){
-        Mockito.when(enderecoRepository.findAll()).thenReturn(java.util.List.of(new Endereco(), new Endereco(), new Endereco()));
+        Mockito.when(enderecoRepository.findAll()).thenReturn(java.util.List.of(EnderecoBuilder.criarEndereco(), EnderecoBuilder.criarEndereco(), EnderecoBuilder.criarEndereco()));
         assertEquals(3, enderecoService.listarEnderecos().size());
     }
 }

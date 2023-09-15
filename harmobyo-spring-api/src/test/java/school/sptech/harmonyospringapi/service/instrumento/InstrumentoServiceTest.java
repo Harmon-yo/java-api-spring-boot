@@ -14,6 +14,7 @@ import school.sptech.harmonyospringapi.service.exceptions.EntidadeConflitanteExc
 import school.sptech.harmonyospringapi.service.exceptions.EntitadeNaoEncontradaException;
 import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoCriacaoDto;
 import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoExibicaoDto;
+import school.sptech.harmonyospringapi.service.naipe.NaipeBuilder;
 import school.sptech.harmonyospringapi.service.naipe.NaipeService;
 
 import java.util.List;
@@ -40,18 +41,11 @@ class InstrumentoServiceTest {
     @Test
     public void quandoAcionadoInstrumentoDeveSerCadastradoCorretamente() {
         // Arrange
-        InstrumentoCriacaoDto instrumentoCriacaoDto = new InstrumentoCriacaoDto();
-        instrumentoCriacaoDto.setNome("Violão");
-        instrumentoCriacaoDto.setNaipe(1);
+        InstrumentoCriacaoDto instrumentoCriacaoDto = InstrumentoBuilder.criarInstrumentoCriacaoDto(1, "Violão");
 
-        Naipe naipe = new Naipe();
-        naipe.setId(1);
-        naipe.setDescricao("Cordas");
+        Naipe naipe = NaipeBuilder.criarNaipe(1, "Cordas");
 
-        Instrumento novoInstrumento = new Instrumento();
-        novoInstrumento.setId(1);
-        novoInstrumento.setNome("Violão");
-        novoInstrumento.setNaipe(naipe);
+        Instrumento novoInstrumento = InstrumentoBuilder.criarInstrumento(1, "Violão");
 
         Mockito.when(instrumentoRepository.existsInstrumentoByNomeIgnoreCase("Violão")).thenReturn(false);
         Mockito.when(instrumentoRepository.save(Mockito.any(Instrumento.class))).thenReturn(novoInstrumento);
@@ -75,9 +69,7 @@ class InstrumentoServiceTest {
     @Test
     public void quandoAcionadoDeveRetornarEntidadeConflitanteException() {
         // Arrange
-        InstrumentoCriacaoDto instrumentoCriacaoDto = new InstrumentoCriacaoDto();
-        instrumentoCriacaoDto.setNome("Violão");
-        instrumentoCriacaoDto.setNaipe(1);
+        InstrumentoCriacaoDto instrumentoCriacaoDto = InstrumentoBuilder.criarInstrumentoCriacaoDto(1, "Violão");
 
         Mockito.when(instrumentoRepository.existsInstrumentoByNomeIgnoreCase("Violão")).thenReturn(true);
 
@@ -92,14 +84,7 @@ class InstrumentoServiceTest {
     @Test
     void devolverListaDeInstrumentosComTamanho3(){
 
-        Instrumento instrumento = new Instrumento();
-        Naipe naipe = new Naipe();
-        naipe.setId(1);
-        naipe.setDescricao("Cordas");
-        instrumento.setId(1);
-        instrumento.setNome("Violão");
-        instrumento.setNaipe(naipe);
-
+        Instrumento instrumento = InstrumentoBuilder.criarInstrumento(1, "Violão");
 
         Mockito.when(instrumentoRepository.findAll()).thenReturn(List.of(instrumento, instrumento, instrumento));
 

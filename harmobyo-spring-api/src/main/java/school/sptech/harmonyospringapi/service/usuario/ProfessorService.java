@@ -176,7 +176,7 @@ public class ProfessorService {
     public List<String> filtrarParametrosDeBusca(String parametros) {
         String operacao = "";
 
-        List<String> criteriosDePesquisa = List.of("><", ">:", "<:", ":", "<", ">");
+        List<String> criteriosDePesquisa = List.of("><", ">:", "<:", ":", "<", ">", "~");
 
         for (String criterio: criteriosDePesquisa) {
             if (parametros.contains(criterio)) {
@@ -376,8 +376,17 @@ public class ProfessorService {
     public Long getMediaTempoResposta(int id) {
         LocalDateTime now = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
         List<Pedido> pedidos = this.pedidoRepository.buscarPorUsuarioId(id);
-        Long somaTempoResposta = pedidos.stream().filter(p -> p.getHoraCriacao().getMonth() == now.getMonth()).mapToLong(p -> Duration.between(p.getHoraCriacao(), p.getHoraResposta()).toMinutes()).sum();
-        Long mediaTempoResposta = somaTempoResposta / pedidos.size();
+        for(Pedido p : pedidos){
+            if(p.getHoraCriacao() == null){
+                System.out.println("é isso");
+
+            }
+        }
+        Long somaTempoResposta = pedidos.stream().filter(p -> p.getHoraCriacao().getMonth() == now.getMonth() && p.getHoraResposta() != null).mapToLong(p -> Duration.between(p.getHoraCriacao(), p.getHoraResposta()).toMinutes()).sum();
+        System.out.println(" =============== aqui");
+        System.out.println(somaTempoResposta);
+        System.out.println(pedidos.size());
+        Long mediaTempoResposta = somaTempoResposta / pedidos.stream().filter(p -> p.getHoraResposta() != null).count();
         return mediaTempoResposta;
     }
 

@@ -13,6 +13,7 @@ import school.sptech.harmonyospringapi.service.exceptions.EntidadeConflitanteExc
 import school.sptech.harmonyospringapi.service.exceptions.EntitadeNaoEncontradaException;
 import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoCriacaoDto;
 import school.sptech.harmonyospringapi.service.naipe.dto.NaipeCriacaoDto;
+import school.sptech.harmonyospringapi.service.naipe.dto.NaipeExibicaoDto;
 import school.sptech.harmonyospringapi.service.naipe.dto.NaipeMapper;
 
 import java.util.Optional;
@@ -33,9 +34,7 @@ class NaipeServiceTest {
     @Test
     public void quandoAcionadoComIdInvalidoDeveRetornarEntidadeNaoEncontradaException() {
         // Arrange
-        Optional<Naipe> naipeEncontrado = naipeRepository.findById(999);
-
-        Mockito.when(naipeRepository.findById(999)).thenReturn(naipeEncontrado);
+        Mockito.when(naipeRepository.findById(Mockito.anyInt())).thenReturn(Optional.empty());
 
         // Act & Assert
         assertThrows(EntitadeNaoEncontradaException.class, ()
@@ -44,14 +43,16 @@ class NaipeServiceTest {
 
     @Test
     public void quandoCadastradoCorretamenteDeveSalvarNaRepository() {
-        Naipe naipeCriado = new Naipe();
-        naipeCriado.setDescricao("Naipe teste");
+        NaipeCriacaoDto naipeCriacaoDto = NaipeBuilder.criarNaipeCriacaoDto("Naipe teste");
+        Naipe naipe = NaipeBuilder.criarNaipe(1, "Naipe teste");
 
-        Mockito.when(naipeRepository.save(Mockito.any(Naipe.class))).thenReturn(naipeCriado);
+        Mockito.when(naipeRepository.save(Mockito.any(Naipe.class))).thenReturn(naipe);
 
-        naipeService.cadastrar(NaipeMapper.of(naipeCriado));
+        NaipeExibicaoDto naipeCriado = naipeService.cadastrar(naipeCriacaoDto);
 
         Mockito.verify(naipeRepository, times(1)).save(Mockito.any(Naipe.class));
+        assertEquals(naipeCriado.getId(), naipe.getId());
+        assertEquals(naipeCriado.getDescricaoNaipe(), naipe.getDescricao());
 
     }
 

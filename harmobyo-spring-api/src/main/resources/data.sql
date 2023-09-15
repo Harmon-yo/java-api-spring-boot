@@ -58,8 +58,7 @@ VALUES ('Violino', 1),
 -- Insert para os intrumentos do professor --
 INSERT INTO professor_instrumento (professor_fk, instrumento_fk, nivel_conhecimento, empresta_instrumento)
 VALUES
-    (4,
-     2, 'Avançado', false),
+    (4, 2, 'Avançado', false),
     (4, 3, 'Intermediário', false),
     (4, 7, 'Intermediário', true),
     (5, 4, 'Intermediário', true),
