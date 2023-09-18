@@ -67,8 +67,6 @@ public class HashTableService {
         int lista = funcaoHash(status);
         List<PedidoExibicaoDto> pedidoExibicaoDto = new ArrayList<>();
 
-        System.out.println(hashTable.getTab()[lista].getTamanho());
-
         for (int i = 0; i < hashTable.getTab()[lista].getTamanho(); i++){
             PedidoExibicaoDto pedido = hashTable.getTab()[lista].getElementoRecursivo(i).getPedido();
             if (idUsuario == pedido.getProfessor().getId() || idUsuario == pedido.getAluno().getId()){
@@ -81,10 +79,13 @@ public class HashTableService {
 
     public PedidoExibicaoDto atualizarStatusPedidoPorId(int id, Pedido pedido, String status){
         int lista = funcaoHash(pedido.getStatus().getDescricao());
+        int listaNova = funcaoHash(status);
         for (int j = 0; j < hashTable.getTab()[lista].getTamanho(); j++){
             PedidoExibicaoDto pedidoExibicaoDto = hashTable.getTab()[lista].getElementoRecursivo(j).getPedido();
             if (id == pedidoExibicaoDto.getId()){
                 pedidoExibicaoDto.getStatus().setDescricao(status);
+                hashTable.getTab()[listaNova].insereNode(pedidoExibicaoDto);
+                hashTable.getTab()[lista].removeNode(pedidoExibicaoDto);
                 return pedidoExibicaoDto;
             }
         }
