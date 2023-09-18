@@ -1,7 +1,5 @@
 package school.sptech.harmonyospringapi.service.usuario;
 
-import com.google.common.base.CharMatcher;
-import com.google.common.base.Splitter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.jpa.domain.Specification;

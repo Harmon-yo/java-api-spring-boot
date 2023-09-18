@@ -111,4 +111,13 @@ public class HashTableService {
             insere(pedidoExibicaoDto.get(i));
         }
     }
+
+    public boolean isEmpty(){
+        for (int i = 0; i < 7; i++){
+            if (this.hashTable.getTab()[i].getTamanho() != 0){
+                return false;
+            }
+        }
+        return true;
+    }
 }

@@ -164,7 +164,7 @@ public class PedidoController {
                                                                                     @RequestParam String data) {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-    LocalDateTime localDateTime = LocalDateTime.parse(data + " 00:00:00", formatter);
+        LocalDateTime localDateTime = LocalDateTime.parse(data + " 00:00:00", formatter);
         List<PedidoExibicaoDto> ltAulas = this.pedidoService.buscarAulasPorIdUsuarioEDataAula(fkUsuario, localDateTime);
 
         if (ltAulas.isEmpty()){
@@ -205,17 +205,13 @@ public class PedidoController {
 
     // ------------------------------- HashingTable ------------------------------- //
 
-    @GetMapping("/hashing")
-    public ResponseEntity<Void> adicionarPedidosNaHashing(){
-        this.hashTableService.adicionarBanco();
-        return ResponseEntity.ok().build();
-    }
-
     @GetMapping("/usuario/hashing/{id}")
     public ResponseEntity<List<PedidoExibicaoDto>> buscarPedidosPorUsuarioIdEStatusHashing(@PathVariable Integer id, @RequestParam String status){
+        if (this.hashTableService.isEmpty()) this.hashTableService.adicionarBanco();
+
         List<PedidoExibicaoDto> pedidoExibicaoDto = this.hashTableService.buscarPedidosPorIdEStatus(id, status);
 
-        if(pedidoExibicaoDto.isEmpty()) return ResponseEntity.noContent().build();
+        if (pedidoExibicaoDto.isEmpty()) return ResponseEntity.noContent().build();
         return ResponseEntity.ok(pedidoExibicaoDto);
     }
 
