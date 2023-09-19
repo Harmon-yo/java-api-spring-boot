@@ -7,6 +7,8 @@ import school.sptech.harmonyospringapi.repository.*;
 import school.sptech.harmonyospringapi.service.aula.AulaService;
 import school.sptech.harmonyospringapi.service.exceptions.EntidadeConflitanteException;
 import school.sptech.harmonyospringapi.service.exceptions.EntitadeNaoEncontradaException;
+import school.sptech.harmonyospringapi.service.notificacao.NotificacaoService;
+import school.sptech.harmonyospringapi.service.pedido.dto.PedidoAlteracaoStatus;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoCriacaoDto;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoDto;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoMapper;
@@ -47,6 +49,9 @@ public class PedidoService {
     @Autowired
     private HashTableService hashTableService;
 
+    @Autowired
+    private NotificacaoService notificacaoService;
+
     public List<PedidoExibicaoDto> obterTodos() {
 
         return this.repository.findAll()
@@ -74,10 +79,10 @@ public class PedidoService {
 
         pedidoCriacaoDto.setDataAula(pedidoCriacaoDto.getDataAula().withSecond(0));
 
-        return PedidoMapper.ofPedidoExibicaoDto(this.repository.save(
-                PedidoMapper.of(pedidoCriacaoDto, aluno, professor, status, aula)
-        ));
-
+        Pedido pedido = this.repository.save(PedidoMapper.of(pedidoCriacaoDto, aluno, professor, status, aula));
+        notificarProfessor("O aluno fez uma proposta de aula no dia %s às %s", pedido);
+        notificarAluno("Você fez uma proposta de aula no dia %s às %s", pedido);
+        return PedidoMapper.ofPedidoExibicaoDto(pedido);
     }
 
     /* ============= PESQUISA ============== */
@@ -95,7 +100,6 @@ public class PedidoService {
         return pedidos.stream().map(PedidoMapper::ofPedidoExibicaoDto).toList();
     }
 
-    /* ============= ACEITAR E RECUSAR ============== */
     public List<PedidoExibicaoDto> buscarPorUsuarioId(Integer id) {
         Usuario usuario = usuarioService.buscarPorId(id);
 
@@ -111,8 +115,12 @@ public class PedidoService {
     }
 
     /* ============= ACEITAR / RECUSAR / CANCELAR / CONCLUIR ============== */
-    public PedidoExibicaoDto aceitarPropostaDoAluno(Integer id) {
-        Pedido pedido = this.buscarPorId(id);
+    public PedidoExibicaoDto aceitarPropostaDoAluno(PedidoAlteracaoStatus pedidoAlteracaoStatus) {
+        Integer idPedido = pedidoAlteracaoStatus.getIdPedido();
+        Integer idUsuario = pedidoAlteracaoStatus.getIdUsuario();
+        String motivo = pedidoAlteracaoStatus.getMotivo();
+
+        Pedido pedido = this.buscarPorId(idPedido);
 
         switch (pedido.getStatus().getDescricao()) {
             case "Confirmado" -> throw new EntitadeNaoEncontradaException("Pedido já confirmado");
@@ -121,14 +129,22 @@ public class PedidoService {
             case "Aguardando Pagamento" -> throw new EntitadeNaoEncontradaException("Pedido já está aguardando pagamento");
         }
 
-        this.hashTableService.atualizarStatusPedidoPorId(id, pedido, "Aguardando Pagamento");
+        this.hashTableService.atualizarStatusPedidoPorId(idPedido, pedido, "Aguardando Pagamento");
         pedido = atualizarStatus(pedido, "Aguardando Pagamento");
+
+        notificarAluno("O professor aceitou sua proposta de aula no dia %s às %s", pedido);
+
+        notificarProfessor("Você aceitou a proposta de aula do aluno %s no dia %s às %s", pedido);
 
         return PedidoMapper.ofPedidoExibicaoDto(pedido);
     }
 
-    public PedidoExibicaoDto recusarPropostaDoAluno(Integer id) {
-        Pedido pedido = this.buscarPorId(id);
+    public PedidoExibicaoDto recusarPropostaDoAluno(PedidoAlteracaoStatus pedidoAlteracaoStatus) {
+        Integer idPedido = pedidoAlteracaoStatus.getIdPedido();
+        Integer idUsuario = pedidoAlteracaoStatus.getIdUsuario();
+        String motivo = pedidoAlteracaoStatus.getMotivo();
+
+        Pedido pedido = this.buscarPorId(idPedido);
 
         switch (pedido.getStatus().getDescricao()) {
             case "Recusado" -> throw new EntidadeConflitanteException("Pedido já recusado");
@@ -137,56 +153,120 @@ public class PedidoService {
                     throw new EntidadeConflitanteException("Pedido já está aguardando pagamento");
         }
 
-        this.hashTableService.atualizarStatusPedidoPorId(id, pedido, "Recusado");
+        this.hashTableService.atualizarStatusPedidoPorId(idPedido, pedido, "Recusado");
         pedido = atualizarStatus(pedido, "Recusado");
 
+        notificarAluno("O professor recusou sua proposta de aula no dia %s às %s", pedido);
+        notificarProfessor("Você recusou a proposta de aula do aluno %s no dia %s às %s", pedido);
+
         return PedidoMapper.ofPedidoExibicaoDto(pedido);
     }
 
-    public PedidoExibicaoDto cancelarPedido(Integer id){
-        Pedido pedido = this.buscarPorId(id);
+    public PedidoExibicaoDto cancelarPedido(PedidoAlteracaoStatus pedidoAlteracaoStatus) {
+        Integer idPedido = pedidoAlteracaoStatus.getIdPedido();
+        Integer idUsuario = pedidoAlteracaoStatus.getIdUsuario();
+        String motivo = pedidoAlteracaoStatus.getMotivo();
 
-        if (this.buscarPorId(id).getStatus().getDescricao().equals("Cancelado")) {
-            throw new EntidadeConflitanteException("Pedido já cancelado");
-        } else if (this.buscarPorId(id).getStatus().getDescricao().equals("Recusado")) {
-            throw new EntidadeConflitanteException("Pedido já recusado");
+        Pedido pedido = this.buscarPorId(idPedido);
+
+        switch (pedido.getStatus().getDescricao()) {
+            case "Cancelado" -> throw new EntidadeConflitanteException("Pedido já cancelado");
+            case "Recusado" -> throw new EntidadeConflitanteException("Pedido já recusado");
         }
-        this.hashTableService.atualizarStatusPedidoPorId(id, pedido, "Cancelado");
+
+        this.hashTableService.atualizarStatusPedidoPorId(idPedido, pedido, "Cancelado");
         pedido = atualizarStatus(pedido, "Cancelado");
 
+        Usuario usuario = usuarioService.buscarPorId(idUsuario);
+
+        if (usuario.getCategoria().equals("Aluno")) {
+            notificacaoService.criarNotificacao(String.format(
+                    "O aluno %s cancelou a aula no dia %s às %s",
+                    pedido.getAluno().getNome(),
+                    pedido.getDataAula().toLocalDate(),
+                    pedido.getDataAula().toLocalTime().toString().substring(0, 5)
+            ), "", pedido.getProfessor());
+
+            notificacaoService.criarNotificacao(String.format(
+                    "Você cancelou a aula com o professor %s no dia %s às %s",
+                    pedido.getProfessor().getNome(),
+                    pedido.getDataAula().toLocalDate(),
+                    pedido.getDataAula().toLocalTime().toString().substring(0, 5)
+            ), "", pedido.getAluno());
+        } else {
+            notificarAluno("O professor %s cancelou a aula no dia %s às %s", pedido);
+            notificarProfessor("Você cancelou a aula com o aluno %s no dia %s às %s", pedido);
+        }
+
         return PedidoMapper.ofPedidoExibicaoDto(pedido);
     }
 
-    public PedidoExibicaoDto realizarPagamento(Integer id) {
-        Pedido pedido = this.buscarPorId(id);
+    public PedidoExibicaoDto realizarPagamento(PedidoAlteracaoStatus pedidoAlteracaoStatus) {
+        Integer idPedido = pedidoAlteracaoStatus.getIdPedido();
+        Integer idUsuario = pedidoAlteracaoStatus.getIdUsuario();
+        String motivo = pedidoAlteracaoStatus.getMotivo();
 
-        if (this.buscarPorId(id).getStatus().getDescricao().equals("Cancelado")) {
-            throw new EntidadeConflitanteException("Pedido já cancelado");
-        } else if (this.buscarPorId(id).getStatus().getDescricao().equals("Recusado")) {
-            throw new EntidadeConflitanteException("Pedido já recusado");
+        Pedido pedido = this.buscarPorId(idPedido);
+
+        switch (pedido.getStatus().getDescricao()) {
+            case "Confirmado" -> throw new EntidadeConflitanteException("Pedido já confirmado");
+            case "Recusado" -> throw new EntidadeConflitanteException("Pedido já recusado");
+            case "Cancelado" -> throw new EntidadeConflitanteException("Pedido já cancelado");
+            case "Concluído" -> throw new EntidadeConflitanteException("Pedido já concluído");
         }
 
-        this.hashTableService.atualizarStatusPedidoPorId(id, pedido, "Confirmado");
+        this.hashTableService.atualizarStatusPedidoPorId(idPedido, pedido, "Confirmado");
         pedido = atualizarStatus(pedido, "Confirmado");
 
+        notificarProfessor("O aluno %s confirmou o pagamento da aula no dia %s às %s", pedido);
+        notificarAluno("Você confirmou o pagamento da aula com o professor %s no dia %s às %s", pedido);
+
         return PedidoMapper.ofPedidoExibicaoDto(pedido);
     }
 
-    public PedidoExibicaoDto concluirPedidoPorId(Integer id) {
-        Pedido pedido = this.buscarPorId(id);
+    public PedidoExibicaoDto concluirPedidoPorId(PedidoAlteracaoStatus pedidoAlteracaoStatus) {
+        Integer idPedido = pedidoAlteracaoStatus.getIdPedido();
+        Integer idUsuario = pedidoAlteracaoStatus.getIdUsuario();
+        String motivo = pedidoAlteracaoStatus.getMotivo();
 
-        if (this.buscarPorId(id).getStatus().getDescricao().equals("Concluído")) {
-            throw new EntidadeConflitanteException("Pedido já concluído");
-        } else if (this.buscarPorId(id).getStatus().getDescricao().equals("Cancelado")) {
-            throw new EntidadeConflitanteException("Pedido já cancelado");
-        } else if (this.buscarPorId(id).getStatus().getDescricao().equals("Recusado")) {
-            throw new EntidadeConflitanteException("Pedido já recusado");
+        Pedido pedido = this.buscarPorId(idPedido);
+
+        switch (pedido.getStatus().getDescricao()) {
+            case "Recusado" -> throw new EntidadeConflitanteException("Pedido já recusado");
+            case "Cancelado" -> throw new EntidadeConflitanteException("Pedido já cancelado");
+            case "Concluído" -> throw new EntidadeConflitanteException("Pedido já concluído");
         }
 
-        this.hashTableService.atualizarStatusPedidoPorId(id, pedido, "Concluído");
+        this.hashTableService.atualizarStatusPedidoPorId(idPedido, pedido, "Concluído");
         pedido = atualizarStatus(pedido, "Concluído");
 
+        Usuario usuario = usuarioService.buscarPorId(idUsuario);
+
+        if (usuario.getCategoria().equals("Aluno")) {
+            notificarProfessor("O aluno %s concluiu a aula no dia %s às %s", pedido);
+            notificarAluno("Você concluiu a aula com o professor %s no dia %s às %s", pedido);
+        } else {
+            notificarAluno("O professor %s concluiu a aula no dia %s às %s", pedido);
+            notificarProfessor("Você concluiu a aula com o aluno %s no dia %s às %s", pedido);
+        }
+
         return PedidoMapper.ofPedidoExibicaoDto(pedido);
+    }
+
+    private void notificarAluno(String mensagem, Pedido pedido) {
+        notificacaoService.criarNotificacao(String.format(mensagem,
+                pedido.getProfessor().getNome(),
+                pedido.getDataAula().toLocalDate(),
+                pedido.getDataAula().toLocalTime().toString().substring(0, 5)
+                ), "", pedido.getAluno());
+    }
+
+    private void notificarProfessor(String mensagem, Pedido pedido) {
+        notificacaoService.criarNotificacao(String.format(mensagem,
+                pedido.getAluno().getNome(),
+                pedido.getDataAula().toLocalDate(),
+                pedido.getDataAula().toLocalTime().toString().substring(0, 5)
+                ), "", pedido.getProfessor());
     }
 
     public Pedido atualizarStatus(Pedido pedido, String nomeStatus) {

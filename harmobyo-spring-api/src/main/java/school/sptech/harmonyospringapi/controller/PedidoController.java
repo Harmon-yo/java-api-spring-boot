@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import school.sptech.harmonyospringapi.domain.Pedido;
 import school.sptech.harmonyospringapi.service.pedido.PedidoService;
+import school.sptech.harmonyospringapi.service.pedido.dto.PedidoAlteracaoStatus;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoCriacaoDto;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoDto;
 import school.sptech.harmonyospringapi.service.pedido.hashing.HashTableService;
@@ -84,8 +85,8 @@ public class PedidoController {
             @ApiResponse(responseCode = "200", description = "Pagamento realizado com sucesso"),
             @ApiResponse(responseCode = "400", description = "Erro de validação")
     })
-    public ResponseEntity<PedidoExibicaoDto> realizarPagamento(@PathVariable Integer id){
-        return ResponseEntity.ok(this.pedidoService.realizarPagamento(id));
+    public ResponseEntity<PedidoExibicaoDto> realizarPagamento(@RequestBody PedidoAlteracaoStatus pedidoAlteracaoStatus){
+        return ResponseEntity.ok(this.pedidoService.realizarPagamento(pedidoAlteracaoStatus));
     }
 
 
@@ -95,8 +96,8 @@ public class PedidoController {
             @ApiResponse(responseCode = "200", description = "Proposta aceita com sucesso"),
             @ApiResponse(responseCode = "400", description = "Erro de validação")
     })
-    public ResponseEntity<PedidoExibicaoDto> aceitarPropostaDoAluno(@PathVariable Integer id){
-        PedidoExibicaoDto pedido = this.pedidoService.aceitarPropostaDoAluno(id);
+    public ResponseEntity<PedidoExibicaoDto> aceitarPropostaDoAluno(@RequestBody PedidoAlteracaoStatus pedidoAlteracaoStatus){
+        PedidoExibicaoDto pedido = this.pedidoService.aceitarPropostaDoAluno(pedidoAlteracaoStatus);
         return ResponseEntity.ok(pedido);
     }
 
@@ -106,25 +107,25 @@ public class PedidoController {
             @ApiResponse(responseCode = "200", description = "Proposta recusada com sucesso"),
             @ApiResponse(responseCode = "400", description = "Erro de validação")
     })
-    public ResponseEntity<PedidoExibicaoDto> recusarPropostaDoAluno(@PathVariable Integer id){
-        return ResponseEntity.ok(this.pedidoService.recusarPropostaDoAluno(id));
+    public ResponseEntity<PedidoExibicaoDto> recusarPropostaDoAluno(@RequestBody PedidoAlteracaoStatus pedidoAlteracaoStatus){
+        return ResponseEntity.ok(this.pedidoService.recusarPropostaDoAluno(pedidoAlteracaoStatus));
     }
 
-    @PutMapping("/cancela-pedido/{id}")
+    @PutMapping("/cancela-pedido")
     @Operation(summary = "Cancela o pedido")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Pedido cancelado com sucesso"),
             @ApiResponse(responseCode = "400", description = "Erro de validação")
     })
     @SecurityRequirement(name = "Bearer")
-    public ResponseEntity<PedidoExibicaoDto> cancelarPedidoPorId(@PathVariable Integer id){
-        return ResponseEntity.ok(pedidoService.cancelarPedido(id));
+    public ResponseEntity<PedidoExibicaoDto> cancelarPedidoPorId(@RequestBody PedidoAlteracaoStatus pedidoAlteracaoStatus){
+        return ResponseEntity.ok(pedidoService.cancelarPedido(pedidoAlteracaoStatus));
     }
 
     @PutMapping("/conclui-pedido/{id}")
     @SecurityRequirement(name = "Bearer")
-    public ResponseEntity<PedidoExibicaoDto> concluirPedidoPorId(@PathVariable Integer id){
-        return ResponseEntity.ok(pedidoService.concluirPedidoPorId(id));
+    public ResponseEntity<PedidoExibicaoDto> concluirPedidoPorId(@RequestBody PedidoAlteracaoStatus pedidoAlteracaoStatus){
+        return ResponseEntity.ok(pedidoService.concluirPedidoPorId(pedidoAlteracaoStatus));
     }
 
     @GetMapping("/usuario/{id}")

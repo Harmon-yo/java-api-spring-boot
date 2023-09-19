@@ -32,7 +32,7 @@ public class AulaController {
 
     @Operation(summary = "Cadastra a aula de um professor ", description = "")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Aula Cadastrada com sucesso"),
+            @ApiResponse(responseCode = "201", description = "Aula Cadastrada com sucesso"),
             @ApiResponse(responseCode = "409", description = "Aula já cadastrada para este professor e para este instrumento !", content = @Content(schema = @Schema(hidden = true))),
             @ApiResponse(responseCode = "404", description = "ID do Professor inválido e/ou ID do instrumento inválido !", content = @Content(schema = @Schema(hidden = true)))
     })
@@ -41,7 +41,7 @@ public class AulaController {
     public ResponseEntity<AulaExibicaoDto> cadastrar(@RequestBody @Valid AulaCriacaoDto aulaCriacaoDto) {
         AulaExibicaoDto aulaCriada = this.aulaService.cadastrarAula(aulaCriacaoDto);
 
-        return ResponseEntity.ok(aulaCriada);
+        return ResponseEntity.created(null).body(aulaCriada);
     }
 
     @Operation(summary = "Obtém uma lista de todos as aulas cadastradas de um professor ", description = "")
