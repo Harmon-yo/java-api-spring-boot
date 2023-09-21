@@ -80,8 +80,8 @@ public class PedidoService {
         pedidoCriacaoDto.setDataAula(pedidoCriacaoDto.getDataAula().withSecond(0));
 
         Pedido pedido = this.repository.save(PedidoMapper.of(pedidoCriacaoDto, aluno, professor, status, aula));
-        notificarProfessor("O aluno fez uma proposta de aula no dia %s às %s", pedido);
-        notificarAluno("Você fez uma proposta de aula no dia %s às %s", pedido);
+        notificarProfessor("O aluno %s fez uma proposta de aula no dia %s às %s", pedido);
+        notificarAluno("Você fez uma proposta de aula para %s no dia %s às %s", pedido);
         return PedidoMapper.ofPedidoExibicaoDto(pedido);
     }
 
@@ -219,7 +219,7 @@ public class PedidoService {
         pedido = atualizarStatus(pedido, "Confirmado");
 
         notificarProfessor("O aluno %s confirmou o pagamento da aula no dia %s às %s", pedido);
-        notificarAluno("Você confirmou o pagamento da aula com o professor %s no dia %s às %s", pedido);
+        notificarAluno("Você realizou o pagamento da aula com o professor %s", pedido);
 
         return PedidoMapper.ofPedidoExibicaoDto(pedido);
     }

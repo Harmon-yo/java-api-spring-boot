@@ -79,7 +79,7 @@ public class PedidoController {
         return ResponseEntity.created(null).body(pedidoExibicaoDto);
     }
 
-    @PutMapping("/realiza-pagamento/{id}")
+    @PutMapping("/realiza-pagamento")
     @Operation(summary = "Realiza o pagamento do pedido")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Pagamento realizado com sucesso"),
@@ -90,7 +90,7 @@ public class PedidoController {
     }
 
 
-    @PutMapping("/aceita-pedido/{id}")
+    @PutMapping("/aceita-pedido")
     @Operation(summary = "Aceita a proposta do aluno")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Proposta aceita com sucesso"),
@@ -101,7 +101,7 @@ public class PedidoController {
         return ResponseEntity.ok(pedido);
     }
 
-    @PutMapping("/recusa-pedido/{id}")
+    @PutMapping("/recusa-pedido")
     @Operation(summary = "Recusa a proposta do aluno")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Proposta recusada com sucesso"),
@@ -122,7 +122,7 @@ public class PedidoController {
         return ResponseEntity.ok(pedidoService.cancelarPedido(pedidoAlteracaoStatus));
     }
 
-    @PutMapping("/conclui-pedido/{id}")
+    @PutMapping("/conclui-pedido")
     @SecurityRequirement(name = "Bearer")
     public ResponseEntity<PedidoExibicaoDto> concluirPedidoPorId(@RequestBody PedidoAlteracaoStatus pedidoAlteracaoStatus){
         return ResponseEntity.ok(pedidoService.concluirPedidoPorId(pedidoAlteracaoStatus));

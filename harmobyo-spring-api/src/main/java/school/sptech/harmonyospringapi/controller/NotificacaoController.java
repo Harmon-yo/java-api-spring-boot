@@ -1,6 +1,10 @@
 package school.sptech.harmonyospringapi.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import school.sptech.harmonyospringapi.service.notificacao.NotificacaoService;
@@ -31,8 +35,16 @@ public class NotificacaoController {
     }
 
     @GetMapping("/usuario/{id}")
-    public ResponseEntity<List<NotificacaoExibicaoDto>> obterPorIdUsuario(@PathVariable int id) {
-        return ResponseEntity.ok().body(this.notificacaoService.obterPorIdUsuario(id));
+    public ResponseEntity<Page<NotificacaoExibicaoDto>> obterPorIdUsuario(@PathVariable int id,
+                                                                          @PageableDefault(size = 10,
+                                                                                  sort = "data",
+                                                                                  direction = Sort.Direction.DESC)
+                                                                          Pageable pageable) {
+        Page<NotificacaoExibicaoDto> ltNotificacoes = this.notificacaoService.obterPorIdUsuario(id, pageable);
+
+        if (ltNotificacoes.isEmpty()) return ResponseEntity.noContent().build();
+
+        return ResponseEntity.ok().body(ltNotificacoes);
     }
 
     @GetMapping("/{id}")

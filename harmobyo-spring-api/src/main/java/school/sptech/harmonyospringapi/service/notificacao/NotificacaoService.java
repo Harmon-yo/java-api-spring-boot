@@ -1,6 +1,9 @@
 package school.sptech.harmonyospringapi.service.notificacao;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Service;
 import school.sptech.harmonyospringapi.domain.Notificacao;
 import school.sptech.harmonyospringapi.domain.Usuario;
@@ -57,14 +60,12 @@ public class NotificacaoService {
                 .toList();
     }
 
-    public List<NotificacaoExibicaoDto> obterPorIdUsuario(Integer idUsuario) {
+    public Page<NotificacaoExibicaoDto> obterPorIdUsuario(Integer idUsuario, Pageable pageable) {
         Usuario usuario = usuarioService.buscarPorId(idUsuario);
 
-        List<Notificacao> ltNotificacao = this.notificacaoRepository.findByUsuarioId(usuario.getId());
+        Page<Notificacao> ltNotificacao = this.notificacaoRepository.findByUsuarioId(usuario.getId(), pageable);
 
-        return ltNotificacao.stream()
-                .map(NotificacaoMapper::ofNotificacao)
-                .toList();
+        return ltNotificacao.map(NotificacaoMapper::ofNotificacao);
     }
 
     private Notificacao obterPorId(Integer idNotificacao) {

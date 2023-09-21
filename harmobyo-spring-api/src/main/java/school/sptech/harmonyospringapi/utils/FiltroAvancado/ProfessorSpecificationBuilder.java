@@ -16,17 +16,17 @@ public class ProfessorSpecificationBuilder {
     }
 
 
-    public final void adicionarParametro(String key, String operation, Object value) {
+    public final void adicionarParametro(String key, String operation, Object value, boolean forceOrPredicate) {
         OperacoesDePesquisa op = OperacoesDePesquisa.getOperacaoSimples(operation);
 
         if (Objects.nonNull(op)) {
             List<String> values = new ArrayList<>();
-            boolean isOrPredicate = false;
+            boolean isOrPredicate = forceOrPredicate;
 
-//          - Para E e ; para OU
+            //          - Para E e ; para OU
             if (value.toString().contains("-")) {
                 values = new ArrayList<>(List.of(((String) value).split("-")));
-            } else if (value.toString().contains(";g")) {
+            } else if (value.toString().contains(";")) {
                 values = new ArrayList<>(List.of(((String) value).split(";")));
                 isOrPredicate = true;
             }
@@ -66,16 +66,19 @@ public class ProfessorSpecificationBuilder {
         return;
     }
 
-
     public Specification<Professor> build() {
         if (this.parametros.size() == 0) return null;
+
+        this.parametros.forEach(
+                parametro -> System.out.println("Parametro: " + parametro.getKey() + " " + parametro.getOperation() + " " + parametro.getValue())
+        );
 
         Specification<Professor> resultado = new ProfessorSpecification(this.parametros.get(0));
 
         for (int i = 1; i < this.parametros.size(); i++) {
             resultado = parametros.get(i).isOrPredicate()
-                    ? Specification.where(resultado).or(new ProfessorSpecification(parametros.get(i)))
-                    : Specification.where(resultado).and(new ProfessorSpecification(parametros.get(i)));
+                    ? resultado.or(new ProfessorSpecification(parametros.get(i)))
+                    : resultado.and(new ProfessorSpecification(parametros.get(i)));
         }
 
         return resultado;

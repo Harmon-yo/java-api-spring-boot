@@ -11,6 +11,7 @@ import school.sptech.harmonyospringapi.domain.*;
 import school.sptech.harmonyospringapi.repository.*;
 import school.sptech.harmonyospringapi.service.aula.AulaService;
 import school.sptech.harmonyospringapi.service.exceptions.EntitadeNaoEncontradaException;
+import school.sptech.harmonyospringapi.service.pedido.dto.PedidoAlteracaoStatus;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoCriacaoDto;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoDto;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoMapper;
@@ -204,9 +205,14 @@ class PedidoServiceTest {
     @Test
     void lancarExcecaoQuandoAcionadoAceitarPedidoComPedidoIdInvalido(){
         Pedido pedido = PedidoBuilder.criarPedido(StatusBuilder.criarStatus());
+        PedidoAlteracaoStatus pedidoAlteracaoStatus = new PedidoAlteracaoStatus();
+        pedidoAlteracaoStatus.setIdPedido(pedido.getId());
+        pedidoAlteracaoStatus.setIdUsuario(pedido.getAluno().getId());
+        pedidoAlteracaoStatus.setMotivo("");
+
 
         EntitadeNaoEncontradaException exception = assertThrows(EntitadeNaoEncontradaException.class, ()
-                -> service.aceitarPropostaDoAluno(pedido.getId()));
+                -> service.aceitarPropostaDoAluno(pedidoAlteracaoStatus));
 
         assertEquals("Pedido não encontrado", exception.getMessage());
     }
@@ -239,9 +245,13 @@ class PedidoServiceTest {
     @Test
     void lancarExcecaoQuandoAcionadoRecusarPedidoComPedidoIdInvalido(){
         Pedido pedido = PedidoBuilder.criarPedido(StatusBuilder.criarStatus());
+        PedidoAlteracaoStatus pedidoAlteracaoStatus = new PedidoAlteracaoStatus();
+        pedidoAlteracaoStatus.setIdPedido(pedido.getId());
+        pedidoAlteracaoStatus.setIdUsuario(pedido.getAluno().getId());
+        pedidoAlteracaoStatus.setMotivo("");
 
         EntitadeNaoEncontradaException exception = assertThrows(EntitadeNaoEncontradaException.class, ()
-                -> service.recusarPropostaDoAluno(pedido.getId()));
+                -> service.recusarPropostaDoAluno(pedidoAlteracaoStatus));
 
         assertEquals("Pedido não encontrado", exception.getMessage());
     }

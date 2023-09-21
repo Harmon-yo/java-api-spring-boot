@@ -25,7 +25,7 @@ import school.sptech.harmonyospringapi.service.usuario.dto.professor.ProfessorPo
 import school.sptech.harmonyospringapi.service.usuario.dto.professor_instrumento.ProfessorInstrumentoCriacaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.professor_instrumento.ProfessorInstrumentoExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.professor_instrumento.ProfessorInstrumentoMapper;
-import school.sptech.harmonyospringapi.utils.FiltroAvancado.CriteriosDePesquisa;
+import school.sptech.harmonyospringapi.utils.FiltroAvancado.SpecificationManager;
 import school.sptech.harmonyospringapi.utils.ListaGenericaObj;
 import school.sptech.harmonyospringapi.service.exceptions.EntidadeConflitanteException;
 import school.sptech.harmonyospringapi.service.exceptions.EntitadeNaoEncontradaException;
@@ -41,8 +41,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Service
 public class ProfessorService {
@@ -122,26 +120,7 @@ public class ProfessorService {
     /* ================ PESQUISA ================ */
 
     public List<ProfessorExibicaoResumidoDto> buscarTodosFiltrado(String listaDeParametros) {
-        List<String> listaDeParametrosSeparados;
-        if (listaDeParametros == null || listaDeParametros.isEmpty()) {
-            listaDeParametrosSeparados = new ArrayList<>();
-        } else {
-            listaDeParametrosSeparados = List.of(listaDeParametros.split(","));
-        }
-
-        boolean compararDistancia = false;
-        ProfessorSpecificationBuilder builder = new ProfessorSpecificationBuilder();
-
-        for (String parametro : listaDeParametrosSeparados) {
-            List<String> parametrosSeparados = filtrarParametrosDeBusca(parametro);
-            if (!Objects.equals(parametrosSeparados.get(0), "distancia")) {
-                builder.adicionarParametro(parametrosSeparados.get(0), parametrosSeparados.get(1), parametrosSeparados.get(2));
-            } else {
-                compararDistancia = true;
-            }
-        }
-
-        Specification<Professor> spec = builder.build();
+        Specification<Professor> spec = new SpecificationManager().obterProfessoresFiltrados(listaDeParametros);
 
         return this.professorRepository.findAll(spec).stream().map(
                 professor -> {
@@ -171,23 +150,6 @@ public class ProfessorService {
         ).toList();
     }
 
-    public List<String> filtrarParametrosDeBusca(String parametros) {
-        String operacao = "";
-
-        List<String> criteriosDePesquisa = List.of("><", ">:", "<:", ":", "<", ">", "~");
-
-        for (String criterio: criteriosDePesquisa) {
-            if (parametros.contains(criterio)) {
-                operacao = criterio;
-                break;
-            }
-        }
-
-        List<String> criterios = new ArrayList<>(List.of(parametros.split(operacao)));
-        criterios.add(1, operacao);
-
-        return criterios;
-    }
 
     public UsuarioExibicaoDto buscarPorIdParaExibicao(Integer id){
         Optional<Professor> professorOpt = this.professorRepository.findById(id);

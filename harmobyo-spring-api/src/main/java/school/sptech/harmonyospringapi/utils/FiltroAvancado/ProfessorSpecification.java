@@ -21,45 +21,31 @@ public class ProfessorSpecification implements Specification<Professor> {
         if (Objects.equals(criterio.getKey(), "preco")) {
             return construirCriterioComJoinValorAula(root, builder);
         } else if (Objects.equals(criterio.getKey(), "avaliacao")) {
-            return construirCriterioComJoinPararMediaAvaliacao(builder, query, root);
-        } else if (Objects.equals(criterio.getKey(), "instrumentos")) {
-            return construirCriterioComJoinInstrumentos(builder, query, root);
-        } else if (Objects.equals(criterio.getKey(), "instrumentosAula")) {
-            return construirCriterioComJoinInstrumentosParaAula(builder, query, root);
+            return construirCriterioComJoinMediaAvaliacao(root, builder, query);
+        } else if (Objects.equals(criterio.getKey(), "instrumento")) {
+            return construirCriterioComJoinInstrumentos(root, builder, query);
+        } else if (Objects.equals(criterio.getKey(), "aula")) {
+            return construirCriterioComJoinAula(root, builder, query);
         } else if (Objects.equals(criterio.getKey(), "cidade")) {
-            return construirCriterioComJoinEndereco(builder, query, root);
+            return construirCriterioComJoinEndereco(root, builder, query);
+        } else if (Objects.equals(criterio.getKey(), "nomeOr")) {
+            return construirCriterioComJoinNomeOr(root, builder);
+        } else if (Objects.equals(criterio.getKey(), "instrumentoOr")) {
+            return construirCriterioComJoinInstrumentoOr(root, builder);
         } else {
-            return construirCriterioSemJoin(root, builder);
+            return construirCriterio(root, builder);
         }
     }
 
-    public Predicate construirCriterioComJoinValorAula(Root<Professor> root, CriteriaBuilder builder) {
+    private Predicate construirCriterioComJoinValorAula(Root<Professor> root, CriteriaBuilder builder) {
         String key = "valorAula";
         Join<Professor, Aula> joinAula = root.join("aulas", JoinType.INNER);
+        Path<String> valorAula = joinAula.get(key);
 
-        if (criterio.getOperation().equals(OperacoesDePesquisa.MAIOR_OU_IGUAL_A)) return builder.greaterThanOrEqualTo(joinAula.get(key), criterio.getValue().toString());
-        else if (criterio.getOperation().equals(OperacoesDePesquisa.MENOR_OU_IGUAL_A)) return builder.lessThanOrEqualTo(joinAula.get(key),  criterio.getValue().toString());
-        else if (criterio.getOperation().equals(OperacoesDePesquisa.MENOR_QUE)) return builder.lessThan(joinAula.get(key), criterio.getValue().toString());
-        else if (criterio.getOperation().equals(OperacoesDePesquisa.MAIOR_QUE)) return builder.greaterThan(joinAula.get(key), criterio.getValue().toString());
-        else if (criterio.getOperation().equals(OperacoesDePesquisa.ENTRE) && Objects.nonNull(criterio.getValue2())) return builder.between(joinAula.get(key), criterio.getValue().toString(), criterio.getValue2().toString());
-        return null;
+        return construirCriterio(root, builder, valorAula);
     }
 
-    public Predicate construirCriterioSemJoin(Root<Professor> root, CriteriaBuilder builder) {
-        if (criterio.getOperation().equals(OperacoesDePesquisa.IGUALDADE)) return builder.equal(root.get(criterio.getKey()), criterio.getValue());
-        else if (criterio.getOperation().equals(OperacoesDePesquisa.MAIOR_QUE)) return builder.greaterThan(root.get(criterio.getKey()), criterio.getValue().toString());
-        else if (criterio.getOperation().equals(OperacoesDePesquisa.MENOR_QUE)) return builder.lessThan(root.get(criterio.getKey()), criterio.getValue().toString());
-        else if (criterio.getOperation().equals(OperacoesDePesquisa.MAIOR_OU_IGUAL_A)) return builder.greaterThanOrEqualTo(root.get(criterio.getKey()), criterio.getValue().toString());
-        else if (criterio.getOperation().equals(OperacoesDePesquisa.MENOR_OU_IGUAL_A)) return builder.lessThanOrEqualTo(root.get(criterio.getKey()), criterio.getValue().toString());
-        else if (criterio.getOperation().equals(OperacoesDePesquisa.CONTEM)) return builder.like(root.get(criterio.getKey()), "%" + criterio.getValue() + "%");
-        else if (criterio.getOperation().equals(OperacoesDePesquisa.INICIA_COM)) return builder.like(root.get(criterio.getKey()), criterio.getValue() + "%");
-        else if (criterio.getOperation().equals(OperacoesDePesquisa.TERMINA_COM)) return builder.like(root.get(criterio.getKey()), "%" + criterio.getValue());
-        else if (criterio.getOperation().equals(OperacoesDePesquisa.ENTRE) && Objects.nonNull(criterio.getValue2())) return builder.between(root.get(criterio.getKey()), criterio.getValue().toString(), criterio.getValue2().toString());
-
-        return null;
-    }
-
-    public Predicate construirCriterioComJoinPararMediaAvaliacao(CriteriaBuilder builder, CriteriaQuery<?> query, Root<Professor> root) {
+    private Predicate construirCriterioComJoinMediaAvaliacao(Root<Professor> root, CriteriaBuilder builder, CriteriaQuery<?> query) {
         Subquery<Double> subquery = query.subquery(Double.class);
         Root<Professor> subRoot = subquery.from(Professor.class);
         Join<Professor, Avaliacao> joinAvaliacao2 = subRoot.join("avaliacoesRecebidas", JoinType.INNER);
@@ -69,26 +55,23 @@ public class ProfessorSpecification implements Specification<Professor> {
         return builder.greaterThanOrEqualTo(subquery, Double.parseDouble((String) criterio.getValue()));
     }
 
-    public Predicate construirCriterioComJoinInstrumentos(CriteriaBuilder builder, CriteriaQuery<?> query, Root<Professor> root) {
+    private Predicate construirCriterioComJoinInstrumentos(Root<Professor> root, CriteriaBuilder builder, CriteriaQuery<?> query) {
         Subquery<Long> subquery = query.subquery(Long.class);
         Root<Professor> subRoot = subquery.from(Professor.class);
-        Join<Professor, ProfessorInstrumento> joinProfessorInstrumentos = subRoot.join("instrumentos", JoinType.INNER);
+        Join<Professor, Aula> joinProfessorAulas = subRoot.join("aulas", JoinType.INNER);
         Predicate possuiOMesmoId = builder.equal(subRoot.get("id"), root.get("id"));
         Predicate possuiOMesmoInstrumento = null;
-        Path<String> nomeInstrumento = joinProfessorInstrumentos.get("instrumento").get("nome");
+        Path<String> nomeInstrumento = joinProfessorAulas.get("instrumento").get("nome");
 
-        if (criterio.getOperation().equals(OperacoesDePesquisa.IGUALDADE)) possuiOMesmoInstrumento = builder.equal(nomeInstrumento, criterio.getValue());
-        else if (criterio.getOperation().equals(OperacoesDePesquisa.CONTEM)) possuiOMesmoInstrumento = builder.like(nomeInstrumento, "%" + criterio.getValue() + "%");
-        else if (criterio.getOperation().equals(OperacoesDePesquisa.INICIA_COM)) possuiOMesmoInstrumento = builder.like(nomeInstrumento, criterio.getValue() + "%");
-        else if (criterio.getOperation().equals(OperacoesDePesquisa.TERMINA_COM)) possuiOMesmoInstrumento = builder.like(nomeInstrumento, "%" + criterio.getValue());
+        possuiOMesmoInstrumento = construirCriterio(root, builder, nomeInstrumento);
 
-        subquery.select(builder.count(joinProfessorInstrumentos))
+        subquery.select(builder.count(joinProfessorAulas))
                 .where(possuiOMesmoId, possuiOMesmoInstrumento);
 
         return builder.equal(subquery, 1L);
     }
 
-    public Predicate construirCriterioComJoinInstrumentosParaAula(CriteriaBuilder builder, CriteriaQuery<?> query, Root<Professor> root) {
+    private Predicate construirCriterioComJoinAula(Root<Professor> root, CriteriaBuilder builder, CriteriaQuery<?> query) {
         Subquery<Long> subquery = query.subquery(Long.class);
         Root<Professor> subRoot = subquery.from(Professor.class);
         Join<Professor, Aula> joinAula = subRoot.join("aulas", JoinType.INNER);
@@ -96,10 +79,7 @@ public class ProfessorSpecification implements Specification<Professor> {
         Predicate ensinaOInstrumento = null;
         Path<String> nomeInstrumento = joinAula.get("instrumento").get("nome");
 
-        if (criterio.getOperation().equals(OperacoesDePesquisa.IGUALDADE)) ensinaOInstrumento = builder.equal(nomeInstrumento, criterio.getValue());
-        else if (criterio.getOperation().equals(OperacoesDePesquisa.CONTEM)) ensinaOInstrumento = builder.like(nomeInstrumento, "%" + criterio.getValue() + "%");
-        else if (criterio.getOperation().equals(OperacoesDePesquisa.INICIA_COM)) ensinaOInstrumento = builder.like(nomeInstrumento, criterio.getValue() + "%");
-        else if (criterio.getOperation().equals(OperacoesDePesquisa.TERMINA_COM)) ensinaOInstrumento = builder.like(nomeInstrumento, "%" + criterio.getValue());
+        ensinaOInstrumento = construirCriterio(root, builder, nomeInstrumento);
 
         subquery.select(builder.count(joinAula))
                 .where(possuiOMesmoId, ensinaOInstrumento);
@@ -107,16 +87,119 @@ public class ProfessorSpecification implements Specification<Professor> {
         return builder.greaterThanOrEqualTo(subquery, 1L);
     }
 
-    public Predicate construirCriterioComJoinEndereco(CriteriaBuilder builder, CriteriaQuery<?> query, Root<Professor> root) {
+    private Predicate construirCriterioComJoinEndereco(Root<Professor> root, CriteriaBuilder builder, CriteriaQuery<?> query) {
         Subquery<Long> subquery = query.subquery(Long.class);
         Root<Professor> subRoot = subquery.from(Professor.class);
         Join<Professor, Endereco> joinEndereco = subRoot.join("endereco", JoinType.INNER);
         Predicate possuiOMesmoId = builder.equal(subRoot.get("id"), root.get("id"));
-        Predicate possuiOMesmaCidade = builder.equal(joinEndereco.get("cidade"), criterio.getValue());
+        Predicate possuiOMesmaCidade = builder.equal(builder.lower(joinEndereco.get("cidade")), criterio.getValue());
 
         subquery.select(builder.count(joinEndereco))
                 .where(possuiOMesmoId, possuiOMesmaCidade);
 
         return builder.greaterThanOrEqualTo(subquery, 1L);
+    }
+
+    private Predicate construirCriterioComJoinNomeOr(Root<Professor> root, CriteriaBuilder builder) {
+        return construirCriterio(root, builder, root.get("nome"));
+    }
+
+    private Predicate construirCriterioComJoinInstrumentoOr(Root<Professor> root, CriteriaBuilder builder) {
+        Join<Professor, Aula> joinAula = root.join("aulas", JoinType.INNER);
+        return construirCriterio(root, builder, joinAula.get("instrumento").get("nome"));
+    }
+
+    private Predicate construirCriterio(Root<Professor> root, CriteriaBuilder builder) {
+        Path<String> path = root.get(criterio.getKey());
+        Expression<String> lowerPath = builder.lower(path);
+        Object valor = criterio.getValue();
+        String valorString = (String) valor;
+
+
+
+        if (criterio.getOperation().equals(OperacoesDePesquisa.IGUALDADE) && criterio.getValue() instanceof String) return builder.equal(lowerPath, valorString);
+        else if (criterio.getOperation().equals(OperacoesDePesquisa.IGUALDADE)) return builder.equal(path, valor);
+        else if (criterio.getOperation().equals(OperacoesDePesquisa.MAIOR_QUE)) return builder.greaterThan(path, valorString);
+        else if (criterio.getOperation().equals(OperacoesDePesquisa.MENOR_QUE)) return builder.lessThan(path, valorString);
+        else if (criterio.getOperation().equals(OperacoesDePesquisa.MAIOR_OU_IGUAL_A)) return builder.greaterThanOrEqualTo(path, valorString);
+        else if (criterio.getOperation().equals(OperacoesDePesquisa.MENOR_OU_IGUAL_A)) return builder.lessThanOrEqualTo(path, valorString);
+        else if (criterio.getOperation().equals(OperacoesDePesquisa.CONTEM)) return builder.like(lowerPath, "%" + valor + "%");
+        else if (criterio.getOperation().equals(OperacoesDePesquisa.INICIA_COM)) return builder.like(lowerPath, valor + "%");
+        else if (criterio.getOperation().equals(OperacoesDePesquisa.TERMINA_COM)) return builder.like(lowerPath, "%" + valor);
+        else if (criterio.getOperation().equals(OperacoesDePesquisa.ENTRE) && Objects.nonNull(criterio.getValue2())) return builder.between(path, valorString, criterio.getValue2().toString());
+
+        return null;
+    }
+
+    private Predicate construirCriterio(Join<?, ?> root, CriteriaBuilder builder) {
+        Expression<String> lowerPath;
+        Path<String> path = root.get(criterio.getKey());
+
+        if (path.getJavaType() == String.class) {
+            lowerPath = builder.lower(path);
+        } else {
+            lowerPath = path;
+        }
+        Object valor = criterio.getValue();
+        String valorString = (String) valor;
+
+        if (criterio.getOperation().equals(OperacoesDePesquisa.IGUALDADE) && criterio.getValue() instanceof String) return builder.equal(lowerPath, valorString);
+        else if (criterio.getOperation().equals(OperacoesDePesquisa.IGUALDADE)) return builder.equal(path, valor);
+        else if (criterio.getOperation().equals(OperacoesDePesquisa.MAIOR_QUE)) return builder.greaterThan(path, valorString);
+        else if (criterio.getOperation().equals(OperacoesDePesquisa.MENOR_QUE)) return builder.lessThan(path, valorString);
+        else if (criterio.getOperation().equals(OperacoesDePesquisa.MAIOR_OU_IGUAL_A)) return builder.greaterThanOrEqualTo(path, valorString);
+        else if (criterio.getOperation().equals(OperacoesDePesquisa.MENOR_OU_IGUAL_A)) return builder.lessThanOrEqualTo(path, valorString);
+        else if (criterio.getOperation().equals(OperacoesDePesquisa.CONTEM)) return builder.like(lowerPath, "%" + valor + "%");
+        else if (criterio.getOperation().equals(OperacoesDePesquisa.INICIA_COM)) return builder.like(lowerPath, valor + "%");
+        else if (criterio.getOperation().equals(OperacoesDePesquisa.TERMINA_COM)) return builder.like(lowerPath, "%" + valor);
+        else if (criterio.getOperation().equals(OperacoesDePesquisa.ENTRE) && Objects.nonNull(criterio.getValue2())) return builder.between(path, valorString, criterio.getValue2().toString());
+
+        return null;
+    }
+
+    private Predicate construirCriterio(Root<Professor> root, CriteriaBuilder builder, Path<String> path) {
+        Expression<String> lowerPath;
+        if (path.getJavaType() == String.class) {
+            lowerPath = builder.lower(path);
+        } else {
+            lowerPath = path;
+        }
+        Object valor = criterio.getValue();
+        String valorString = valor.toString();
+
+
+        if (criterio.getOperation().equals(OperacoesDePesquisa.IGUALDADE) && path.getJavaType() == String.class) return builder.equal(lowerPath, valorString);
+        else if (criterio.getOperation().equals(OperacoesDePesquisa.IGUALDADE)) return builder.equal(path, valor);
+        else if (criterio.getOperation().equals(OperacoesDePesquisa.MAIOR_QUE)) return builder.greaterThan(path, valorString);
+        else if (criterio.getOperation().equals(OperacoesDePesquisa.MENOR_QUE)) return builder.lessThan(path, valorString);
+        else if (criterio.getOperation().equals(OperacoesDePesquisa.MAIOR_OU_IGUAL_A)) return builder.greaterThanOrEqualTo(path, valorString);
+        else if (criterio.getOperation().equals(OperacoesDePesquisa.MENOR_OU_IGUAL_A)) return builder.lessThanOrEqualTo(path, valorString);
+        else if (criterio.getOperation().equals(OperacoesDePesquisa.CONTEM)) return builder.like(lowerPath, "%" + valor + "%");
+        else if (criterio.getOperation().equals(OperacoesDePesquisa.INICIA_COM)) return builder.like(lowerPath, valor + "%");
+        else if (criterio.getOperation().equals(OperacoesDePesquisa.TERMINA_COM)) return builder.like(lowerPath, "%" + valor);
+        else if (criterio.getOperation().equals(OperacoesDePesquisa.ENTRE) && Objects.nonNull(criterio.getValue2())) return builder.between(path, valorString, criterio.getValue2().toString());
+
+        return null;
+    }
+
+    private Predicate construirCriterio(Join<?, ?> root, CriteriaBuilder builder, CriteriosDePesquisa criterio) {
+        Path<String> path = root.get(criterio.getKey());
+        Expression<String> lowerPath = builder.lower(path);
+        Object valor = criterio.getValue();
+        String valorString = (String) valor;
+
+
+        if (criterio.getOperation().equals(OperacoesDePesquisa.IGUALDADE) && criterio.getValue() instanceof String) return builder.equal(lowerPath, valorString);
+        else if (criterio.getOperation().equals(OperacoesDePesquisa.IGUALDADE)) return builder.equal(path, valor);
+        else if (criterio.getOperation().equals(OperacoesDePesquisa.MAIOR_QUE)) return builder.greaterThan(path, valorString);
+        else if (criterio.getOperation().equals(OperacoesDePesquisa.MENOR_QUE)) return builder.lessThan(path, valorString);
+        else if (criterio.getOperation().equals(OperacoesDePesquisa.MAIOR_OU_IGUAL_A)) return builder.greaterThanOrEqualTo(path, valorString);
+        else if (criterio.getOperation().equals(OperacoesDePesquisa.MENOR_OU_IGUAL_A)) return builder.lessThanOrEqualTo(path, valorString);
+        else if (criterio.getOperation().equals(OperacoesDePesquisa.CONTEM)) return builder.like(lowerPath, "%" + valor + "%");
+        else if (criterio.getOperation().equals(OperacoesDePesquisa.INICIA_COM)) return builder.like(lowerPath, valor + "%");
+        else if (criterio.getOperation().equals(OperacoesDePesquisa.TERMINA_COM)) return builder.like(lowerPath, "%" + valor);
+        else if (criterio.getOperation().equals(OperacoesDePesquisa.ENTRE) && Objects.nonNull(criterio.getValue2())) return builder.between(path, valorString, criterio.getValue2().toString());
+
+        return null;
     }
 }
