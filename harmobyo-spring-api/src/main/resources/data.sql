@@ -20,7 +20,6 @@ VALUES
     ('Carlos Silva', 'carlos.silva@hotmail.com', '260.973.558-82', 'Masculino', '$2a$10$/5q27KS5Pq3BsrEFoxwPbuVE2v0PZJg.c6MCi2yKu8j574oR63YqG', '1978-12-31', '(11) 99999-9999', 5, 'Professor', '', true, true, TIMESTAMPADD(HOUR, -3, CURRENT_TIMESTAMP), CURRENT_TIMESTAMP),
     ('Patrícia Almeida', 'patricia.almeida@yahoo.com.br', '999.888.777-66', 'Feminino', '$2a$10$/5q27KS5Pq3BsrEFoxwPbuVE2v0PZJg.c6MCi2yKu8j574oR63YqG', '1980-07-05', '(11) 99999-9999', 6, 'Professor', '', true, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-
 -- Inserts para usuários com categoria "Administrador"
 INSERT INTO usuario (nome, email, cpf, sexo, senha, data_nasc, telefone, endereco_id, categoria, bibliografia, ativo, autenticado, ultima_vez_online)
 VALUES
@@ -34,26 +33,66 @@ VALUES ('Violinista - Orquestra Harmonyo', 'Violinista da orquestra Harmonyo de 
 -- Inserts para naipe --
 INSERT INTO naipe (descricao)
 VALUES ('Corda'),
-       ('Metal'),
-       ('Percurssão'),
-       ('Madeira');
+       ('Madeira'),
+       ('Metal',),
+       ('Percurssão');
 
 -- Inserts para intrumento --
-INSERT
-INTO
-    instrumento (nome, naipe_id)
-VALUES ('Violino', 1),
-       ('Violão', 1),
+INSERT INTO instrumento (nome, naipe_id)
+       -- Cordas --
+VALUES ('Violão', 1),
+       ('Cavaquinho', 1),
        ('Guitarra', 1),
-       ('Trompete', 2),
-       ('Tuba', 2),
-       ('Trombone', 2),
-       ('Bateria', 3),
-       ('Pandeiro', 3),
-       ('Tambor', 3),
-       ('Clarinete', 4),
-       ('Flauta', 4),
-       ('Saxofone', 4);
+       ('Bandolim', 1),
+       ('Mandolin', 1),
+       ('Contrabaixo', 1),
+       ('Viola', 1),
+       ('Banjo', 1),
+       ('Ukulele', 1),
+       ('Rabeca', 1),
+       ('Piano', 1),
+       -- Madeiras --
+       ('Flauta', 2),
+       ('Flautim', 2),
+       ('Oboé', 2),
+       ('Fagote', 2),
+       ('Contrafagote', 2),
+       ('Clarinete', 2),
+       ('Corne inglês', 2),
+       ('Saxofone', 2),
+       -- Metal --
+       ('Trompete', 3),
+       ('Trompa', 3),
+       ('Trombone', 3),
+       ('Tuba', 3),
+       -- Percussão --
+       ('Agogô', 4),
+       ('Bateria', 4),
+       ('Berimbau de boca', 4),
+       ('Beringuelo', 4),
+       ('Caixa', 4),
+       ('Cajon', 4),
+       ('Caxixi', 4),
+       ('Chocalho', 4),
+       ('Cuíca', 4),
+       ('Djembe', 4),
+       ('Ganzá', 4),
+       ('Kalimba', 4),
+       ('Maracá', 4),
+       ('Pandeiro', 4),
+       ('Tambor', 4),
+       ('Tamborim', 4),
+       ('Tímpanos', 4),
+       ('Xequeré', 4),
+       ('Conga', 4),
+       ('Bongô', 4),
+       ('Djembê', 4),
+       ('Surdo', 4),
+       ('Timbales', 4),
+       ('Xilofone', 4),
+       ('Marimba', 4),
+       ('Triângulo', 4),
+       ('Cowbell', 4);
 
 -- Insert para os intrumentos do professor --
 INSERT INTO professor_instrumento (professor_fk, instrumento_fk, nivel_conhecimento, empresta_instrumento)

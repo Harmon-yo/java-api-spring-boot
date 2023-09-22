@@ -66,4 +66,6 @@ public interface ProfessorRepository extends JpaRepository<Professor, Integer>, 
             "ORDER BY FUNCTION('MONTH', p.dataAula)")
     List<PedidosMes> getAulasAgrupadasPorMes(int id, LocalDateTime comeco, LocalDateTime fim);
 
+    @Query("SELECT COUNT(p) FROM Professor p WHERE p.dataCriacao BETWEEN :dataInicial AND :dataFinal")
+    Integer obterQuantidadeCadastradosEntre(LocalDateTime dataInicial, LocalDateTime dataFinal);
 }

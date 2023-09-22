@@ -164,4 +164,9 @@ public class AlunoController{
         Aluno aluno = new Aluno();
         return ResponseEntity.status(200).body(aluno.getHistorico());
     }
+
+    @GetMapping("/quantidade-cadastrados-semana")
+    public ResponseEntity<List<Integer>> obterQuantidadeCadastrados(){
+        return ResponseEntity.status(200).body(this.alunoService.obterQuantidadeCadastradosSemana());
+    }
 }

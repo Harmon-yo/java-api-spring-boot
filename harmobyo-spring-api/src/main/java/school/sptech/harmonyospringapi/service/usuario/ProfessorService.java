@@ -37,10 +37,7 @@ import school.sptech.harmonyospringapi.utils.FiltroAvancado.ProfessorSpecificati
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class ProfessorService {
@@ -414,5 +411,38 @@ public class ProfessorService {
         LocalDateTime comeco = LocalDateTime.of(now.getYear(), 1,1,0,0);
         LocalDateTime fim = LocalDateTime.of(now.getYear(), now.getMonth().getValue(),30,23,59);
         return this.professorRepository.getAulasAgrupadasPorMes(id, comeco, fim);
+    }
+
+    /* =========== Métricas Dashboard Admin ========= */
+
+    public List<Integer> obterQuantidadeCadastradosSemana() {
+        List<Integer> ltQtdUsuario = new ArrayList<>();
+
+        LocalDateTime dataAtual = obterPrimeiroDiaSemana();
+        LocalDateTime dataInicialAux, dataFinalAux;
+
+        for (int i = 0; i < 7; i++) {
+            dataInicialAux = dataAtual.withHour(0).withMinute(0).withSecond(0);
+            dataFinalAux = dataAtual.withHour(23).withMinute(59).withSecond(59);
+
+            ltQtdUsuario.add(this.professorRepository.obterQuantidadeCadastradosEntre(dataInicialAux, dataFinalAux));
+
+
+            dataAtual = dataAtual.plusDays(1);
+        }
+
+        return ltQtdUsuario;
+    }
+
+    private LocalDateTime obterPrimeiroDiaSemana() {
+        Calendar c = Calendar.getInstance();
+
+        c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+
+        LocalDateTime dataInicial = c.getTime().toInstant().atZone(c.getTimeZone().toZoneId()).toLocalDateTime();
+
+        dataInicial = dataInicial.withHour(0).withMinute(0).withSecond(0);
+
+        return dataInicial;
     }
 }

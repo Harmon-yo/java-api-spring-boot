@@ -364,4 +364,9 @@ public class ProfessorController {
         return ResponseEntity.ok(mesesAulas);
     }
 
+    @GetMapping("/quantidade-cadastrados-semana")
+    public ResponseEntity<List<Integer>> obterQuantidadeCadastrados(){
+        return ResponseEntity.status(200).body(this.professorService.obterQuantidadeCadastradosSemana());
+    }
+
 }

@@ -26,6 +26,7 @@ import school.sptech.harmonyospringapi.utils.PilhaObj;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 
@@ -189,6 +190,35 @@ public class AlunoService {
         return instrumentos.stream().map(InstrumentoMapper::ofInstrumentoExibicao).toList();
     }
 
-    /* ============= EDITAR PERFIL ================ */
+    public List<Integer> obterQuantidadeCadastradosSemana() {
+        List<Integer> ltQtdUsuario = new ArrayList<>();
+
+        LocalDateTime dataAtual = obterPrimeiroDiaSemana();
+        LocalDateTime dataInicialAux, dataFinalAux;
+
+        for (int i = 0; i < 7; i++) {
+            dataInicialAux = dataAtual.withHour(0).withMinute(0).withSecond(0);
+            dataFinalAux = dataAtual.withHour(23).withMinute(59).withSecond(59);
+
+            ltQtdUsuario.add(this.alunoRepository.obterQuantidadeCadastradosEntre(dataInicialAux, dataFinalAux));
+
+
+            dataAtual = dataAtual.plusDays(1);
+        }
+
+        return ltQtdUsuario;
+    }
+
+    private LocalDateTime obterPrimeiroDiaSemana() {
+        Calendar c = Calendar.getInstance();
+
+        c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+
+        LocalDateTime dataInicial = c.getTime().toInstant().atZone(c.getTimeZone().toZoneId()).toLocalDateTime();
+
+        dataInicial = dataInicial.withHour(0).withMinute(0).withSecond(0);
+
+        return dataInicial;
+    }
 
 }
