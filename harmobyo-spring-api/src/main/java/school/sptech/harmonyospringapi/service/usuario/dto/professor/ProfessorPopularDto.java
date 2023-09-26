@@ -15,7 +15,6 @@ public class ProfessorPopularDto {
 
     private Double mediaAvaliacao;
 
-    private LocalDateTime ultimaVezOnline;
 
     private List<String> instrumentos;
 
@@ -55,13 +54,6 @@ public class ProfessorPopularDto {
         this.mediaAvaliacao = mediaAvaliacao;
     }
 
-    public LocalDateTime getUltimaVezOnline() {
-        return ultimaVezOnline;
-    }
-
-    public void setUltimaVezOnline(LocalDateTime ultimaVezOnline) {
-        this.ultimaVezOnline = ultimaVezOnline;
-    }
 
     public List<String> getInstrumentos() {
         return instrumentos;

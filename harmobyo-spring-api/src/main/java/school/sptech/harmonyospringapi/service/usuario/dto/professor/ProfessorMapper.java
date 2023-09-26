@@ -51,7 +51,6 @@ public class ProfessorMapper {
         dto.setNome(p.getNome());
         dto.setLocalizacao(p.getEndereco().getBairro());
         dto.setMediaAvaliacao(mediaAvaiacao);
-        dto.setUltimaVezOnline(p.getUltimaVezOnline());
 
         return dto;
     }

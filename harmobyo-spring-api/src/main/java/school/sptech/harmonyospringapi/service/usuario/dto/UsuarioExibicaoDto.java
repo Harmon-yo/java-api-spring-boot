@@ -14,7 +14,6 @@ public class UsuarioExibicaoDto {
 
     private boolean ativo;
     private boolean autenticado;
-    private LocalDateTime ultimaVezOnline;
 
     public Integer getId() {
         return id;
@@ -72,11 +71,4 @@ public class UsuarioExibicaoDto {
         this.autenticado = autenticado;
     }
 
-    public LocalDateTime getUltimaVezOnline() {
-        return ultimaVezOnline;
-    }
-
-    public void setUltimaVezOnline(LocalDateTime ultimaVezOnline) {
-        this.ultimaVezOnline = ultimaVezOnline;
-    }
 }
