@@ -21,6 +21,8 @@ public class Aula {
     @JoinColumn(name = "instrumento_fk")
     private Instrumento instrumento;
 
+    private boolean ativa;
+
     public Integer getId() {
         return id;
     }
@@ -51,5 +53,13 @@ public class Aula {
 
     public void setInstrumento(Instrumento instrumento) {
         this.instrumento = instrumento;
+    }
+
+    public boolean isAtiva() {
+        return ativa;
+    }
+
+    public void setAtiva(boolean ativa) {
+        this.ativa = ativa;
     }
 }

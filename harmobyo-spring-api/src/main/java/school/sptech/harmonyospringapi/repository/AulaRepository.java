@@ -19,6 +19,8 @@ public interface AulaRepository extends JpaRepository<Aula, Integer> {
 
     List<Aula> findAllByProfessorId(int fkProfessor);
 
+    List<Aula> findAllByProfessorIdAndAtivaTrue(int fkProfessor);
+
     boolean existsByProfessorIdAndInstrumentoId(int idProfessor, int idInstrumento);
 
     @Query(value = "SELECT MIN(a.valorAula) FROM Aula a WHERE a.professor.id = :idProfessor")

@@ -13,6 +13,7 @@ public class AulaMapper {
         aula.setValorAula(aulaCriacaoDto.getValorAula());
         aula.setProfessor(professor);
         aula.setInstrumento(instrumento);
+        aula.setAtiva(true);
 
         return aula;
     }
@@ -23,6 +24,7 @@ public class AulaMapper {
         aulaExibicaoDto.setId(aula.getId());
         aulaExibicaoDto.setValorAula(aula.getValorAula());
         aulaExibicaoDto.setInstrumento(InstrumentoMapper.ofInstrumentoExibicao(aula.getInstrumento()));
+        aulaExibicaoDto.setAtiva(aula.isAtiva());
 
         return aulaExibicaoDto;
     }
