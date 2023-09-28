@@ -50,7 +50,7 @@ public abstract class Usuario {
 
     private boolean autenticado;
 
-    private LocalDateTime ultimaVezOnline;
+
 
     private LocalDateTime dataCriacao;
 
@@ -158,13 +158,6 @@ public abstract class Usuario {
         this.autenticado = autenticado;
     }
 
-    public LocalDateTime getUltimaVezOnline() {
-        return ultimaVezOnline;
-    }
-
-    public void setUltimaVezOnline(LocalDateTime ultimaVezOnline) {
-        this.ultimaVezOnline = ultimaVezOnline;
-    }
 
     public LocalDateTime getDataCriacao() {
         return dataCriacao;

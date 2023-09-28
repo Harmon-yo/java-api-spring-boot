@@ -31,7 +31,6 @@ public class UsuarioMapper {
 
         novoAluno.setAtivo(true);
 
-        novoAluno.setUltimaVezOnline(LocalDateTime.now());
 
         return novoAluno;
     }
@@ -56,7 +55,6 @@ public class UsuarioMapper {
 
         novoProfessor.setAtivo(true);
 
-        novoProfessor.setUltimaVezOnline(LocalDateTime.now());
 
         return novoProfessor;
     }
@@ -81,7 +79,6 @@ public class UsuarioMapper {
 
         usuarioExibicaoDto.setEndereco(usuario.getEndereco());
 
-        usuarioExibicaoDto.setUltimaVezOnline(usuario.getUltimaVezOnline());
 
         return usuarioExibicaoDto;
 
@@ -92,7 +89,7 @@ public class UsuarioMapper {
         UsuarioTokenDto usuarioTokenDto = new UsuarioTokenDto();
 
         usuarioTokenDto.setUserId(usuario.getId());
-    
+
         usuarioTokenDto.setEmail(usuario.getEmail());
 
         usuarioTokenDto.setNome(usuario.getNome());
