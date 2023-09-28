@@ -33,6 +33,8 @@ public class Pedido {
 
     private LocalDateTime dataAula;
 
+    private double valorAula;
+
     public Integer getId() {
         return id;
     }
@@ -95,5 +97,13 @@ public class Pedido {
 
     public void setAula(Aula aula) {
         this.aula = aula;
+    }
+
+    public double getValorAula() {
+        return valorAula;
+    }
+
+    public void setValorAula(double valorAula) {
+        this.valorAula = valorAula;
     }
 }
