@@ -432,7 +432,7 @@ public class ProfessorController {
             while ((line = reader.readLine()) != null) {
                 String[] campos = line.split(";\n");
                 dados.add(campos);
-                //tomar ação aq
+                //tomar ação aq sdfdsf
             }
 
 
