@@ -106,20 +106,16 @@ public class AulaService {
         }
     }
 
-    public void desativarAulaPorId(Integer id) {
-        if (this.aulaRepository.existsById(id)){
-            this.aulaRepository.findById(id).get().setAtiva(false);
-        } else {
-            throw new EntitadeNaoEncontradaException("ID de Aula Inválido. Aula não encontrada !");
-        }
+    public void desativarAulaPorId(Integer idAula) {
+        Aula aula = this.buscarPorId(idAula);
+        aula.setAtiva(false);
+        this.aulaRepository.save(aula);
     }
 
-    public void ativarAulaPorId(Integer id) {
-        if (this.aulaRepository.existsById(id)){
-            this.aulaRepository.findById(id).get().setAtiva(true);
-        } else {
-            throw new EntitadeNaoEncontradaException("ID de Aula Inválido. Aula não encontrada !");
-        }
+    public void ativarAulaPorId(Integer idAula) {
+        Aula aula = this.buscarPorId(idAula);
+        aula.setAtiva(true);
+        this.aulaRepository.save(aula);
     }
 
     public Boolean aulaExiste(int idProfessor, int idInstrumento) {

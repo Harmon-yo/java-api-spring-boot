@@ -82,12 +82,6 @@ public class AulaController {
         return ResponseEntity.ok(ltAulas);
     }
 
-    @Operation(summary = "Desativa uma Aula pelo seu ID")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Aula atualizada com sucesso."),
-            @ApiResponse(responseCode = "404", description = "ID da Aula inválido !", content = @Content(schema = @Schema(hidden = true)))
-    })
-    @SecurityRequirement(name = "Bearer")
     @PutMapping("/desativar/{idAula}")
     public ResponseEntity<AulaExibicaoDto> desativarAulaPorId(@PathVariable int idAula){
 
@@ -96,12 +90,6 @@ public class AulaController {
         return ResponseEntity.ok().build();
     }
 
-    @Operation(summary = "Ativa uma Aula pelo seu ID")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Aula atualizada com sucesso."),
-            @ApiResponse(responseCode = "404", description = "ID da Aula inválido !", content = @Content(schema = @Schema(hidden = true)))
-    })
-    @SecurityRequirement(name = "Bearer")
     @PutMapping("/ativar/{idAula}")
     public ResponseEntity<AulaExibicaoDto> ativarAulaPorId(@PathVariable int idAula){
 
