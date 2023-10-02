@@ -11,7 +11,6 @@ public class PedidoMapper {
 
     public static Pedido of(PedidoCriacaoDto pedidoCriacaoDto, Aluno aluno, Professor professor, Status status, Aula aula) {
 
-
         Pedido pedido = new Pedido();
         pedido.setAluno(aluno);
         pedido.setProfessor(professor);
@@ -19,6 +18,7 @@ public class PedidoMapper {
         pedido.setAula(aula);
         pedido.setDataAula(pedidoCriacaoDto.getDataAula());
         pedido.setHoraCriacao(LocalDateTime.now());
+        pedido.setValorAula(aula.getValorAula());
         return pedido;
     }
 
@@ -32,9 +32,8 @@ public class PedidoMapper {
         pedidoExibicaoDto.setDataAula(pedido.getDataAula());
         pedidoExibicaoDto.setHoraCriacao(pedido.getHoraCriacao());
         pedidoExibicaoDto.setHoraResposta(pedido.getHoraResposta());
+        pedidoExibicaoDto.setValorAula(pedido.getValorAula());
 
         return pedidoExibicaoDto;
     }
-
-
 }

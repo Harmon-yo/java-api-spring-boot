@@ -11,6 +11,8 @@ public class AulaExibicaoDto {
 
     private InstrumentoExibicaoDto instrumento;
 
+    private boolean ativa;
+
     public Integer getId() {
         return id;
     }
@@ -33,5 +35,13 @@ public class AulaExibicaoDto {
 
     public void setInstrumento(InstrumentoExibicaoDto instrumento) {
         this.instrumento = instrumento;
+    }
+
+    public boolean isAtiva() {
+        return ativa;
+    }
+
+    public void setAtiva(boolean ativa) {
+        this.ativa = ativa;
     }
 }

@@ -63,6 +63,53 @@ public class AulaController {
         return ResponseEntity.ok(ltAulas);
     }
 
+    @Operation(summary = "Obtém uma lista de todos as aulas cadastradas e ativas de um professor", description = "")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Aulas encontrados."),
+            @ApiResponse(responseCode = "204", description = "Este professor não possui aulas cadastradas e ativas.", content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "404", description = "ID do Professor inválido !", content = @Content(schema = @Schema(hidden = true)))
+    })
+    @SecurityRequirement(name = "Bearer")
+    @GetMapping("/ativas/{fkProfessor}")
+    public ResponseEntity<List<AulaExibicaoDto>> buscarAulasAtivasPorIdProfessor(@PathVariable int fkProfessor) {
+
+        List<AulaExibicaoDto> ltAulas = this.aulaService.buscarAulasAtivasPorIdProfessor(fkProfessor);
+
+        if (ltAulas.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(ltAulas);
+    }
+
+    @Operation(summary = "Desativa uma Aula pelo seu ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Aula atualizada com sucesso."),
+            @ApiResponse(responseCode = "404", description = "ID da Aula inválido !", content = @Content(schema = @Schema(hidden = true)))
+    })
+    @SecurityRequirement(name = "Bearer")
+    @PutMapping("/desativar/{idAula}")
+    public ResponseEntity<AulaExibicaoDto> desativarAulaPorId(@PathVariable int idAula){
+
+        this.aulaService.desativarAulaPorId(idAula);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "Ativa uma Aula pelo seu ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Aula atualizada com sucesso."),
+            @ApiResponse(responseCode = "404", description = "ID da Aula inválido !", content = @Content(schema = @Schema(hidden = true)))
+    })
+    @SecurityRequirement(name = "Bearer")
+    @PutMapping("/ativar/{idAula}")
+    public ResponseEntity<AulaExibicaoDto> ativarAulaPorId(@PathVariable int idAula){
+
+        this.aulaService.ativarAulaPorId(idAula);
+
+        return ResponseEntity.ok().build();
+    }
+
     @Operation(summary = "Atualiza uma Aula pelo seu ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Aula atualizada com sucesso."),

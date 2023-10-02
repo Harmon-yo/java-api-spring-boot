@@ -80,6 +80,12 @@ public class AulaService {
         return ltAulas.stream().map(AulaMapper::ofAulaExibicaoDto).toList();
     }
 
+    public List<AulaExibicaoDto> buscarAulasAtivasPorIdProfessor(int fkProfessor) {
+        List<Aula> ltAulas = this.aulaRepository.findAllByProfessorIdAndAtivaTrue(fkProfessor);
+
+        return ltAulas.stream().map(AulaMapper::ofAulaExibicaoDto).toList();
+    }
+
     public AulaExibicaoDto atualizarAulaPorId(int idAula, AulaAtualizacaoDto aulaAtualizacaoDto) {
 
         Aula aula = this.buscarPorId(idAula);
@@ -95,6 +101,22 @@ public class AulaService {
     public void deletarAulaPorId(Integer id) {
         if (this.aulaRepository.existsById(id)){
             this.aulaRepository.deleteById(id);
+        } else {
+            throw new EntitadeNaoEncontradaException("ID de Aula Inválido. Aula não encontrada !");
+        }
+    }
+
+    public void desativarAulaPorId(Integer id) {
+        if (this.aulaRepository.existsById(id)){
+            this.aulaRepository.findById(id).get().setAtiva(false);
+        } else {
+            throw new EntitadeNaoEncontradaException("ID de Aula Inválido. Aula não encontrada !");
+        }
+    }
+
+    public void ativarAulaPorId(Integer id) {
+        if (this.aulaRepository.existsById(id)){
+            this.aulaRepository.findById(id).get().setAtiva(true);
         } else {
             throw new EntitadeNaoEncontradaException("ID de Aula Inválido. Aula não encontrada !");
         }

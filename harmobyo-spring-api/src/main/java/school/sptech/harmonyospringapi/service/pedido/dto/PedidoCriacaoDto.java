@@ -28,6 +28,8 @@ public class PedidoCriacaoDto {
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dataAula;
 
+    private double valorAula;
+
 
     public Integer getAlunoId() {
         return alunoId;
@@ -59,5 +61,13 @@ public class PedidoCriacaoDto {
 
     public void setAulaId(Integer aulaId) {
         this.aulaId = aulaId;
+    }
+
+    public double getValorAula() {
+        return valorAula;
+    }
+
+    public void setValorAula(double valorAula) {
+        this.valorAula = valorAula;
     }
 }

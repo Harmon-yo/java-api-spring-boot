@@ -12,6 +12,7 @@ import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import school.sptech.harmonyospringapi.domain.Professor;
 import school.sptech.harmonyospringapi.service.aula.dto.AulaExibicaoDto;
 import school.sptech.harmonyospringapi.service.aula.dto.AulaGraficoInformacoesDashboardDto;
@@ -27,6 +28,13 @@ import school.sptech.harmonyospringapi.service.usuario.ProfessorService;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioCriacaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioExibicaoDto;
 
+import java.io.BufferedReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Formatter;
+import java.util.FormatterClosedException;
 import java.util.List;
 
 @RestController
@@ -367,6 +375,72 @@ public class ProfessorController {
     @GetMapping("/quantidade-cadastrados-semana")
     public ResponseEntity<List<Integer>> obterQuantidadeCadastrados(){
         return ResponseEntity.status(200).body(this.professorService.obterQuantidadeCadastradosSemana());
+    }
+
+    @GetMapping("/exportacao-dados-professores")
+    public ResponseEntity<Boolean> exportarCsvProfessores(){
+            FileWriter arq = null;
+            Formatter saida = null;
+            boolean deuRuim = false;
+            String nomeArq = "professores_" + System.currentTimeMillis();
+            List<UsuarioExibicaoDto> todosProfessores = this.professorService.obterTodosEmOrdemAlfabetica();
+
+            try {
+                arq = new FileWriter(nomeArq);
+                saida = new Formatter(arq);
+            } catch (IOException erro) {
+                System.out.println("Erro ao abrir o arquivo");
+                System.exit(1);
+            }
+
+            try {
+                for (UsuarioExibicaoDto p : todosProfessores) {
+                    Double rendimentoProfessor = this.professorService.getRendimentoMesAtual(p.getId());
+                    saida.format("%d;%s;%s;%.2f;\n", p.getId(), p.getNome(),
+                            p.getEmail(), rendimentoProfessor);
+                }
+            } catch (FormatterClosedException erro) {
+                System.out.println("Erro ao gravar no arquivo");
+                deuRuim = true;
+            } finally {
+                saida.close();
+                try {
+                    arq.close();
+                } catch (IOException erro) {
+                    System.out.println("Erro ao fechar o arquivo");
+                    deuRuim = true;
+                }
+                if (deuRuim) {
+                    System.exit(1);
+                    return ResponseEntity.badRequest().body(false);
+                }
+            }
+
+        return ResponseEntity.ok(true);
+    }
+
+    @PostMapping("/importacao-dados-csv")
+    public ResponseEntity<Boolean> importarCsv(@RequestParam("file") MultipartFile file) {
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body(false);
+        }
+
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+            String line;
+            List<String[]> dados = new ArrayList<>();
+
+            while ((line = reader.readLine()) != null) {
+                String[] campos = line.split(";\n");
+                dados.add(campos);
+                //tomar ação aq sdfdsf
+            }
+
+
+            return ResponseEntity.ok(true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(false);
+        }
     }
 
 }
