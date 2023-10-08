@@ -40,6 +40,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/professores")
 @Tag(name = "Professores")
+@CrossOrigin("*")
 public class ProfessorController {
 
     @Autowired
@@ -417,6 +418,28 @@ public class ProfessorController {
             }
 
         return ResponseEntity.ok(true);
+    }
+
+    @GetMapping("/download-csv")
+    public ResponseEntity<byte[]> downloadCSV() throws IOException {
+        StringBuilder csvData = new StringBuilder();
+
+        List<UsuarioExibicaoDto> professores = this.professorService.obterTodosEmOrdemAlfabetica();
+
+        csvData.append(String.format("%S;%S;%S;%S\n", "ID", "NOME", "EMAIL", "RENDIMENTO_MES"));
+
+        for (UsuarioExibicaoDto p : professores) {
+            Double rendimentoProfessor = this.professorService.getRendimentoMesAtual(p.getId());
+            csvData.append(String.format("%d;%s;%s;%.2f\n",p.getId(), p.getNome(),
+                    p.getEmail(), rendimentoProfessor));
+        }
+        byte[] csvBytes = csvData.toString().getBytes();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", "data.csv");
+
+        return new ResponseEntity<>(csvBytes, headers, HttpStatus.OK);
     }
 
     @PostMapping("/importacao-dados-csv")
