@@ -7,6 +7,7 @@ import school.sptech.harmonyospringapi.service.pedido.dto.PedidoMapper;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioMapper;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class AvaliacaoMapper {
 
@@ -37,4 +38,18 @@ public class AvaliacaoMapper {
         return avaliacaoExibicaoDto;
     }
 
+    public static AvaliacaoCardDto ofAvaliacaoCard(Avaliacao avaliacao){
+        AvaliacaoCardDto avaliacaoCardDto = new AvaliacaoCardDto();
+
+        avaliacaoCardDto.setIdAvaliador(avaliacao.getUsuarioAvaliador().getId());
+        avaliacaoCardDto.setNomeAvaliador(avaliacao.getUsuarioAvaliador().getNome());
+        avaliacaoCardDto.setComentario(avaliacao.getComentario());
+        avaliacaoCardDto.setValorAvaliacao(avaliacao.getValor());
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String dataFormatada = avaliacao.getDataAvaliacao().format(formatter);
+        avaliacaoCardDto.setDataAvaliacaoFormatada(dataFormatada);
+
+        return avaliacaoCardDto;
+    }
 }

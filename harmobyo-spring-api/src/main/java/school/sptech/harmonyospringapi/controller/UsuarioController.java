@@ -17,10 +17,7 @@ import school.sptech.harmonyospringapi.domain.Pedido;
 import school.sptech.harmonyospringapi.service.usuario.UsuarioService;
 import school.sptech.harmonyospringapi.service.usuario.autenticacao.dto.UsuarioLoginDto;
 import school.sptech.harmonyospringapi.service.usuario.autenticacao.dto.UsuarioTokenDto;
-import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioAtulizarDadosPessoaisDto;
-import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioBibliografiaDto;
-import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioDadosPerfilDto;
-import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioExibicaoDto;
+import school.sptech.harmonyospringapi.service.usuario.dto.*;
 import school.sptech.harmonyospringapi.service.usuario.dto.avaliacao.AvaliacaoCriacaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.avaliacao.AvaliacaoExibicaoDto;
 
@@ -136,6 +133,11 @@ public class UsuarioController {
         FiltroMinimoMaximo filtroMinimoMaximo = this.usuarioService.filtroMinimoMaximo();
 
         return ResponseEntity.ok(filtroMinimoMaximo);
+    }
+
+    @GetMapping("/{idUsuario}/avaliacoes-recebidas")
+    public ResponseEntity<UsuarioTelaFeedback> obterDadosUsuarioTelaFeedback(@PathVariable int idUsuario){
+        return ResponseEntity.ok(this.usuarioService.obterDadosUsuarioTelaFeedback(idUsuario));
     }
 
     @PutMapping("atualiza-dados-pessoais/{id}")

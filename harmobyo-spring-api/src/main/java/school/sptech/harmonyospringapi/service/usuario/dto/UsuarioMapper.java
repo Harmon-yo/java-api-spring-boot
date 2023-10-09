@@ -5,6 +5,7 @@ import school.sptech.harmonyospringapi.domain.Professor;
 import school.sptech.harmonyospringapi.domain.Usuario;
 import school.sptech.harmonyospringapi.service.experiencia.dto.ExperienciaExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.autenticacao.dto.UsuarioTokenDto;
+import school.sptech.harmonyospringapi.service.usuario.dto.avaliacao.AvaliacaoCardDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -118,5 +119,17 @@ public class UsuarioMapper {
         usuarioDadosPerfilDto.setExperiencia(experiencias);
         usuarioDadosPerfilDto.setCategoriaUsuario(categoriaUsuario);
         return usuarioDadosPerfilDto;
+    }
+
+    public static UsuarioTelaFeedback ofUsuarioTelaFeedback(Usuario usuario, List<AvaliacaoCardDto> avaliacoes, Double mediaAvaliacao){
+
+        UsuarioTelaFeedback usuarioTelaFeedback = new UsuarioTelaFeedback();
+
+        usuarioTelaFeedback.setId(usuario.getId());
+        usuarioTelaFeedback.setNome(usuario.getNome());
+        usuarioTelaFeedback.setAvaliacaoMedia(mediaAvaliacao);
+        usuarioTelaFeedback.setAvaliacoes(avaliacoes);
+
+        return usuarioTelaFeedback;
     }
 }

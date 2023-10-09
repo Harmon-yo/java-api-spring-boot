@@ -17,8 +17,8 @@ import school.sptech.harmonyospringapi.service.endereco.dto.EnderecoAtualizacaoD
 import school.sptech.harmonyospringapi.service.experiencia.dto.ExperienciaMapper;
 import school.sptech.harmonyospringapi.service.experiencia.dto.ExperienciaExibicaoDto;
 import school.sptech.harmonyospringapi.service.pedido.PedidoService;
-import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioAtulizarDadosPessoaisDto;
-import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioDadosPerfilDto;
+import school.sptech.harmonyospringapi.service.usuario.dto.*;
+import school.sptech.harmonyospringapi.service.usuario.dto.avaliacao.AvaliacaoCardDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.avaliacao.AvaliacaoCriacaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.avaliacao.AvaliacaoExibicaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.avaliacao.AvaliacaoMapper;
@@ -29,8 +29,6 @@ import school.sptech.harmonyospringapi.service.endereco.dto.EnderecoExibicaoDto;
 import school.sptech.harmonyospringapi.service.endereco.dto.EnderecoMapper;
 import school.sptech.harmonyospringapi.service.usuario.autenticacao.dto.UsuarioLoginDto;
 import school.sptech.harmonyospringapi.service.usuario.autenticacao.dto.UsuarioTokenDto;
-import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioExibicaoDto;
-import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioMapper;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -228,6 +226,21 @@ public class UsuarioService {
         List<Avaliacao> avaliacoes = this.avaliacaoRepository.findByUsuarioAvaliadoId(usuario.getId());
 
         return avaliacoes.stream().map(AvaliacaoMapper::ofAvaliacaoExibicao).toList();
+    }
+
+    public UsuarioTelaFeedback obterDadosUsuarioTelaFeedback(Integer idUsuario) {
+
+        if (!this.usuarioRepository.existsById(idUsuario)) throw new EntitadeNaoEncontradaException("ID de Usuário invalido. Usuário não encontrado !");
+
+        Usuario usuario = buscarPorId(idUsuario);
+
+        List<AvaliacaoCardDto> avaliacoes = this.avaliacaoRepository.findByUsuarioAvaliadoId(usuario.getId())
+                                                                    .stream().map(AvaliacaoMapper::ofAvaliacaoCard)
+                                                                    .toList();
+
+        Double avaliacaoMedia = this.avaliacaoRepository.getMediaAvaliacaoUsuario(idUsuario).orElse(0.0);
+
+        return UsuarioMapper.ofUsuarioTelaFeedback(usuario, avaliacoes, avaliacaoMedia);
     }
 
     public UsuarioDadosPerfilDto obterDadosPerfilUsuario(int id) {
