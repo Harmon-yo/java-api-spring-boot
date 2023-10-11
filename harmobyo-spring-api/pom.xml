@@ -95,6 +95,11 @@
 			<artifactId>spring-boot-starter-actuator</artifactId>
 			<version>3.0.5</version>
 		</dependency>
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk-s3</artifactId>
+			<version>1.12.565</version>
+		</dependency>
 
 	</dependencies>
 
