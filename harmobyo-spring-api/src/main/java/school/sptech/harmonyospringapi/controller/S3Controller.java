@@ -14,6 +14,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Random;
 import java.util.UUID;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @RestController
 public class S3Controller {
@@ -32,11 +34,15 @@ public class S3Controller {
         this.amazonS3Client = amazonS3Client;
     }
 
-    @PostMapping("/upload-log/{email}/{metodo}/{timestamp}")
-    public String uploadRandomTxtToS3(@PathVariable String email, @PathVariable String metodo, @PathVariable String timestamp) {
+    @PostMapping("/upload-log/{email}/{metodo}")
+    public String uploadLogS3(@PathVariable String email, @PathVariable String metodo) {
         String bucketName = "bucket-harmonyo-publico";
         String key = generateRandomFileName() + ".txt";
-        String content = email + " acessou o método " + metodo + " as " + timestamp;
+        Date currentDate = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        String timestamp = dateFormat.format(currentDate);
+
+        String content = email + " acessou o método " + metodo + " na data: " + timestamp;
 
         byte[] contentBytes = content.getBytes();
         ByteArrayInputStream contentStream = new ByteArrayInputStream(contentBytes);
@@ -46,19 +52,13 @@ public class S3Controller {
         PutObjectRequest request = new PutObjectRequest(bucketName, key, contentStream, metadata);
         amazonS3Client.putObject(request);
 
-        return "Arquivo TXT aleatório foi enviado com sucesso para o bucket público.";
+        return "Log enviado";
     }
 
-    // Implemente ou substitua os métodos geradores de nome de arquivo e conteúdo aleatório aqui.
 
     private String generateRandomFileName() {
         return UUID.randomUUID().toString();
     }
 
-    private String generateRandomTxtContent() {
-        Random random = new Random();
-        int randomNumber = random.nextInt(1000);
-        return "Conteúdo aleatório: " + randomNumber;
-    }
 
 }
