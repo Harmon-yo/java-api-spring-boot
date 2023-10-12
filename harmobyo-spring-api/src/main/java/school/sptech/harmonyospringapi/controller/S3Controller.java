@@ -1,7 +1,10 @@
 package school.sptech.harmonyospringapi.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import com.amazonaws.services.s3.AmazonS3;
@@ -10,17 +13,30 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Random;
+import java.util.UUID;
 
 @RestController
 public class S3Controller {
-    @Autowired
-    private AmazonS3 amazonS3Client;
+    @Value("${aws.accessKey}")
+    private String accessKey;
 
-    @PostMapping("/uploadRandomTxt")
-    public String uploadRandomTxtToS3() {
-        String bucketName = "bucket-teste-publico-d";
+    @Value("${aws.secretKey}")
+    private String secretKey;
+
+    @Value("${aws.region}")
+    private String region;
+
+    private final AmazonS3 amazonS3Client;
+
+    public S3Controller(AmazonS3 amazonS3Client) {
+        this.amazonS3Client = amazonS3Client;
+    }
+
+    @PostMapping("/upload-log/{email}/{metodo}/{timestamp}")
+    public String uploadRandomTxtToS3(@PathVariable String email, @PathVariable String metodo, @PathVariable String timestamp) {
+        String bucketName = "bucket-harmonyo-publico";
         String key = generateRandomFileName() + ".txt";
-        String content = generateRandomTxtContent();
+        String content = email + " acessou o método " + metodo + " as " + timestamp;
 
         byte[] contentBytes = content.getBytes();
         ByteArrayInputStream contentStream = new ByteArrayInputStream(contentBytes);
@@ -33,13 +49,16 @@ public class S3Controller {
         return "Arquivo TXT aleatório foi enviado com sucesso para o bucket público.";
     }
 
+    // Implemente ou substitua os métodos geradores de nome de arquivo e conteúdo aleatório aqui.
+
     private String generateRandomFileName() {
-        // Gere um nome de arquivo aleatório, por exemplo, com base no timestamp.
-        return "file" + System.currentTimeMillis();
+        return UUID.randomUUID().toString();
     }
 
     private String generateRandomTxtContent() {
-        // Gere conteúdo de arquivo TXT aleatório (exemplo).
-        return "Conteúdo do arquivo TXT aleatório gerado pelo aplicativo Spring Boot.";
+        Random random = new Random();
+        int randomNumber = random.nextInt(1000);
+        return "Conteúdo aleatório: " + randomNumber;
     }
+
 }
