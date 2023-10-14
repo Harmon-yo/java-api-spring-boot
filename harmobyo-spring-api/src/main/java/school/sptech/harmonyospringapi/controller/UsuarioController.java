@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import school.sptech.harmonyospringapi.domain.FiltroMinimoMaximo;
 import school.sptech.harmonyospringapi.domain.Pedido;
 import school.sptech.harmonyospringapi.service.usuario.UsuarioService;
@@ -21,7 +22,10 @@ import school.sptech.harmonyospringapi.service.usuario.dto.*;
 import school.sptech.harmonyospringapi.service.usuario.dto.avaliacao.AvaliacaoCriacaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.avaliacao.AvaliacaoExibicaoDto;
 
+import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -178,4 +182,24 @@ public class UsuarioController {
     public ResponseEntity<List<Integer>> obterQuantidadeUsuariosCadastradosMesAnterior(){
         return ResponseEntity.status(200).body(this.usuarioService.obterUsuariosCadastradosMesAnterior());
     }
+
+    @PostMapping("/importacao-dados-txt")
+    public ResponseEntity<Boolean> importarTxt(@RequestParam("file") MultipartFile file) {
+
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body(false);
+        }
+
+        try {
+            String content = new String(file.getBytes());
+            BufferedReader entrada = new BufferedReader(new StringReader(content));
+            //usuarioService.lerSalvarTxt(entrada);
+            System.out.println(content);
+            return ResponseEntity.ok(true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(false);
+        }
+    }
+
 }

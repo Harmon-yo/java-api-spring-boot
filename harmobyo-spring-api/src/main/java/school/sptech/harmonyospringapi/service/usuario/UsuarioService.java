@@ -30,6 +30,8 @@ import school.sptech.harmonyospringapi.service.endereco.dto.EnderecoMapper;
 import school.sptech.harmonyospringapi.service.usuario.autenticacao.dto.UsuarioLoginDto;
 import school.sptech.harmonyospringapi.service.usuario.autenticacao.dto.UsuarioTokenDto;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -428,4 +430,60 @@ public class UsuarioService {
 
         return dataFinal;
     }
-}
+
+    public boolean lerSalvarTxt(BufferedReader entrada) {
+        String registro, tipoRegistro;
+        int id, contaRegDadosGravados = 0, contaRegDadosLidos = 0;
+        String nomeAluno, email, genero, instrumento;
+        List<Aluno> listaLida = new ArrayList<>();
+        try {
+            registro = entrada.readLine();
+            while (registro != null) {
+
+                tipoRegistro = registro.substring(0, 2);
+                if (tipoRegistro.equals("00")) {
+                    System.out.println("Tipo do arquivo: " + registro.substring(2, 6));
+                    System.out.println("Data e hora da gravação: " + registro.substring(6, 25));
+                    System.out.println("Versão do documento de layout: " + registro.substring(25, 27));
+                } else if (tipoRegistro.equals("01")) {
+                    contaRegDadosGravados = Integer.parseInt(registro.substring(2, 7));
+                    if (contaRegDadosGravados == contaRegDadosLidos) {
+                        System.out.println("Quantidade de registros de dados lidos eh compativel com " +
+                                "quantidade de registros de dados gravados");
+                    } else {
+                        System.out.println("Quantidade de registros de dados lidos eh incompativel com " +
+                                "quantidade de registros de dados gravados");
+                    }
+                } else if (tipoRegistro.equals("02")) {
+
+                    nomeAluno = registro.substring(5, 45);
+                    email = registro.substring(45, 65);
+                    genero = registro.substring(65, 66);
+                    instrumento = registro.substring(66, 76);
+                    Aluno a = new Aluno();
+                    a.setNome(nomeAluno);
+                    a.setEmail(email);
+                    a.setSexo(genero);
+                    //a.set
+
+                    contaRegDadosLidos++;
+                    //listaLida.add(e);
+
+                } else {
+                    System.out.println("tipo de registro invalido");
+                }
+
+                registro = entrada.readLine();
+            }
+            entrada.close();
+
+        } catch (
+                IOException e) {
+            throw new RuntimeException(e);
+        }
+        return  true;
+    }
+
+    }
+
+
