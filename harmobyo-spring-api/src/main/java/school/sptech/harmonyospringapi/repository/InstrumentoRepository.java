@@ -5,4 +5,5 @@ import school.sptech.harmonyospringapi.domain.Instrumento;
 
 public interface InstrumentoRepository extends JpaRepository<Instrumento, Integer> {
     boolean existsInstrumentoByNomeIgnoreCase(String nome);
+    Instrumento findByNomeIgnoreCase(String nome);
 }

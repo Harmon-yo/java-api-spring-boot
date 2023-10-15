@@ -42,6 +42,7 @@ public class UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+
     @Autowired
     private ExperienciaRepository experienciaRepository;
 
@@ -50,6 +51,9 @@ public class UsuarioService {
 
     @Autowired
     private AvaliacaoRepository avaliacaoRepository;
+
+    @Autowired
+    private InstrumentoRepository instrumentoRepository;
 
     @Autowired
     @Lazy
@@ -434,7 +438,8 @@ public class UsuarioService {
     public boolean lerSalvarTxt(BufferedReader entrada) {
         String registro, tipoRegistro;
         int id, contaRegDadosGravados = 0, contaRegDadosLidos = 0;
-        String nomeAluno, email, genero, instrumento;
+        String nomeAluno, email, genero, instrumento, telefone, cpf, logradouro, numero, complemento, cidade, bairro;
+        String nomeProfessor, exp;
         List<Aluno> listaLida = new ArrayList<>();
         try {
             registro = entrada.readLine();
@@ -460,16 +465,76 @@ public class UsuarioService {
                     email = registro.substring(45, 65);
                     genero = registro.substring(65, 66);
                     instrumento = registro.substring(66, 76);
+                    telefone = registro.substring(76, 89);
+                    cpf = registro.substring(89, 103);
+                    logradouro = registro.substring(103, 133);
+                    numero = registro.substring(133, 138);
+                    complemento = registro.substring(138, 168);
+                    cidade = registro.substring(168, 198);
+                    bairro = registro.substring(198, 228);
+
+                    Endereco e = new Endereco();
+                    e.setLogradouro(logradouro);
+                    e.setNumero(numero);
+                    e.setComplemento(complemento);
+                    e.setCidade(cidade);
+                    e.setBairro(bairro);
+
+
+
                     Aluno a = new Aluno();
                     a.setNome(nomeAluno);
                     a.setEmail(email);
                     a.setSexo(genero);
-                    //a.set
+                    a.setTelefone(telefone);
+                    a.setCpf(cpf);
+                    a.setEndereco(e);
+                    a.setCategoria("Aluno");
+
+                    usuarioRepository.save(a);
 
                     contaRegDadosLidos++;
-                    //listaLida.add(e);
 
-                } else {
+
+                } else if (tipoRegistro.equals("03")) {
+
+                    nomeProfessor = registro.substring(5, 45);
+                    email = registro.substring(45, 65);
+                    genero = registro.substring(65, 66);
+                    instrumento = registro.substring(66, 76);
+                    exp = registro.substring(76, 84);
+                    telefone = registro.substring(84, 97);
+                    cpf = registro.substring(97, 111);
+                    logradouro = registro.substring(111, 141);
+                    numero = registro.substring(141, 146);
+                    complemento = registro.substring(146, 176);
+                    cidade = registro.substring(176, 206);
+                    bairro = registro.substring(206, 236);
+
+                    Endereco e = new Endereco();
+                    e.setLogradouro(logradouro);
+                    e.setNumero(numero);
+                    e.setComplemento(complemento);
+                    e.setCidade(cidade);
+                    e.setBairro(bairro);
+
+                    
+                    Professor p = new Professor();
+                    p.setNome(nomeProfessor);
+                    p.setEmail(email);
+                    p.setSexo(genero);
+                    p.setTelefone(telefone);
+                    p.setCpf(cpf);
+                    p.setEndereco(e);
+                    p.setCategoria("Professor");
+                    p.setBibliografia(exp);
+
+                    usuarioRepository.save(p);
+
+                    contaRegDadosLidos++;
+
+                }
+                else {
                     System.out.println("tipo de registro invalido");
                 }
 
@@ -477,10 +542,10 @@ public class UsuarioService {
             }
             entrada.close();
 
-        } catch (
-                IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
         return  true;
     }
 
