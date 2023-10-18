@@ -13,8 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import school.sptech.harmonyospringapi.domain.Aluno;
 import school.sptech.harmonyospringapi.domain.FiltroMinimoMaximo;
 import school.sptech.harmonyospringapi.domain.Pedido;
+import school.sptech.harmonyospringapi.domain.Professor;
+import school.sptech.harmonyospringapi.service.usuario.AlunoService;
+import school.sptech.harmonyospringapi.service.usuario.ProfessorService;
 import school.sptech.harmonyospringapi.service.usuario.UsuarioService;
 import school.sptech.harmonyospringapi.service.usuario.autenticacao.dto.UsuarioLoginDto;
 import school.sptech.harmonyospringapi.service.usuario.autenticacao.dto.UsuarioTokenDto;
@@ -23,7 +27,9 @@ import school.sptech.harmonyospringapi.service.usuario.dto.avaliacao.AvaliacaoCr
 import school.sptech.harmonyospringapi.service.usuario.dto.avaliacao.AvaliacaoExibicaoDto;
 
 import java.io.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
@@ -200,6 +206,62 @@ public class UsuarioController {
             e.printStackTrace();
             return ResponseEntity.badRequest().body(false);
         }
+    }
+    @PostMapping("/exportacao-dados-txt")
+    public ResponseEntity<Boolean> exportarTxt() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        Date dataHoraAtual = new Date();
+        String dataHoraFormatada = sdf.format(dataHoraAtual);
+        List<UsuarioExibicaoDto> lista = this.usuarioService.exibeTodosOrdemAlfabetica();
+
+        String header = String.format("00LEAD%s01", dataHoraFormatada);
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("arquivo1.txt"))) {
+            writer.write(header);
+            writer.newLine();
+
+            for (UsuarioExibicaoDto user : lista) {
+                String campoAdicionalProfessor;
+                String telefone;
+                String sexo;
+                Integer id = user.getId();
+                String nome = user.getNome();
+                String email = user.getEmail();
+                String categoria = user.getCategoria();
+                String endereco = user.getEndereco().getLogradouro();
+                if(user.getCategoria().equalsIgnoreCase("professor")){
+                    ProfessorService professorService = new ProfessorService();
+                    Professor professor = professorService.buscarPorId(user.getId());
+                    campoAdicionalProfessor = professor.getBibliografia().substring(0,10);
+                    sexo = professor.getSexo().substring(0,1);
+                    telefone = professor.getTelefone();
+
+                    String registroDados =String.format("%03d%40s%20s%01s%10s%13s%10s%40s", id, nome, email,
+                            sexo, campoAdicionalProfessor, telefone, categoria, endereco);
+                    writer.write(registroDados);
+                    writer.newLine();
+
+                } else if (user.getCategoria().equalsIgnoreCase("aluno")) {
+                    AlunoService alunoService = new AlunoService();
+                    Aluno aluno = alunoService.buscarPorId(user.getId());
+                    telefone = aluno.getTelefone();
+                    sexo = aluno.getSexo().substring(0,1);
+
+                    String registroDados =String.format("%03d%40s%20s%01s%13s%10s%40s",
+                            id, nome, email, sexo, telefone, categoria, endereco);
+                    writer.write(registroDados);
+                    writer.newLine();
+                }
+            }
+
+            // Escreve o registro de trailer
+            String trailer = String.format("0100005");
+            writer.write(trailer);
+            return ResponseEntity.ok(true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.noContent().build();
     }
 
 }
