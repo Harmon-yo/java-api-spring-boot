@@ -10,6 +10,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,6 +20,7 @@ import school.sptech.harmonyospringapi.domain.Aluno;
 import school.sptech.harmonyospringapi.domain.FiltroMinimoMaximo;
 import school.sptech.harmonyospringapi.domain.Pedido;
 import school.sptech.harmonyospringapi.domain.Professor;
+import school.sptech.harmonyospringapi.service.exceptions.EntitadeNaoEncontradaException;
 import school.sptech.harmonyospringapi.service.usuario.AlunoService;
 import school.sptech.harmonyospringapi.service.usuario.ProfessorService;
 import school.sptech.harmonyospringapi.service.usuario.UsuarioService;
@@ -25,6 +29,7 @@ import school.sptech.harmonyospringapi.service.usuario.autenticacao.dto.UsuarioT
 import school.sptech.harmonyospringapi.service.usuario.dto.*;
 import school.sptech.harmonyospringapi.service.usuario.dto.avaliacao.AvaliacaoCriacaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.avaliacao.AvaliacaoExibicaoDto;
+import school.sptech.harmonyospringapi.service.usuario.dto.professor.ProfessorExibicaoResumidoDto;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
@@ -40,6 +45,12 @@ public class UsuarioController {
 
     @Autowired
     private UsuarioService usuarioService;
+
+    @Autowired
+    private ProfessorService professorService;
+
+    @Autowired
+    private AlunoService alunoService;
 
 
     @Operation(summary = "Obtém uma lista de todos os usuários cadastrados", description = "")
@@ -262,6 +273,113 @@ public class UsuarioController {
             e.printStackTrace();
         }
         return ResponseEntity.noContent().build();
+
+    }
+
+    @GetMapping("/download-txt-professor")
+    public ResponseEntity<byte[]> downloadTXTProfessor() throws IOException {
+        StringBuilder txtData = new StringBuilder();
+
+        List<UsuarioExibicaoDto> usuarios = this.professorService.listar();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        Date dataHoraAtual = new Date();
+        String dataHoraFormatada = sdf.format(dataHoraAtual);
+
+        txtData.append(String.format("00LEAD%s01\n", dataHoraFormatada));
+
+        for (UsuarioExibicaoDto user : usuarios) {
+            String telefone;
+            String sexo;
+            Integer id = user.getId();
+            String nome = user.getNome();
+            String email = user.getEmail();
+            String categoria = user.getCategoria();
+            String endereco = user.getEndereco().getLogradouro();
+            String campoAdicionalProfessor = "SEM BIOGRAFIA;";
+
+            Professor professor = professorService.buscarPorId(id);
+            if(professor.getBibliografia().length() >= 10){
+                campoAdicionalProfessor = professor.getBibliografia().substring(1, 10);
+            }
+
+            sexo = professor.getSexo().substring(0, 1);
+            telefone = professor.getTelefone();
+            boolean autenticado = professor.isAutenticado();
+
+            txtData.append(String.format("%03d %-40s %-20s %1s %10s %13s %-10s %-40s %5b\n", id, nome, email,
+                    sexo, campoAdicionalProfessor, telefone, categoria, endereco, autenticado));
+
+        }
+
+        txtData.append("0100005\n");
+
+        byte[] txtBytes = txtData.toString().getBytes();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.TEXT_PLAIN);
+        headers.setContentDispositionFormData("attachment", "data.txt");
+
+        return new ResponseEntity<>(txtBytes, headers, HttpStatus.OK);
+    }
+
+    @GetMapping("/download-txt-aluno")
+    public ResponseEntity<byte[]> downloadTXTAluno() throws IOException {
+        StringBuilder txtData = new StringBuilder();
+
+        List<UsuarioExibicaoDto> alunos = this.alunoService.listar();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        Date dataHoraAtual = new Date();
+        String dataHoraFormatada = sdf.format(dataHoraAtual);
+
+        txtData.append(String.format("00LEAD%s01\n", dataHoraFormatada));
+
+        for (UsuarioExibicaoDto user : alunos) {
+            String telefone;
+            String sexo = "I";
+            Integer id = user.getId();
+            String nome = user.getNome();
+            String email = user.getEmail();
+            String categoria = user.getCategoria();
+            String endereco = user.getEndereco().getLogradouro();
+            String campoAdicionalProfessor = "SEM BIOGRAFIA;";
+            String instrumentoUltimaAula;
+
+            Aluno aluno = alunoService.buscarPorId(id);
+
+            if(aluno.getBibliografia().length() >= 10){
+                campoAdicionalProfessor = aluno.getBibliografia().substring(1, 10);
+            }
+
+            if(aluno.getHistorico().isEmpty()){
+                instrumentoUltimaAula = "SEM AULAS;";
+            }else{
+                instrumentoUltimaAula =  aluno.getHistorico().peek().getInstrumentoAula();
+            }
+
+            telefone = aluno.getTelefone();
+
+            if(aluno.getSexo() != null){
+                sexo = aluno.getSexo().substring(0, 1);
+            }
+
+            boolean autenticado = aluno.isAutenticado();
+
+            txtData.append(String.format("%03d %-40s %-20s %1s %10s %13s %-10s %-40s %5b %10s\n", id, nome, email,
+                    sexo, campoAdicionalProfessor, telefone, categoria, endereco, autenticado, instrumentoUltimaAula));
+
+        }
+
+        txtData.append("0100005\n");
+
+        byte[] txtBytes = txtData.toString().getBytes();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.TEXT_PLAIN);
+        headers.setContentDispositionFormData("attachment", "data.txt");
+
+        return new ResponseEntity<>(txtBytes, headers, HttpStatus.OK);
     }
 
 }
