@@ -260,6 +260,7 @@ public class UsuarioController {
 
                     String registroDados =String.format("%03d%40s%20s%01s%13s%10s%40s",
                             id, nome, email, sexo, telefone, categoria, endereco);
+
                     writer.write(registroDados);
                     writer.newLine();
                 }
@@ -289,27 +290,30 @@ public class UsuarioController {
         txtData.append(String.format("00LEAD%s01\n", dataHoraFormatada));
 
         for (UsuarioExibicaoDto user : usuarios) {
-            String telefone;
-            String sexo;
             Integer id = user.getId();
+            Professor professor = professorService.buscarPorId(id);
+
             String nome = user.getNome();
             String email = user.getEmail();
-            String categoria = user.getCategoria();
-            String endereco = user.getEndereco().getLogradouro();
-            String campoAdicionalProfessor = "SEM BIOGRAFIA;";
+            String sexo = "I";
+            String telefone = professor.getTelefone();
+            String cpf = professor.getCpf();
+            String logradouro = user.getEndereco().getLogradouro();
+            String numeroLogradouro = user.getEndereco().getNumero();
+            String complemento = user.getEndereco().getComplemento();
+            String cidade = user.getEndereco().getCidade();
+            String bairro = user.getEndereco().getBairro();
 
-            Professor professor = professorService.buscarPorId(id);
-            if(professor.getBibliografia().length() >= 10){
-                campoAdicionalProfessor = professor.getBibliografia().substring(1, 10);
+
+            if(professor.getSexo() != null){
+                sexo = professor.getSexo().substring(0, 1);
             }
 
-            sexo = professor.getSexo().substring(0, 1);
-            telefone = professor.getTelefone();
-            boolean autenticado = professor.isAutenticado();
-
-            txtData.append(String.format("%03d %-40s %-20s %1s %10s %13s %-10s %-40s %5b\n", id, nome, email,
-                    sexo, campoAdicionalProfessor, telefone, categoria, endereco, autenticado));
-
+            txtData.append(String.format("%03d %-40s %-20s %1s %13s %14s %30s %-5s %30s %30s %30s\n",
+                    id, nome, email,
+                    sexo, telefone, cpf,
+                    logradouro, numeroLogradouro, complemento, cidade
+                    , bairro));
         }
 
         txtData.append("0100005\n");
@@ -336,29 +340,20 @@ public class UsuarioController {
         txtData.append(String.format("00LEAD%s01\n", dataHoraFormatada));
 
         for (UsuarioExibicaoDto user : alunos) {
-            String telefone;
-            String sexo = "I";
             Integer id = user.getId();
-            String nome = user.getNome();
-            String email = user.getEmail();
-            String categoria = user.getCategoria();
-            String endereco = user.getEndereco().getLogradouro();
-            String campoAdicionalProfessor = "SEM BIOGRAFIA;";
-            String instrumentoUltimaAula;
-
             Aluno aluno = alunoService.buscarPorId(id);
 
-            if(aluno.getBibliografia().length() >= 10){
-                campoAdicionalProfessor = aluno.getBibliografia().substring(1, 10);
-            }
+            String nome = user.getNome();
+            String email = user.getEmail();
+            String sexo = "I";
+            String telefone = aluno.getTelefone();
+            String cpf = aluno.getCpf();
+            String logradouro = user.getEndereco().getLogradouro();
+            String numeroLogradouro = user.getEndereco().getNumero();
+            String complemento = user.getEndereco().getComplemento();
+            String cidade = user.getEndereco().getCidade();
+            String bairro = user.getEndereco().getBairro();
 
-            if(aluno.getHistorico().isEmpty()){
-                instrumentoUltimaAula = "SEM AULAS;";
-            }else{
-                instrumentoUltimaAula =  aluno.getHistorico().peek().getInstrumentoAula();
-            }
-
-            telefone = aluno.getTelefone();
 
             if(aluno.getSexo() != null){
                 sexo = aluno.getSexo().substring(0, 1);
@@ -366,8 +361,11 @@ public class UsuarioController {
 
             boolean autenticado = aluno.isAutenticado();
 
-            txtData.append(String.format("%03d %-40s %-20s %1s %10s %13s %-10s %-40s %5b %10s\n", id, nome, email,
-                    sexo, campoAdicionalProfessor, telefone, categoria, endereco, autenticado, instrumentoUltimaAula));
+            txtData.append(String.format("%03d %-40s %-20s %1s %13s %14s %30s %-5s %30s %30s %30s\n",
+                    id, nome, email,
+                    sexo, telefone, cpf,
+                    logradouro, numeroLogradouro, complemento, cidade
+                    , bairro));
 
         }
 
@@ -381,5 +379,7 @@ public class UsuarioController {
 
         return new ResponseEntity<>(txtBytes, headers, HttpStatus.OK);
     }
+
+
 
 }
