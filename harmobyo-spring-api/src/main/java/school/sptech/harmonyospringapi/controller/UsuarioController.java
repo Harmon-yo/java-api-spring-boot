@@ -210,8 +210,8 @@ public class UsuarioController {
         try {
             String content = new String(file.getBytes());
             BufferedReader entrada = new BufferedReader(new StringReader(content));
-            //usuarioService.lerSalvarTxt(entrada);
-            System.out.println(content);
+            usuarioService.lerSalvarTxt(entrada);
+
             return ResponseEntity.ok(true);
         } catch (IOException e) {
             e.printStackTrace();
@@ -230,7 +230,7 @@ public class UsuarioController {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("arquivo1.txt"))) {
             writer.write(header);
             writer.newLine();
-
+            String corpo = "02";
             for (UsuarioExibicaoDto user : lista) {
                 String campoAdicionalProfessor;
                 String telefone;
@@ -247,7 +247,7 @@ public class UsuarioController {
                     sexo = professor.getSexo().substring(0,1);
                     telefone = professor.getTelefone();
 
-                    String registroDados =String.format("%03d%40s%20s%01s%10s%13s%10s%40s", id, nome, email,
+                    String registroDados =String.format("%s%03d%-40.40s%-50.50s%-1.1s%-10.10s%-13.13s%-10.10s%-40.40s", corpo,id, nome, email,
                             sexo, campoAdicionalProfessor, telefone, categoria, endereco);
                     writer.write(registroDados);
                     writer.newLine();
@@ -258,7 +258,7 @@ public class UsuarioController {
                     telefone = aluno.getTelefone();
                     sexo = aluno.getSexo().substring(0,1);
 
-                    String registroDados =String.format("%03d%40s%20s%01s%13s%10s%40s",
+                    String registroDados =String.format("%03d%-40.40s%-50.50s%-1.1s%-13.13s%-10.10s%-40.40s",
                             id, nome, email, sexo, telefone, categoria, endereco);
 
                     writer.write(registroDados);
@@ -288,7 +288,8 @@ public class UsuarioController {
         String dataHoraFormatada = sdf.format(dataHoraAtual);
 
         txtData.append(String.format("00LEAD%s01\n", dataHoraFormatada));
-
+        int contador = 0;
+        String corpo = "03";
         for (UsuarioExibicaoDto user : usuarios) {
             Integer id = user.getId();
             Professor professor = professorService.buscarPorId(id);
@@ -309,14 +310,19 @@ public class UsuarioController {
                 sexo = professor.getSexo().substring(0, 1);
             }
 
-            txtData.append(String.format("%03d %-40s %-20s %1s %13s %14s %30s %-5s %30s %30s %30s\n",
+            txtData.append(String.format("%s%03d%-40.40s%-50.50s%-1.1s%-15.15s%-14.14s%-30.30s%-5.5s%-30.30s%-30.30s%-30.30s\n",corpo,
                     id, nome, email,
                     sexo, telefone, cpf,
                     logradouro, numeroLogradouro, complemento, cidade
                     , bairro));
+            contador++;
         }
 
-        txtData.append("0100005\n");
+        String trailer = "01";
+        trailer += String.format("%05d\n", contador);
+
+
+        txtData.append(trailer);
 
         byte[] txtBytes = txtData.toString().getBytes();
 
@@ -336,9 +342,9 @@ public class UsuarioController {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         Date dataHoraAtual = new Date();
         String dataHoraFormatada = sdf.format(dataHoraAtual);
-
+        int contador = 0;
         txtData.append(String.format("00LEAD%s01\n", dataHoraFormatada));
-
+        String corpo = "02";
         for (UsuarioExibicaoDto user : alunos) {
             Integer id = user.getId();
             Aluno aluno = alunoService.buscarPorId(id);
@@ -358,10 +364,10 @@ public class UsuarioController {
             if(aluno.getSexo() != null){
                 sexo = aluno.getSexo().substring(0, 1);
             }
-
+            contador++;
             boolean autenticado = aluno.isAutenticado();
 
-            txtData.append(String.format("%03d %-40s %-20s %1s %13s %14s %30s %-5s %30s %30s %30s\n",
+            txtData.append(String.format("%s%03d%-40.40s%-50.50s%-1.1s%-15.15s%-14.14s%-30.30s%-5.5s%-30.30s%-30.30s%-30.30s\n",corpo,
                     id, nome, email,
                     sexo, telefone, cpf,
                     logradouro, numeroLogradouro, complemento, cidade
@@ -369,8 +375,10 @@ public class UsuarioController {
 
         }
 
-        txtData.append("0100005\n");
 
+        String trailer = "01";
+        trailer += String.format("%05d\n", contador);
+        txtData.append(trailer);
         byte[] txtBytes = txtData.toString().getBytes();
 
         HttpHeaders headers = new HttpHeaders();

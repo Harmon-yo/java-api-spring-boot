@@ -441,10 +441,10 @@ public class UsuarioService {
         String nomeAluno, email, genero, instrumento, telefone, cpf, logradouro, numero, complemento, cidade, bairro;
         String nomeProfessor, exp;
         List<Aluno> listaLida = new ArrayList<>();
+        System.out.println("aloo");
         try {
             registro = entrada.readLine();
             while (registro != null) {
-
                 tipoRegistro = registro.substring(0, 2);
                 if (tipoRegistro.equals("00")) {
                     System.out.println("Tipo do arquivo: " + registro.substring(2, 6));
@@ -462,16 +462,16 @@ public class UsuarioService {
                 } else if (tipoRegistro.equals("02")) {
 
                     nomeAluno = registro.substring(5, 45);
-                    email = registro.substring(45, 65);
-                    genero = registro.substring(65, 66);
-                    instrumento = registro.substring(66, 76);
-                    telefone = registro.substring(76, 89);
-                    cpf = registro.substring(89, 103);
-                    logradouro = registro.substring(103, 133);
-                    numero = registro.substring(133, 138);
-                    complemento = registro.substring(138, 168);
-                    cidade = registro.substring(168, 198);
-                    bairro = registro.substring(198, 228);
+                    email = registro.substring(45, 95);
+                    genero = registro.substring(95, 96);
+                    telefone = registro.substring(96, 111);
+                    cpf = registro.substring(111, 125);
+                    logradouro = registro.substring(125, 155);
+                    numero = registro.substring(155, 160);
+                    complemento = registro.substring(160, 190);
+                    cidade = registro.substring(190, 210);
+                    bairro = registro.substring(210, 240);
+
 
                     Endereco e = new Endereco();
                     e.setLogradouro(logradouro);
@@ -479,7 +479,6 @@ public class UsuarioService {
                     e.setComplemento(complemento);
                     e.setCidade(cidade);
                     e.setBairro(bairro);
-
 
 
                     Aluno a = new Aluno();
@@ -499,17 +498,16 @@ public class UsuarioService {
                 } else if (tipoRegistro.equals("03")) {
 
                     nomeProfessor = registro.substring(5, 45);
-                    email = registro.substring(45, 65);
-                    genero = registro.substring(65, 66);
-                    instrumento = registro.substring(66, 76);
-                    exp = registro.substring(76, 84);
-                    telefone = registro.substring(84, 97);
-                    cpf = registro.substring(97, 111);
-                    logradouro = registro.substring(111, 141);
-                    numero = registro.substring(141, 146);
-                    complemento = registro.substring(146, 176);
-                    cidade = registro.substring(176, 206);
-                    bairro = registro.substring(206, 236);
+                    email = registro.substring(45, 95);
+                    genero = registro.substring(95, 96);
+                    telefone = registro.substring(96,111);
+                    cpf = registro.substring(111, 125);
+                    logradouro = registro.substring(125, 155);
+                    numero = registro.substring(155, 160);
+                    complemento = registro.substring(160, 190);
+                    cidade = registro.substring(190, 210);
+                    bairro = registro.substring(210, 240);
+
 
                     Endereco e = new Endereco();
                     e.setLogradouro(logradouro);
@@ -518,7 +516,7 @@ public class UsuarioService {
                     e.setCidade(cidade);
                     e.setBairro(bairro);
 
-                    
+
                     Professor p = new Professor();
                     p.setNome(nomeProfessor);
                     p.setEmail(email);
@@ -527,7 +525,7 @@ public class UsuarioService {
                     p.setCpf(cpf);
                     p.setEndereco(e);
                     p.setCategoria("Professor");
-                    p.setBibliografia(exp);
+
 
                     usuarioRepository.save(p);
 
