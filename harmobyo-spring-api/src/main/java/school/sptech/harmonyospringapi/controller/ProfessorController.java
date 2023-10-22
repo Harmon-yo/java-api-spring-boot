@@ -271,6 +271,54 @@ public class ProfessorController {
         return ResponseEntity.status(200).body(qtdAulasAnual);
     }
 
+    @Operation(summary = "Retorna a média total de tempo de resposta", description = "")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Média total de tempo de resposta do professor solicitado"),
+            @ApiResponse(responseCode = "204", description = "Professor com o ID fornecido não encontrado")
+    })
+    @SecurityRequirement(name = "Bearer")
+    @GetMapping("/dashboard/total/media-tempo-resposta/{id}")
+    public ResponseEntity<Long> getMediaTempoRespostaTotal(@PathVariable int id){
+        Long mediaTempoRespostaTotal = this.professorService.getMediaTempoRespostaTotal(id);
+        return ResponseEntity.status(200).body(mediaTempoRespostaTotal);
+    }
+
+    @Operation(summary = "Obtém o rendimento total de um professor a partir de seu ID", description = "")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Rendimento total do professor solicitado"),
+            @ApiResponse(responseCode = "204", description = "Professor com o ID fornecido não encontrado")
+    })
+    @SecurityRequirement(name = "Bearer")
+    @GetMapping("/dashboard/total/rendimento/{id}")
+    public ResponseEntity<Double> getRendimentoTotal(@PathVariable int id){
+        Double rendimentoTotal = this.professorService.getRendimentoTotal(id);
+        return ResponseEntity.status(200).body(rendimentoTotal);
+    }
+
+    @Operation(summary = "Obtém a quantidade total de alunos de um professor a partir de seu ID", description = "")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Quantidade total de alunos do professor solicitado"),
+            @ApiResponse(responseCode = "204", description = "Professor com o ID fornecido não encontrado")
+    })
+    @SecurityRequirement(name = "Bearer")
+    @GetMapping("/dashboard/total/qtd-alunos/{id}")
+    public ResponseEntity<Integer> getQuantidadeAlunosTotal(@PathVariable int id){
+        Integer qtdAlunosTotal = this.professorService.getQuantidadeAlunosTotal(id);
+        return ResponseEntity.status(200).body(qtdAlunosTotal);
+    }
+
+    @Operation(summary = "Obtém a quantidade total de aulas de um professor a partir de seu ID", description = "")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Quantidade total de aulas do professor solicitado"),
+            @ApiResponse(responseCode = "204", description = "Professor com o ID fornecido não encontrado")
+    })
+    @SecurityRequirement(name = "Bearer")
+    @GetMapping("/dashboard/total/qtd-aulas/{id}")
+    public ResponseEntity<Integer> getQuantidadeAulasTotal(@PathVariable int id){
+        Integer qtdAulasTotal = this.professorService.getQuantidadeAulasTotal(id);
+        return ResponseEntity.status(200).body(qtdAulasTotal);
+    }
+
 
 
     /*  GRAFICO DASH   */
@@ -327,6 +375,20 @@ public class ProfessorController {
     @GetMapping("/dashboard/minhas-aulas-ano/{id}")
     public ResponseEntity<List<PedidoExibicaoDashboardDto>> getAulasRealizadasAnual(@PathVariable int id){
         List<PedidoExibicaoDashboardDto> aulas = this.professorService.getAulasRealizadasAnual(id);
+        return  aulas.isEmpty()? ResponseEntity.status(204).build() :
+                ResponseEntity.status(200).body(aulas);
+
+    }
+
+    @Operation(summary = "Obtém o histórico de aulas realizadas de um professor a partir de seu ID", description = "")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Histórico de aulas realizadas do professor solicitado:  "),
+            @ApiResponse(responseCode = "204", description = "Professor com o ID fornecido não encontrado. ")
+    })
+    @SecurityRequirement(name = "Bearer")
+    @GetMapping("/dashboard/minhas-aulas-total/{id}")
+    public ResponseEntity<List<PedidoExibicaoDashboardDto>> getAulasRealizadasTotal(@PathVariable int id){
+        List<PedidoExibicaoDashboardDto> aulas = this.professorService.getAulasRealizadasTotal(id);
         return  aulas.isEmpty()? ResponseEntity.status(204).build() :
                 ResponseEntity.status(200).body(aulas);
 

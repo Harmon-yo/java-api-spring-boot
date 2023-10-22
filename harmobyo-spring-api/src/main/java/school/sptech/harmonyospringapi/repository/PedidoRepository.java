@@ -14,6 +14,9 @@ public interface PedidoRepository extends JpaRepository<Pedido, Integer> {
     @Query("SELECT p FROM Pedido p WHERE p.aluno.id = :usuarioId OR p.professor.id = :usuarioId")
     List<Pedido> buscarPorUsuarioId(Integer usuarioId);
 
+    @Query("SELECT p FROM Pedido p WHERE p.aluno.id = :usuarioId OR p.professor.id = :usuarioId AND YEAR(p.horaCriacao) = YEAR(CURDATE())")
+    List<Pedido> buscarPorUsuarioIdAnual(Integer usuarioId);
+
     @Query("SELECT p FROM Pedido p WHERE p.aula.professor.id = :idProfessor AND (p.status.descricao = 'Pendente' OR p.status.descricao = 'Aguardando Pagamento' OR p.status.descricao = 'Confirmado')")
     List<Pedido> encontrarPedidosPendentesPorIdProfessor(int idProfessor);
 

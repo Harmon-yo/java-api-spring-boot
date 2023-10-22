@@ -37,12 +37,22 @@ public interface ProfessorRepository extends JpaRepository<Professor, Integer>, 
 
     @Query("SELECT SUM(a.valorAula) FROM Aula a INNER JOIN Pedido p ON p.aula.id = a.id WHERE p.professor.id = :idProfessor AND p.dataAula BETWEEN :comeco AND :fim AND p.status.descricao = 'Concluído'")
     Optional<Double> getRendimentoPorPeriodo(int idProfessor, LocalDateTime comeco, LocalDateTime fim);
+    @Query("SELECT SUM(a.valorAula) FROM Aula a INNER JOIN Pedido p ON p.aula.id = a.id WHERE p.professor.id = :idProfessor AND p.status.descricao = 'Concluído'")
+    Optional<Double> getRendimento(int idProfessor);
 
     @Query("SELECT COUNT(DISTINCT (p.aluno.id)) FROM Pedido p WHERE p.professor.id = :id AND p.status.descricao = 'Concluído' AND p.dataAula BETWEEN :comeco AND :fim")
     Optional<Integer> getQuantidadeAlunosPorPeriodo(int id, LocalDateTime comeco, LocalDateTime fim);
 
+    @Query("SELECT COUNT(DISTINCT (p.aluno.id)) FROM Pedido p WHERE p.professor.id = :id AND p.status.descricao = 'Concluído'")
+    Optional<Integer> getQuantidadeAlunos(int id);
+
+
     @Query("SELECT COUNT(p.id) FROM Pedido p WHERE p.professor.id = :id AND p.status.descricao = 'Concluído' AND p.dataAula BETWEEN :comeco AND :fim")
     Optional<Integer> getQuantidadeAulasPorPeriodo(int id, LocalDateTime comeco, LocalDateTime fim);
+
+    @Query("SELECT COUNT(p.id) FROM Pedido p WHERE p.professor.id = :id AND p.status.descricao = 'Concluído'")
+    Optional<Integer> getQuantidadeAulas(int id);
+
 
     @Query("SELECT AVG(EXTRACT(MINUTE FROM p.horaCriacao) - EXTRACT(MINUTE FROM p.horaResposta)) FROM Pedido p WHERE p.professor.id = :id")
     Optional<Integer> getMediaTempoResposta(int id);
@@ -52,6 +62,10 @@ public interface ProfessorRepository extends JpaRepository<Professor, Integer>, 
 
     @Query("SELECT new school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoDashboardDto(p.aula.instrumento.id, p.aula.instrumento.nome, COUNT(p.id), SUM(p.aula.valorAula)) FROM Pedido p WHERE p.professor.id = :id AND p.status.descricao = 'Concluído' AND p.dataAula BETWEEN :comeco AND :fim  GROUP BY p.aula.instrumento.id")
     List<PedidoExibicaoDashboardDto> getAulasRealizadasAgrupadasPorInstrumentoMesAtual(int id, LocalDateTime comeco, LocalDateTime fim);
+
+    @Query("SELECT new school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoDashboardDto(p.aula.instrumento.id, p.aula.instrumento.nome, COUNT(p.id), SUM(p.aula.valorAula)) FROM Pedido p WHERE p.professor.id = :id AND p.status.descricao = 'Concluído' GROUP BY p.aula.instrumento.id")
+    List<PedidoExibicaoDashboardDto> getAulasRealizadasAgrupadasPorInstrumentoTotal(int id);
+
 
 
     @Query("SELECT new school.sptech.harmonyospringapi.service.pedido.dto.PedidosMes(" +
@@ -65,6 +79,17 @@ public interface ProfessorRepository extends JpaRepository<Professor, Integer>, 
             "GROUP BY FUNCTION('MONTHNAME', p.dataAula), MONTH(p.dataAula)"+
             "ORDER BY FUNCTION('MONTH', p.dataAula)")
     List<PedidosMes> getAulasAgrupadasPorMes(int id, LocalDateTime comeco, LocalDateTime fim);
+
+    @Query("SELECT new school.sptech.harmonyospringapi.service.pedido.dto.PedidosMes(" +
+            "FUNCTION('MONTHNAME', p.dataAula), " +
+            "SUM(CASE WHEN p.status.descricao = 'Cancelado' THEN 1 ELSE 0 END), " +
+            "SUM(CASE WHEN p.status.descricao = 'Recusado' THEN 1 ELSE 0 END), " +
+            "SUM(CASE WHEN p.status.descricao = 'Concluído' THEN 1 ELSE 0 END)) " +
+            "FROM Pedido p " +
+            "WHERE p.professor.id = :id AND p.status.descricao IN ('Cancelado', 'Recusado', 'Concluído') " +
+            "GROUP BY FUNCTION('MONTHNAME', p.dataAula), MONTH(p.dataAula)"+
+            "ORDER BY FUNCTION('MONTH', p.dataAula)")
+    List<PedidosMes> getAulasAgrupadasPorMes(int id);
 
     @Query("SELECT COUNT(p) FROM Professor p WHERE p.dataCriacao BETWEEN :dataInicial AND :dataFinal")
     Integer obterQuantidadeCadastradosEntre(LocalDateTime dataInicial, LocalDateTime dataFinal);

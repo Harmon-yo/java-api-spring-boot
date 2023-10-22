@@ -361,6 +361,11 @@ public class ProfessorService {
         return pedidos;
     }
 
+    public List<PedidoExibicaoDashboardDto> getAulasRealizadasTotal(int id){
+        List<PedidoExibicaoDashboardDto> pedidos = this.professorRepository.getAulasRealizadasAgrupadasPorInstrumentoTotal(id);
+        return pedidos;
+    }
+
     public AulaGraficoInformacoesDashboardDto getDadosAulasMesAtual(int id) {
 
         LocalDateTime now = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
@@ -380,8 +385,8 @@ public class ProfessorService {
 
         LocalDateTime now = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
 
-        List<Pedido> pedidos = this.pedidoRepository.buscarPorUsuarioId(id);
-        Long somaTempoResposta = pedidos.stream().filter(p -> p.getHoraCriacao().getYear() == now.getYear() ).mapToLong(p -> Duration.between(p.getHoraCriacao(), p.getHoraResposta()).toMinutes()).sum();
+        List<Pedido> pedidos = this.pedidoRepository.buscarPorUsuarioIdAnual(id);
+        Long somaTempoResposta = pedidos.stream().filter(p -> p.getHoraCriacao().getYear() == now.getYear() && p.getHoraResposta() != null ).mapToLong(p -> Duration.between(p.getHoraCriacao(), p.getHoraResposta()).toMinutes()).sum();
         return somaTempoResposta / pedidos.size();
     }
 
@@ -412,6 +417,34 @@ public class ProfessorService {
         LocalDateTime fim = LocalDateTime.of(now.getYear(), now.getMonth().getValue(),30,23,59);
         return this.professorRepository.getAulasAgrupadasPorMes(id, comeco, fim);
     }
+
+
+    public Long getMediaTempoRespostaTotal(int id) {
+
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
+
+        List<Pedido> pedidos = this.pedidoRepository.buscarPorUsuarioId(id);
+        Long somaTempoResposta = pedidos.stream().filter(p -> p.getHoraCriacao().getYear() == now.getYear() && p.getHoraResposta() != null ).mapToLong(p -> Duration.between(p.getHoraCriacao(), p.getHoraResposta()).toMinutes()).sum();
+        return somaTempoResposta / pedidos.size();
+    }
+
+    public Double getRendimentoTotal(int id) {
+        return this.professorRepository.getRendimento(id).orElse(0d);
+    }
+
+    public Integer getQuantidadeAlunosTotal(int id) {
+        return this.professorRepository.getQuantidadeAlunos(id).orElse(0);
+    }
+
+    public Integer getQuantidadeAulasTotal(int id) {
+        return this.professorRepository.getQuantidadeAulas(id).orElse(0);
+    }
+
+    public List<PedidosMes> dadosAulasTotal(int id) {
+        return this.professorRepository.getAulasAgrupadasPorMes(id);
+    }
+
+
 
     /* =========== Métricas Dashboard Admin ========= */
 
