@@ -24,4 +24,12 @@ public class NaipeExibicaoDto {
     public void setDescricaoNaipe(String descricaoNaipe) {
         this.descricaoNaipe = descricaoNaipe;
     }
+
+    @Override
+    public String toString() {
+        return "NaipeExibicaoDto{" +
+                "id=" + id +
+                ", descricaoNaipe='" + descricaoNaipe + '\'' +
+                '}';
+    }
 }

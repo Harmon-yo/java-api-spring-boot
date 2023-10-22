@@ -31,4 +31,12 @@ public class InstrumentoCriacaoDto {
     public void setNaipe(Integer naipeId) {
         this.naipeId = naipeId;
     }
+
+    @Override
+    public String toString() {
+        return "InstrumentoCriacaoDto{" +
+                "nome='" + nome + '\'' +
+                ", naipeId=" + naipeId +
+                '}';
+    }
 }

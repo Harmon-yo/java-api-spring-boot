@@ -43,4 +43,13 @@ public class InstrumentoExibicaoDto {
     public void setNaipe(NaipeExibicaoDto naipe) {
         this.naipe = naipe;
     }
+
+    @Override
+    public String toString() {
+        return "InstrumentoExibicaoDto{" +
+                "id=" + id +
+                ", nome='" + nome + '\'' +
+                ", naipe=" + naipe +
+                '}';
+    }
 }

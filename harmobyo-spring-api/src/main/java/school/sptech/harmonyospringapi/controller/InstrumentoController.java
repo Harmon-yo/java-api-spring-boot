@@ -14,7 +14,10 @@ import school.sptech.harmonyospringapi.repository.InstrumentoRepository;
 import school.sptech.harmonyospringapi.service.instrumento.InstrumentoService;
 import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoCriacaoDto;
 import school.sptech.harmonyospringapi.service.instrumento.dto.InstrumentoExibicaoDto;
+import school.sptech.harmonyospringapi.utils.ArvoreBin;
+import school.sptech.harmonyospringapi.utils.Node;
 
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -24,6 +27,8 @@ public class InstrumentoController {
 
     @Autowired
     private InstrumentoService instrumentoService;
+
+    ArvoreBin arvoreBin = new ArvoreBin();
 
     @Operation( summary = "Cadastra um instrumento na plataforma a partir de uma DTO")
     @ApiResponses({
@@ -50,5 +55,43 @@ public class InstrumentoController {
         List<InstrumentoExibicaoDto> instrumentoExibicaoDtos = this.instrumentoService.listar();
 
         return instrumentoExibicaoDtos.isEmpty() ? ResponseEntity.status(204).build() : ResponseEntity.status(200).body(instrumentoExibicaoDtos);
+    }
+
+
+    @GetMapping("/arvore-binaria")
+    public ResponseEntity<Boolean> exibirArvoreBinaria() {
+        List<InstrumentoExibicaoDto> listInstrumento = this.instrumentoService.listar();
+
+        if (!listInstrumento.isEmpty()) {
+
+            arvoreBin.criaRaiz(listInstrumento.get(0));
+
+            for (int i = 1; i < listInstrumento.size(); i++) {
+                InstrumentoExibicaoDto instrumento = listInstrumento.get(i);
+                Node<InstrumentoExibicaoDto> raiz = arvoreBin.getRaiz();
+
+                insereInstrumentoNaArvore(raiz, instrumento);
+            }
+
+            arvoreBin.exibeArvore(arvoreBin.getRaiz());
+            return ResponseEntity.ok(true);
+        }
+
+        return ResponseEntity.noContent().build();
+    }
+    private void insereInstrumentoNaArvore(Node<InstrumentoExibicaoDto> noDaVez, InstrumentoExibicaoDto instrumento) {
+        if (instrumento.getId().compareTo(noDaVez.getInfo().getId()) < 0) {
+            if (noDaVez.getEsq() == null) {
+                arvoreBin.insereEsq(noDaVez, instrumento);
+            } else {
+                insereInstrumentoNaArvore(noDaVez.getEsq(), instrumento);
+            }
+        } else {
+            if (noDaVez.getDir() == null) {
+                arvoreBin.insereDir(noDaVez, instrumento);
+            } else {
+                insereInstrumentoNaArvore(noDaVez.getDir(), instrumento);
+            }
+        }
     }
 }

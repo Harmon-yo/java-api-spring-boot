@@ -30,6 +30,7 @@ import school.sptech.harmonyospringapi.service.usuario.dto.professor_instrumento
 import school.sptech.harmonyospringapi.service.usuario.ProfessorService;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioCriacaoDto;
 import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioExibicaoDto;
+import school.sptech.harmonyospringapi.utils.ArvoreBin;
 
 import java.io.BufferedReader;
 import java.io.FileWriter;
@@ -48,6 +49,8 @@ public class ProfessorController {
 
     @Autowired
     private ProfessorService professorService;
+
+    private ArvoreBin arvoreBin;
 
     @Operation(summary = "Cadastra um professor", description = "")
     @ApiResponse(responseCode = "201", description = "Professor cadastrado.")
@@ -520,9 +523,7 @@ public class ProfessorController {
             while ((line = reader.readLine()) != null) {
                 String[] campos = line.split(";\n");
                 dados.add(campos);
-                //tomar ação aq sdfdsf
             }
-
 
             return ResponseEntity.ok(true);
         } catch (IOException e) {
@@ -530,5 +531,7 @@ public class ProfessorController {
             return ResponseEntity.badRequest().body(false);
         }
     }
+
+
 
 }

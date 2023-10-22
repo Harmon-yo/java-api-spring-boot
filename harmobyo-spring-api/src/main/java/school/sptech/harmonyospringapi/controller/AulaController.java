@@ -16,6 +16,7 @@ import school.sptech.harmonyospringapi.service.aula.AulaService;
 import school.sptech.harmonyospringapi.service.aula.dto.AulaAtualizacaoDto;
 import school.sptech.harmonyospringapi.service.aula.dto.AulaCriacaoDto;
 import school.sptech.harmonyospringapi.service.aula.dto.AulaExibicaoDto;
+import school.sptech.harmonyospringapi.utils.ArvoreBin;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -28,6 +29,7 @@ public class AulaController {
 
     @Autowired
     private AulaService aulaService;
+
 
 
     @Operation(summary = "Cadastra a aula de um professor ", description = "")
@@ -56,7 +58,7 @@ public class AulaController {
 
         List<AulaExibicaoDto> ltAulas = this.aulaService.buscarAulasPorIdProfessor(fkProfessor);
 
-        if (ltAulas.isEmpty()){
+        if (ltAulas.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
 
@@ -75,7 +77,7 @@ public class AulaController {
 
         List<AulaExibicaoDto> ltAulas = this.aulaService.buscarAulasAtivasPorIdProfessor(fkProfessor);
 
-        if (ltAulas.isEmpty()){
+        if (ltAulas.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
 
@@ -83,7 +85,7 @@ public class AulaController {
     }
 
     @PutMapping("/desativar/{idAula}")
-    public ResponseEntity<AulaExibicaoDto> desativarAulaPorId(@PathVariable int idAula){
+    public ResponseEntity<AulaExibicaoDto> desativarAulaPorId(@PathVariable int idAula) {
 
         this.aulaService.desativarAulaPorId(idAula);
 
@@ -91,7 +93,7 @@ public class AulaController {
     }
 
     @PutMapping("/ativar/{idAula}")
-    public ResponseEntity<AulaExibicaoDto> ativarAulaPorId(@PathVariable int idAula){
+    public ResponseEntity<AulaExibicaoDto> ativarAulaPorId(@PathVariable int idAula) {
 
         this.aulaService.ativarAulaPorId(idAula);
 
@@ -106,7 +108,7 @@ public class AulaController {
     })
     @SecurityRequirement(name = "Bearer")
     @PutMapping("/{idAula}")
-    public ResponseEntity<AulaExibicaoDto> atualizarAulaPorId(@PathVariable int idAula, @RequestBody @Valid AulaAtualizacaoDto aulaAtualizacaoDto){
+    public ResponseEntity<AulaExibicaoDto> atualizarAulaPorId(@PathVariable int idAula, @RequestBody @Valid AulaAtualizacaoDto aulaAtualizacaoDto) {
 
         AulaExibicaoDto aulaAtualizada = this.aulaService.atualizarAulaPorId(idAula, aulaAtualizacaoDto);
 
@@ -120,7 +122,7 @@ public class AulaController {
     })
     @SecurityRequirement(name = "Bearer")
     @DeleteMapping("/{idAula}")
-    public ResponseEntity<Void> deletarAulaPorId(@PathVariable int idAula){
+    public ResponseEntity<Void> deletarAulaPorId(@PathVariable int idAula) {
 
         this.aulaService.deletarAulaPorId(idAula);
 
@@ -147,7 +149,13 @@ public class AulaController {
     }
 
     @GetMapping("quantidade-por-aluno")
-    public ResponseEntity<Double> quantidadeUsuariosPorAluno(){
+    public ResponseEntity<Double> quantidadeUsuariosPorAluno() {
         return ResponseEntity.ok(this.aulaService.quantidadeUsuariosPorAluno());
     }
+
+
+
 }
+
+
+
