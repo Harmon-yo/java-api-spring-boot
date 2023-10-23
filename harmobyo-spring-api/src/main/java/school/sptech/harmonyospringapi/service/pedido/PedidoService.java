@@ -59,6 +59,16 @@ public class PedidoService {
                 .toList();
     }
 
+    public List<PedidoExibicaoDto> inverterLista(List<PedidoExibicaoDto> pedidos) {
+        List<PedidoExibicaoDto> pedidosInvertidos = new ArrayList<>();
+
+        for (int i = pedidos.size() - 1; i >= 0; i--) {
+            pedidosInvertidos.add(pedidos.get(i));
+        }
+
+        return pedidosInvertidos;
+    }
+
     public PilhaObj<PedidoExibicaoDto> obterPedidosPendentes(int idProfessor){
 
         List<Pedido> pedidosPendentes = repository.encontrarPedidosPendentesPorIdProfessor(idProfessor);
@@ -277,9 +287,20 @@ public class PedidoService {
         return this.repository.save(pedido);
     }
 
+    public List<PedidoExibicaoDto> buscarAulasPorIdUsuarioEDataAulaConfirmado(int fkProfessor, LocalDateTime data) {
+        List<Pedido> aulas = repository.findAllByUsuarioIdAndAulaDataConfirmado(fkProfessor, data);
+        return aulas.stream().map(PedidoMapper::ofPedidoExibicaoDto).toList();
+    }
+
     public List<PedidoExibicaoDto> buscarAulasPorIdUsuarioEDataAula(int fkProfessor, LocalDateTime data) {
         List<Pedido> aulas = repository.findAllByUsuarioIdAndAulaData(fkProfessor, data);
         return aulas.stream().map(PedidoMapper::ofPedidoExibicaoDto).toList();
+    }
+
+    public PedidoExibicaoDto buscarPorIdUsuarioEDataAula(int fkProfessor, LocalDateTime data) {
+        Pedido aula = repository.findByUsuarioIdAndAulaData(fkProfessor, data);
+        PedidoExibicaoDto pedido = PedidoMapper.ofPedidoExibicaoDto(aula);
+        return pedido;
     }
 
     public List<PedidoExibicaoDto> buscarAulasPorIdUsuarioEMesAula(int fkUsuario, LocalDateTime localDateTime) {

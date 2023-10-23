@@ -19,13 +19,15 @@ public class HashTableService {
     @Lazy
     private PedidoService pedidoService;
 
-
     private HashTable hashTable = new HashTable(7);
 
     private int funcaoHash(String status){
         int posicao = 0;
 
         switch (status) {
+            case "Em Fila":
+                posicao = 0;
+                break;
             case "Pendente":
                 posicao = 1;
                 break;
@@ -53,6 +55,7 @@ public class HashTableService {
 
         hashTable.getTab()[lista].insereNode(pedidoExibicaoDto);
     }
+
     public boolean busca(PedidoExibicaoDto pedidoExibicaoDto){
         int lista = funcaoHash(pedidoExibicaoDto.getStatus().getDescricao());
 

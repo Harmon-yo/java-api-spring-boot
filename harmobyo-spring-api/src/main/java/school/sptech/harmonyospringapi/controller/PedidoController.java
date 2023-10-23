@@ -8,18 +8,18 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import school.sptech.harmonyospringapi.domain.Pedido;
+import school.sptech.harmonyospringapi.domain.fila.FilaEspera;
 import school.sptech.harmonyospringapi.service.pedido.PedidoService;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoAlteracaoStatus;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoCriacaoDto;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoDto;
+import school.sptech.harmonyospringapi.service.pedido.fila.FilaEsperaService;
 import school.sptech.harmonyospringapi.service.pedido.hashing.HashTableService;
 import school.sptech.harmonyospringapi.utils.PilhaObj;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -32,6 +32,8 @@ public class PedidoController {
     private PedidoService pedidoService;
     @Autowired
     private HashTableService hashTableService;
+    @Autowired
+    private FilaEsperaService filaService;
 
     @GetMapping
     @Operation(summary = "Lista todos os pedidos cadastrados")
@@ -89,6 +91,17 @@ public class PedidoController {
         return ResponseEntity.ok(this.pedidoService.realizarPagamento(pedidoAlteracaoStatus));
     }
 
+    @PutMapping("/fila/{id}")
+    @Operation(summary = "Realiza o pagamento do pedido")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Pagamento realizado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Erro de validação")
+    })
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<Pedido> colocaEmFila(@PathVariable int id){
+        Pedido pedido = this.pedidoService.buscarPorId(id);
+        return ResponseEntity.ok(this.pedidoService.atualizarStatus(pedido, "Em Fila"));
+    }
 
     @PutMapping("/aceita-pedido")
     @Operation(summary = "Aceita a proposta do aluno")
@@ -161,12 +174,12 @@ public class PedidoController {
             @ApiResponse(responseCode = "204", description = "Este professor não possui aulas cadastradas.", content = @Content(schema = @Schema(hidden = true))),
             @ApiResponse(responseCode = "404", description = "ID do Professor inválido !", content = @Content(schema = @Schema(hidden = true)))
     })
-    public ResponseEntity<List<PedidoExibicaoDto>> buscarAulasPorIdUsuarioEDataAula(@RequestParam int fkUsuario,
+    public ResponseEntity<List<PedidoExibicaoDto>> buscarAulasPorIdUsuarioEDataAulaConfirmado(@RequestParam int fkUsuario,
                                                                                     @RequestParam String data) {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime localDateTime = LocalDateTime.parse(data + " 00:00:00", formatter);
-        List<PedidoExibicaoDto> ltAulas = this.pedidoService.buscarAulasPorIdUsuarioEDataAula(fkUsuario, localDateTime);
+        List<PedidoExibicaoDto> ltAulas = this.pedidoService.buscarAulasPorIdUsuarioEDataAulaConfirmado(fkUsuario, localDateTime);
 
         if (ltAulas.isEmpty()){
             return ResponseEntity.noContent().build();
@@ -209,12 +222,42 @@ public class PedidoController {
     @GetMapping("/usuario/hashing/{id}")
     public ResponseEntity<List<PedidoExibicaoDto>> buscarPedidosPorUsuarioIdEStatusHashing(@PathVariable Integer id, @RequestParam String status){
         if (this.hashTableService.isEmpty()) this.hashTableService.adicionarBanco();
+        // if (this.filaService.isEmpty()) this.filaService.adicionarBanco();
 
         List<PedidoExibicaoDto> pedidoExibicaoDto = this.hashTableService.buscarPedidosPorIdEStatus(id, status);
 
         if (pedidoExibicaoDto.isEmpty()) return ResponseEntity.noContent().build();
         return ResponseEntity.ok(pedidoExibicaoDto);
     }
+
+    // ------------------------------- FilaEspera ------------------------------- //
+
+    @PostMapping("/fila-espera/{id}")
+    public ResponseEntity<PedidoExibicaoDto> adicionarPedidoFilaEspera(@PathVariable int id, @RequestParam String data){
+        return ResponseEntity.ok(this.filaService.adicionarPedidoFilaEspera(id, data));
+    }
+
+    @PutMapping("/fila-espera")
+    public ResponseEntity<PedidoExibicaoDto> removerPrimeiroPedidoFilaEspera(@RequestBody PedidoExibicaoDto pedidoExibicaoDto){
+        return ResponseEntity.ok(this.filaService.removerPrimeiroPedidoFilaEspera(pedidoExibicaoDto));
+    }
+
+    @GetMapping("/fila-espera/posicao")
+    public ResponseEntity<Integer> posicaoNaFila(@RequestBody PedidoExibicaoDto pedidoExibicaoDto){
+        return ResponseEntity.ok(this.filaService.pegarPosicaoNaFila(pedidoExibicaoDto));
+    }
+
+    @GetMapping("/fila-espera/{id}")
+    public ResponseEntity<List<PedidoExibicaoDto>> listarPedidosFilaEsperaPorPai(@PathVariable int id){
+        return ResponseEntity.ok(this.filaService.listarFilaDeEspera(id));
+    }
+
+    @GetMapping("/fila-espera")
+    public ResponseEntity<List<FilaEspera>> listarFilasEspera(){
+        return ResponseEntity.ok(this.filaService.listarFilas());
+    }
+
+    // ------------------------------- KPIs ------------------------------- //
 
     @GetMapping("/quantidade-realizadas-semana")
     public ResponseEntity<List<Integer>> obterQuantidadePedidosRealizadosSemana(){

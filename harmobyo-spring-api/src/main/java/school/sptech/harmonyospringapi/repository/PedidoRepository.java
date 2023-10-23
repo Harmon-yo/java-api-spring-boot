@@ -28,7 +28,13 @@ public interface PedidoRepository extends JpaRepository<Pedido, Integer> {
     AulaGraficoInformacoesDashboardDto getDadosAulasPeriodoPorIdProfessor(int id, LocalDateTime comeco, LocalDateTime fim);
 
     @Query(value = "SELECT p from Pedido p where (p.professor.id = :fkUsuario or p.aluno.id = :fkUsuario) and (p.status.descricao = 'Confirmado' or p.status.descricao = 'Concluído')  and CAST(p.dataAula AS DATE ) = CAST(:data AS DATE)")
+    List<Pedido> findAllByUsuarioIdAndAulaDataConfirmado(int fkUsuario, LocalDateTime data);
+
+    @Query(value = "SELECT p from Pedido p where (p.professor.id = :fkUsuario or p.aluno.id = :fkUsuario) and CAST(p.dataAula AS DATE ) = CAST(:data AS DATE)")
     List<Pedido> findAllByUsuarioIdAndAulaData(int fkUsuario, LocalDateTime data);
+
+    @Query(value = "SELECT p from Pedido p where (p.professor.id = :fkUsuario or p.aluno.id = :fkUsuario) and CAST(p.dataAula AS DATE ) = CAST(:data AS DATE)")
+    Pedido findByUsuarioIdAndAulaData(int fkUsuario, LocalDateTime data);
 
     @Query(value = "SELECT p FROM Pedido p WHERE (p.professor.id = :usuarioId OR p.aluno.id = :usuarioId) AND p.status.descricao = 'Confirmado'")
     List<Pedido> buscarPorUsuarioIdConfirmado(Integer usuarioId);

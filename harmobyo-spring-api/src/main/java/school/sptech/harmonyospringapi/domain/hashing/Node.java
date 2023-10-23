@@ -4,7 +4,6 @@ import school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoDto;
 
 
 public class Node {
-
     private PedidoExibicaoDto pedidoExibicaoDto;
     private Node next;
 
