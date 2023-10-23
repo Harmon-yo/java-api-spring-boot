@@ -118,8 +118,8 @@ public class UsuarioService {
         return ltUsuarios.stream().map(UsuarioMapper::ofUsuarioExibicao).toList();
     }
 
-    public Integer quantidadeUsuarios() {
-        return this.usuarioRepository.obterQuantidadeUsuario();
+    public Integer quantidadeCadastradosUsuarios(LocalDateTime dataComeco, LocalDateTime dataFim) {
+        return this.usuarioRepository.obterQuantidadeUsuario(dataComeco, dataFim);
     }
 
     /* ================ PESQUISA ================ */
@@ -546,7 +546,6 @@ public class UsuarioService {
 
         return  true;
     }
-
-    }
+}
 
 

@@ -35,6 +35,7 @@ import school.sptech.harmonyospringapi.service.usuario.dto.UsuarioMapper;
 import school.sptech.harmonyospringapi.utils.FiltroAvancado.ProfessorSpecificationBuilder;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
@@ -477,5 +478,9 @@ public class ProfessorService {
         dataInicial = dataInicial.withHour(0).withMinute(0).withSecond(0);
 
         return dataInicial;
+    }
+
+    public Double getRendimentoTotalPeriodo(LocalDateTime dataInicial, LocalDateTime dataFinal) {
+        return this.professorRepository.getRendimentoTotalPeriodo(dataInicial, dataFinal).orElse(0d);
     }
 }

@@ -36,10 +36,12 @@ import java.io.BufferedReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Formatter;
-import java.util.FormatterClosedException;
-import java.util.List;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 @RestController
 @RequestMapping("/professores")
@@ -532,6 +534,13 @@ public class ProfessorController {
         }
     }
 
+    @GetMapping("/rendimento-total-periodo")
+    public ResponseEntity<Double> getRendimentoTotal(@RequestParam String dataComeco, @RequestParam String dataFim) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDateTime dataComecoFormatada = LocalDate.parse(dataComeco, formatter).atStartOfDay();
+        LocalDateTime dataFimFormatada = LocalDate.parse(dataFim, formatter).atTime(23, 59, 59);
 
+        return ResponseEntity.status(200).body(this.professorService.getRendimentoTotalPeriodo(dataComecoFormatada, dataFimFormatada));
 
+    }
 }

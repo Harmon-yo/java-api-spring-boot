@@ -19,7 +19,6 @@ import school.sptech.harmonyospringapi.service.usuario.ProfessorService;
 import school.sptech.harmonyospringapi.service.usuario.UsuarioService;
 import school.sptech.harmonyospringapi.utils.PilhaObj;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -408,5 +407,9 @@ public class PedidoService {
         LocalDateTime diaFinal = diaInicial.plusDays(6).withHour(23).withMinute(59).withSecond(59);
 
         return this.repository.obterQuantidadePedidosCanceladosDuranteDatas(diaInicial, diaFinal);
+    }
+
+    public Integer obterQuantidadePedidosTotalPeriodo(LocalDateTime dataComeco, LocalDateTime dataFim) {
+        return this.repository.obterQuantidadePedidosDuranteDatas(dataComeco, dataFim);
     }
 }

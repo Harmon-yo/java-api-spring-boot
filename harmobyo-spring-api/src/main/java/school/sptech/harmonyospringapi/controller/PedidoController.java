@@ -245,5 +245,14 @@ public class PedidoController {
     public ResponseEntity<Integer> obterQuantidadePedidosCanceladosTotalnaSemana(){
         return ResponseEntity.ok(this.pedidoService.obterQuantidadePedidosCanceladosTotalnaSemana());
     }
+
+    @GetMapping("/quantidade-total-periodo")
+    public ResponseEntity<Integer> obterQuantidadePedidosTotalPeriodo(@RequestParam String dataComeco, @RequestParam String dataFim){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDateTime dataComecoFormatada = LocalDate.parse(dataComeco, formatter).atStartOfDay();
+        LocalDateTime dataFimFormatada = LocalDate.parse(dataFim, formatter).atTime(23, 59, 59);
+
+        return ResponseEntity.ok(this.pedidoService.obterQuantidadePedidosTotalPeriodo(dataComecoFormatada, dataFimFormatada));
+    }
 }
 

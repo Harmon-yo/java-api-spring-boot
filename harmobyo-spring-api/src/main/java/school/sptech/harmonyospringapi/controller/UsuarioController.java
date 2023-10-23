@@ -33,10 +33,11 @@ import school.sptech.harmonyospringapi.service.usuario.dto.professor.ProfessorEx
 
 import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
-import java.util.Scanner;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -175,9 +176,13 @@ public class UsuarioController {
         return ResponseEntity.status(200).build();
     }
 
-    @GetMapping("/quantidade")
-    public ResponseEntity<Integer> quantidadeUsuarios(){
-        return ResponseEntity.ok(this.usuarioService.quantidadeUsuarios());
+    @GetMapping("/quantidade-cadastrados-periodo")
+    public ResponseEntity<Integer> quantidadeCadastradosUsuarios(@RequestParam String dataComeco, @RequestParam String dataFim){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDateTime dataComecoFormatada = LocalDate.parse(dataComeco, formatter).atStartOfDay();
+        LocalDateTime dataFimFormatada = LocalDate.parse(dataFim, formatter).atTime(23, 59, 59);
+
+        return ResponseEntity.ok(this.usuarioService.quantidadeCadastradosUsuarios(dataComecoFormatada, dataFimFormatada));
     }
 
     @GetMapping("/quantidade-cadastrados-semana")
@@ -387,7 +392,4 @@ public class UsuarioController {
 
         return new ResponseEntity<>(txtBytes, headers, HttpStatus.OK);
     }
-
-
-
 }

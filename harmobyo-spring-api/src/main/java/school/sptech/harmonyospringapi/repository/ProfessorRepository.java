@@ -9,7 +9,9 @@ import school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoDashboar
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoHistoricoDto;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidosMes;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -93,4 +95,8 @@ public interface ProfessorRepository extends JpaRepository<Professor, Integer>, 
 
     @Query("SELECT COUNT(p) FROM Professor p WHERE p.dataCriacao BETWEEN :dataInicial AND :dataFinal")
     Integer obterQuantidadeCadastradosEntre(LocalDateTime dataInicial, LocalDateTime dataFinal);
+
+    @Query("SELECT SUM(a.valorAula) FROM Aula a INNER JOIN Pedido p ON p.aula.id = a.id WHERE p.dataAula BETWEEN :dataComeco AND :dataFim AND p.status.descricao = 'Concluído'")
+    Optional<Double> getRendimentoTotalPeriodo(LocalDateTime dataComeco, LocalDateTime dataFim);
 }
+

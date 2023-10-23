@@ -6,7 +6,6 @@ import school.sptech.harmonyospringapi.domain.Pedido;
 import school.sptech.harmonyospringapi.service.aula.dto.AulaGraficoInformacoesDashboardDto;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoDto;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -36,6 +35,9 @@ public interface PedidoRepository extends JpaRepository<Pedido, Integer> {
 
     @Query(value = "SELECT p from Pedido p where (p.professor.id = :fkUsuario or p.aluno.id = :fkUsuario) and (p.status.descricao = 'Confirmado' or p.status.descricao = 'Concluído') and  MONTH(CAST(p.dataAula as DATE)) = MONTH(CAST(:localDateTime AS DATE))")
     List<Pedido> findAllByUsuarioIdAndAulaDataMes(int fkUsuario, LocalDateTime localDateTime);
+
+    @Query("SELECT COUNT(p) FROM Pedido p WHERE p.dataAula BETWEEN :dataComeco AND :dataFim")
+    Integer obterQuantidadePedidosDuranteDatas(LocalDateTime dataComeco, LocalDateTime dataFim);
 
     @Query("SELECT COUNT(p) FROM Pedido p WHERE p.status.descricao = 'Concluído' AND p.dataAula BETWEEN :diaInicio AND :diaFim")
     Integer obterQuantidadePedidosRealizadosDuranteDatas(LocalDateTime diaInicio, LocalDateTime diaFim);
