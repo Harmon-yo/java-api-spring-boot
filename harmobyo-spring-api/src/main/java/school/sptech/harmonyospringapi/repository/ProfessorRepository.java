@@ -83,14 +83,14 @@ public interface ProfessorRepository extends JpaRepository<Professor, Integer>, 
     List<PedidosMes> getAulasAgrupadasPorMes(int id, LocalDateTime comeco, LocalDateTime fim);
 
     @Query("SELECT new school.sptech.harmonyospringapi.service.pedido.dto.PedidosMes(" +
-            "FUNCTION('MONTHNAME', p.dataAula), " +
+            "CONCAT(FUNCTION('MONTHNAME', p.dataAula), '/', FUNCTION('YEAR', p.dataAula)), " +
             "SUM(CASE WHEN p.status.descricao = 'Cancelado' THEN 1 ELSE 0 END), " +
             "SUM(CASE WHEN p.status.descricao = 'Recusado' THEN 1 ELSE 0 END), " +
             "SUM(CASE WHEN p.status.descricao = 'Concluído' THEN 1 ELSE 0 END)) " +
             "FROM Pedido p " +
             "WHERE p.professor.id = :id AND p.status.descricao IN ('Cancelado', 'Recusado', 'Concluído') " +
-            "GROUP BY FUNCTION('MONTHNAME', p.dataAula), MONTH(p.dataAula)"+
-            "ORDER BY FUNCTION('MONTH', p.dataAula)")
+            "GROUP BY CONCAT(FUNCTION('MONTHNAME', p.dataAula), '/', FUNCTION('YEAR', p.dataAula)), FUNCTION('YEAR', p.dataAula), MONTH(p.dataAula)"+
+            "ORDER BY FUNCTION('YEAR', p.dataAula), FUNCTION('MONTH', p.dataAula)")
     List<PedidosMes> getAulasAgrupadasPorMes(int id);
 
     @Query("SELECT COUNT(p) FROM Professor p WHERE p.dataCriacao BETWEEN :dataInicial AND :dataFinal")

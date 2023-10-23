@@ -442,7 +442,19 @@ public class ProfessorController {
 
         return ResponseEntity.ok(mesesAulas);
     }
+    @Operation(summary = "Devolve dados sobre mês e quantidade de aulas por status", description = "")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Dados encontrados : "),
+            @ApiResponse(responseCode = "204", description = "Dados não encontrados. ")
+    })
+    @GetMapping("/dashboard/dados-aulas-total/{id}")
+    public ResponseEntity<List<PedidosMes>> dadosAulasTotal(@PathVariable int id) {
+        List<PedidosMes> mesesAulas = this.professorService.dadosAulasTotal(id);
 
+        if (mesesAulas.isEmpty()) return ResponseEntity.noContent().build();
+
+        return ResponseEntity.ok(mesesAulas);
+    }
     @GetMapping("/quantidade-cadastrados-semana")
     public ResponseEntity<List<Integer>> obterQuantidadeCadastrados(){
         return ResponseEntity.status(200).body(this.professorService.obterQuantidadeCadastradosSemana());

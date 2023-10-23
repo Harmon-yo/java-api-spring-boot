@@ -420,6 +420,8 @@ public class ProfessorService {
     }
 
 
+
+
     public Long getMediaTempoRespostaTotal(int id) {
 
         LocalDateTime now = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
