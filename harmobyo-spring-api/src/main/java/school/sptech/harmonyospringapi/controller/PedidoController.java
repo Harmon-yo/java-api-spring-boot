@@ -20,6 +20,7 @@ import school.sptech.harmonyospringapi.service.pedido.fila.FilaEsperaService;
 import school.sptech.harmonyospringapi.service.pedido.hashing.HashTableService;
 import school.sptech.harmonyospringapi.utils.PilhaObj;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -151,6 +152,7 @@ public class PedidoController {
         List<PedidoExibicaoDto> pedidoExibicaoDto = this.pedidoService.buscarPorUsuarioId(id);
 
         if(pedidoExibicaoDto.isEmpty()) return ResponseEntity.noContent().build();
+        if(this.filaService.isEmpty()) this.filaService.adicionarBanco();
         return ResponseEntity.ok(pedidoExibicaoDto);
     }
 
@@ -242,9 +244,9 @@ public class PedidoController {
         return ResponseEntity.ok(this.filaService.removerPrimeiroPedidoFilaEspera(pedidoExibicaoDto));
     }
 
-    @GetMapping("/fila-espera/posicao")
-    public ResponseEntity<Integer> posicaoNaFila(@RequestBody PedidoExibicaoDto pedidoExibicaoDto){
-        return ResponseEntity.ok(this.filaService.pegarPosicaoNaFila(pedidoExibicaoDto));
+    @GetMapping("/fila-espera/posicao/{id}")
+    public ResponseEntity<Integer> posicaoNaFila(@PathVariable int id){
+        return ResponseEntity.ok(this.filaService.pegarPosicaoNaFila(id));
     }
 
     @GetMapping("/fila-espera/{id}")

@@ -26,6 +26,13 @@ public class FilaEsperaService {
 
     //pesquisa o pedido pai e já cria uma fila pronta para inserir o pedido
     public FilaEspera criarFila(PedidoExibicaoDto pai){
+        List<FilaEspera> filas = this.listaFilas.getFilas();
+        for(FilaEspera fila : filas){
+            if (fila.getPai().getId() == pai.getId()){
+                return fila;
+            }
+        }
+
         FilaEspera novaFila = new FilaEspera(pai);
         this.listaFilas.novaFila(novaFila);
         return novaFila;
@@ -56,7 +63,6 @@ public class FilaEsperaService {
             this.pedidoService.atualizarStatus(
                     this.pedidoService.buscarPorId(pedidoExibicaoDto.getId()), "Em Fila");
             // insere o pedido na fila
-            System.out.println("Inserindo pedido " + pedidoExibicaoDto.getId() + " na fila");
             filaEspera.insert(pedidoExibicaoDto);
             // retorna o pedido inserido
             return filaEspera.peek();
@@ -64,15 +70,14 @@ public class FilaEsperaService {
         // caso exista a fila, só insere o pedido na fila
         else {
             // busca a fila
-            NodeObj<FilaEspera> filaEspera = this.listaFilas.buscaFila(pai);
+            FilaEspera filaEspera = this.listaFilas.buscaFila(pai.getId());
             // atualiza o status do pedido inserido
             this.pedidoService.atualizarStatus(
                     this.pedidoService.buscarPorId(pedidoExibicaoDto.getId()), "Em Fila");
             // insere o pedido na fila
-            System.out.println("Inserindo pedido " + pedidoExibicaoDto.getId() + " na fila");
-            filaEspera.getInfo().insert(pedidoExibicaoDto);
+            filaEspera.insert(pedidoExibicaoDto);
             // retorna o pedido inserido
-            return filaEspera.getInfo().peek();
+            return filaEspera.peek();
         }
     }
 
@@ -81,23 +86,25 @@ public class FilaEsperaService {
         if (pai == null){
             return null;
         } else {
-            NodeObj<FilaEspera> filaEspera = this.listaFilas.buscaFila(pai);
+            FilaEspera filaEspera = this.listaFilas.buscaFila(pai.getId());
 
             this.pedidoService.atualizarStatus(
                     this.pedidoService.buscarPorId(pedidoExibicaoDto.getId()), "Pendente");
 
-            return filaEspera.getInfo().poll();
+            return filaEspera.poll();
         }
     }
 
-    public int pegarPosicaoNaFila(PedidoExibicaoDto pedidoExibicaoDto){
+    public int pegarPosicaoNaFila(int id){
+        PedidoExibicaoDto pedidoExibicaoDto = this.pedidoService.buscarPorIdParaExibicao(id);
         PedidoExibicaoDto pai = this.listaFilas.buscarPai(pedidoExibicaoDto.getId());
+        List<FilaEspera> filas = this.listaFilas.getFilas();
         if (pai == null){
             return 0;
         } else {
-            NodeObj<FilaEspera> filaEspera = this.listaFilas.buscaFila(pai);
+            FilaEspera filaEspera = this.listaFilas.buscaFila(pai.getId());
 
-            return filaEspera.getInfo().posicaoNaFila(pedidoExibicaoDto);
+            return filaEspera.posicaoNaFila(pedidoExibicaoDto);
         }
     }
 
@@ -110,10 +117,8 @@ public class FilaEsperaService {
         if (pai == null){
             return null;
         } else {
-            NodeObj<FilaEspera> filaEspera = this.listaFilas.buscaFila(pai);
-            System.out.println("Listando fila do pedido " + filaEspera.getInfo().getPai().getId());
-            System.out.println("Fila: " + filaEspera.getInfo());
-            return filaEspera.getInfo().getPedidos();
+            FilaEspera filaEspera = this.listaFilas.buscaFila(pai.getId());
+            return filaEspera.getPedidos();
         }
     }
 
@@ -131,14 +136,16 @@ public class FilaEsperaService {
 
         for (PedidoExibicaoDto pedidoExibicaoDto : listaPedidos){
             if (pedidoExibicaoDto.getStatus().getDescricao().equals("Em Fila")){
-                System.out.println("Adicionando pedido " + pedidoExibicaoDto.getId() + " na fila");
                 PedidoExibicaoDto pai = this.listaFilas.buscarPai(pedidoExibicaoDto.getId());
                 if (pai == null){
-                    FilaEspera filaEspera = criarFila(this.pedidoService.buscarPorIdParaExibicao(pai.getId()));
+                    List<PedidoExibicaoDto> pedidosDatasIguais = this.pedidoService.buscarAulasPorIdUsuarioEDataAula(
+                            pedidoExibicaoDto.getAluno().getId(), pedidoExibicaoDto.getDataAula());
+                    pai = pedidosDatasIguais.get(pedidosDatasIguais.size()-1);
+                    FilaEspera filaEspera = criarFila(pai);
                     filaEspera.insert(pedidoExibicaoDto);
                 } else {
-                    NodeObj<FilaEspera> filaEspera = this.listaFilas.buscaFila(pai);
-                    filaEspera.getInfo().insert(pedidoExibicaoDto);
+                    FilaEspera filaEspera = this.listaFilas.buscaFila(pai.getId());
+                    filaEspera.insert(pedidoExibicaoDto);
                 }
             }
         }

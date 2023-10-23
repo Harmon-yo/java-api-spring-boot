@@ -20,13 +20,11 @@ public class ListaFilas {
         this.head.setNext(novo);
     }
 
-    public NodeObj<FilaEspera> buscaFila(PedidoExibicaoDto pai){
-        NodeObj<FilaEspera> atual = this.head.getNext();
-        while (atual != null){
-            if (atual.getInfo().getPai() == pai){
-                return atual;
-            } else {
-                atual = atual.getNext();
+    public FilaEspera buscaFila(int idPai){
+        List<FilaEspera> filas = this.getFilas();
+        for (FilaEspera fila : filas){
+            if (fila.getPai().getId() == idPai){
+                return fila;
             }
         }
         return null;
@@ -48,12 +46,13 @@ public class ListaFilas {
     }
 
     public PedidoExibicaoDto buscarPai(int idPedido){
-        NodeObj<FilaEspera> atual = this.head.getNext();
-        while (atual != null){
-            if (atual.getInfo().getPai().getId() == idPedido){
-                return atual.getInfo().getPai();
-            } else {
-                atual = atual.getNext();
+        List<FilaEspera> filas = this.getFilas();
+        for (FilaEspera fila : filas){
+            List<PedidoExibicaoDto> pedidos = fila.getPedidos();
+            for (PedidoExibicaoDto pedido : pedidos){
+                if (pedido.getId() == idPedido){
+                    return fila.getPai();
+                }
             }
         }
         return null;

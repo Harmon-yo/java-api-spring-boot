@@ -10,12 +10,12 @@ import java.util.List;
 public class FilaEspera {
     private NodeObj<PedidoExibicaoDto> inicio;
     private NodeObj<PedidoExibicaoDto> fim;
-    private NodeObj<PedidoExibicaoDto> pai;
+    private PedidoExibicaoDto pai;
 
     public FilaEspera(PedidoExibicaoDto pai) {
         this.inicio = null;
         this.fim = new NodeObj<>(null);
-        this.pai = new NodeObj<PedidoExibicaoDto>(pai);
+        this.pai = pai;
     }
 
     public boolean isEmpty() {
@@ -24,12 +24,16 @@ public class FilaEspera {
 
     public void insert(PedidoExibicaoDto info) {
         NodeObj<PedidoExibicaoDto> novo = new NodeObj<>(info);
-        novo.setNext(this.fim.getNext());
-        this.fim.setNext(novo);
         if (isEmpty()) {
             this.inicio = novo;
             this.inicio.setNext(this.fim);
-            System.out.println("inicio: " + this.inicio.getInfo());
+        } else {
+            NodeObj<PedidoExibicaoDto> atual = this.inicio;
+            while (atual.getNext() != this.fim) {
+                atual = atual.getNext();
+            }
+            atual.setNext(novo);
+            novo.setNext(this.fim);
         }
     }
 
@@ -46,23 +50,22 @@ public class FilaEspera {
     public int posicaoNaFila(PedidoExibicaoDto info){
         int posicao = 1;
         if (!isEmpty()) {
-            NodeObj<PedidoExibicaoDto> atual = this.inicio;
-            while (atual != this.fim) {
-                if (atual.getInfo() == info) {
+            List<PedidoExibicaoDto> pedidos = this.getPedidos();
+            for (PedidoExibicaoDto pedido : pedidos){
+                if (pedido.getId() == info.getId()){
                     return posicao;
                 }
-                atual = atual.getNext();
                 posicao++;
             }
         }
-        return 0;
+        return posicao;
     }
 
     public PedidoExibicaoDto getPai() {
-        return this.pai.getInfo();
+        return this.pai;
     }
     public void setPai(PedidoExibicaoDto pai) {
-        this.pai.setInfo(pai);
+        this.pai = pai;
     }
 
     public PedidoExibicaoDto peek() {
@@ -71,7 +74,7 @@ public class FilaEspera {
 
     public PedidoExibicaoDto poll() {
         if (!isEmpty()) {
-            this.pai = this.inicio;
+            this.pai = this.inicio.getInfo();
             PedidoExibicaoDto aux = this.inicio.getInfo();
             this.inicio = this.inicio.getNext();
             return aux;
