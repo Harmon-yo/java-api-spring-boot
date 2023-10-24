@@ -6,6 +6,7 @@ import school.sptech.harmonyospringapi.domain.fila.FilaEspera;
 import school.sptech.harmonyospringapi.domain.fila.ListaFilas;
 import school.sptech.harmonyospringapi.service.pedido.PedidoService;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoDto;
+import school.sptech.harmonyospringapi.service.pedido.hashing.HashTableService;
 import school.sptech.harmonyospringapi.utils.NodeObj;
 
 import java.time.LocalDateTime;
@@ -17,6 +18,8 @@ public class FilaEsperaService {
 
     @Autowired
     private PedidoService pedidoService;
+    @Autowired
+    private HashTableService hashTableService;
 
     private ListaFilas listaFilas;
 
@@ -62,6 +65,8 @@ public class FilaEsperaService {
             // atualiza o status do pedido inserido
             this.pedidoService.atualizarStatus(
                     this.pedidoService.buscarPorId(pedidoExibicaoDto.getId()), "Em Fila");
+            this.hashTableService.atualizarStatusPedidoPorId(
+                    pedidoExibicaoDto.getId(), this.pedidoService.buscarPorId(pedidoExibicaoDto.getId()),"Em Fila");
             // insere o pedido na fila
             filaEspera.insert(pedidoExibicaoDto);
             // retorna o pedido inserido
@@ -74,6 +79,8 @@ public class FilaEsperaService {
             // atualiza o status do pedido inserido
             this.pedidoService.atualizarStatus(
                     this.pedidoService.buscarPorId(pedidoExibicaoDto.getId()), "Em Fila");
+            this.hashTableService.atualizarStatusPedidoPorId(
+                    pedidoExibicaoDto.getId(), this.pedidoService.buscarPorId(pedidoExibicaoDto.getId()),"Em Fila");
             // insere o pedido na fila
             filaEspera.insert(pedidoExibicaoDto);
             // retorna o pedido inserido
@@ -81,15 +88,17 @@ public class FilaEsperaService {
         }
     }
 
-    public PedidoExibicaoDto removerPrimeiroPedidoFilaEspera(PedidoExibicaoDto pedidoExibicaoDto){
-        PedidoExibicaoDto pai = this.listaFilas.buscarPai(pedidoExibicaoDto.getId());
+    public PedidoExibicaoDto removerPrimeiroPedidoFilaEspera(int id){
+        PedidoExibicaoDto pai = this.listaFilas.buscarPai(id);
         if (pai == null){
             return null;
         } else {
             FilaEspera filaEspera = this.listaFilas.buscaFila(pai.getId());
 
             this.pedidoService.atualizarStatus(
-                    this.pedidoService.buscarPorId(pedidoExibicaoDto.getId()), "Pendente");
+                    this.pedidoService.buscarPorId(id), "Pendente");
+            this.hashTableService.atualizarStatusPedidoPorId(
+                    id, this.pedidoService.buscarPorId(id),"Pendente");
 
             return filaEspera.poll();
         }

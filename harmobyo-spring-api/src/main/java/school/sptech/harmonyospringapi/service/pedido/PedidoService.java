@@ -12,6 +12,7 @@ import school.sptech.harmonyospringapi.service.pedido.dto.PedidoAlteracaoStatus;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoCriacaoDto;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoDto;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoMapper;
+import school.sptech.harmonyospringapi.service.pedido.fila.FilaEsperaService;
 import school.sptech.harmonyospringapi.service.pedido.hashing.HashTableService;
 import school.sptech.harmonyospringapi.service.status.StatusService;
 import school.sptech.harmonyospringapi.service.usuario.AlunoService;
@@ -47,6 +48,8 @@ public class PedidoService {
 
     @Autowired
     private HashTableService hashTableService;
+    @Autowired
+    private FilaEsperaService filaEsperaService;
 
     @Autowired
     private NotificacaoService notificacaoService;
@@ -163,6 +166,10 @@ public class PedidoService {
         }
 
         this.hashTableService.atualizarStatusPedidoPorId(idPedido, pedido, "Recusado");
+        PedidoExibicaoDto pai = this.filaEsperaService.buscarPai(idPedido);
+        if (pai != null){
+            this.filaEsperaService.removerPrimeiroPedidoFilaEspera(idPedido);
+        }
         pedido = atualizarStatus(pedido, "Recusado");
 
         notificarAluno("O professor recusou sua proposta de aula no dia %s às %s", pedido);
@@ -184,6 +191,10 @@ public class PedidoService {
         }
 
         this.hashTableService.atualizarStatusPedidoPorId(idPedido, pedido, "Cancelado");
+        PedidoExibicaoDto pai = this.filaEsperaService.buscarPai(idPedido);
+        if (pai != null){
+            this.filaEsperaService.removerPrimeiroPedidoFilaEspera(idPedido);
+        }
         pedido = atualizarStatus(pedido, "Cancelado");
 
         Usuario usuario = usuarioService.buscarPorId(idUsuario);
