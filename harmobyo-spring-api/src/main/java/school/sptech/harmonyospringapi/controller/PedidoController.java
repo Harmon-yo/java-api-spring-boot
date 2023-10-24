@@ -254,6 +254,12 @@ public class PedidoController {
         return ResponseEntity.ok(this.filaService.listarFilaDeEspera(id));
     }
 
+    @GetMapping("/fila-espera/pai/{id}")
+    public ResponseEntity<PedidoExibicaoDto> buscarPaiPorPedidoId(@PathVariable int id){
+        System.out.println("AAAAAAAAAAA" + this.filaService.buscarPai(id));
+        return ResponseEntity.ok(this.filaService.buscarPai(id));
+    }
+
     @GetMapping("/fila-espera")
     public ResponseEntity<List<FilaEspera>> listarFilasEspera(){
         return ResponseEntity.ok(this.filaService.listarFilas());
