@@ -1,6 +1,7 @@
 package school.sptech.harmonyospringapi.service.pedido.fila;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import school.sptech.harmonyospringapi.domain.fila.FilaEspera;
 import school.sptech.harmonyospringapi.domain.fila.ListaFilas;
@@ -16,6 +17,7 @@ import java.util.List;
 @Service
 public class FilaEsperaService {
 
+    @Lazy
     @Autowired
     private PedidoService pedidoService;
     @Autowired

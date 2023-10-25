@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import school.sptech.harmonyospringapi.domain.Pedido;
@@ -34,6 +35,8 @@ public class PedidoController {
     private PedidoService pedidoService;
     @Autowired
     private HashTableService hashTableService;
+
+    @Lazy
     @Autowired
     private FilaEsperaService filaService;
 
