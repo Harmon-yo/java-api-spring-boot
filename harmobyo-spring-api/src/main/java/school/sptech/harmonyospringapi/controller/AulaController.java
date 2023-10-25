@@ -148,9 +148,19 @@ public class AulaController {
         return ResponseEntity.ok(this.aulaService.obterQuantidadeAulasCadastradas());
     }
 
+    @GetMapping("/quantidade-mes")
+    public ResponseEntity<Integer> obterQuantidadeAulasCadastradasNesseMes() {
+        return ResponseEntity.ok(this.aulaService.obterQuantidadeAulasCadastradasNesseMes());
+    }
+
     @GetMapping("quantidade-por-aluno")
     public ResponseEntity<Double> quantidadeUsuariosPorAluno() {
         return ResponseEntity.ok(this.aulaService.quantidadeUsuariosPorAluno());
+    }
+
+    @GetMapping("quantidade-por-aluno-mes")
+    public ResponseEntity<Double> quantidadeUsuariosPorAlunoNesseMes() {
+        return ResponseEntity.ok(this.aulaService.quantidadeUsuariosPorAlunoNesseMes());
     }
 
 

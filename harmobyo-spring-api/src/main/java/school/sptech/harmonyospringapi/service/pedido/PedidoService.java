@@ -19,6 +19,7 @@ import school.sptech.harmonyospringapi.service.usuario.ProfessorService;
 import school.sptech.harmonyospringapi.service.usuario.UsuarioService;
 import school.sptech.harmonyospringapi.utils.PilhaObj;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -321,7 +322,7 @@ public class PedidoService {
         LocalDateTime diaFinal = diaInicial.withHour(23).withMinute(59).withSecond(59);
         for (int i = 0; i < 7; i++) {
 
-            valoresDaSemana.add(this.repository.obterQuantidadePedidosRealizadosDuranteDatas(diaInicial, diaFinal));
+            valoresDaSemana.add(this.repository.obterQuantidadePedidosRealizadosDuranteDatas(diaInicial, diaFinal).orElse(0));
             c.add(Calendar.DATE, 1);
             diaInicial = c.getTime().toInstant().atZone(c.getTimeZone().toZoneId()).toLocalDateTime();
             diaInicial = diaInicial.withHour(0).withMinute(0).withSecond(0);
@@ -399,7 +400,7 @@ public class PedidoService {
 
         LocalDateTime diaFinal = diaInicial.plusDays(6).withHour(23).withMinute(59).withSecond(59);
 
-        return this.repository.obterQuantidadePedidosRealizadosDuranteDatas(diaInicial, diaFinal);
+        return this.repository.obterQuantidadePedidosRealizadosDuranteDatas(diaInicial, diaFinal).orElse(0);
     }
 
     public Integer obterQuantidadePedidosPendentesTotalnaSemana() {
@@ -432,5 +433,33 @@ public class PedidoService {
 
     public Integer obterQuantidadePedidosTotalPeriodo(LocalDateTime dataComeco, LocalDateTime dataFim) {
         return this.repository.obterQuantidadePedidosDuranteDatas(dataComeco, dataFim);
+    }
+
+    public List<Double> obterRendimentoMesPorDia() {
+        LocalDateTime dataComeco = LocalDateTime.now().withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0);
+        LocalDateTime dataFim = LocalDateTime.now().withDayOfMonth(LocalDate.now().lengthOfMonth()).withHour(23).withMinute(59).withSecond(59);
+
+        List<Double> valoresDoMes = new ArrayList<>();
+
+        while (dataComeco.isBefore(dataFim)) {
+            valoresDoMes.add(this.repository.obterRendimentoPeriodo(dataComeco, dataComeco.withHour(23).withMinute(59).withSecond(59)).orElse(0d));
+            dataComeco = dataComeco.plusDays(1);
+        }
+
+        return valoresDoMes;
+    }
+
+    public List<Integer> obterQuantidadePedidoMesPorDia() {
+        LocalDateTime dataComeco = LocalDateTime.now().withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0);
+        LocalDateTime dataFim = LocalDateTime.now().withDayOfMonth(LocalDate.now().lengthOfMonth()).withHour(23).withMinute(59).withSecond(59);
+
+        List<Integer> valoresDoMes = new ArrayList<>();
+
+        while (dataComeco.isBefore(dataFim)) {
+            valoresDoMes.add(this.repository.obterQuantidadePedidosRealizadosDuranteDatas(dataComeco, dataComeco.withHour(23).withMinute(59).withSecond(59)).orElse(0));
+            dataComeco = dataComeco.plusDays(1);
+        }
+
+        return valoresDoMes;
     }
 }

@@ -8,6 +8,7 @@ import school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface PedidoRepository extends JpaRepository<Pedido, Integer> {
     @Query("SELECT p FROM Pedido p WHERE p.aluno.id = :usuarioId OR p.professor.id = :usuarioId")
@@ -46,7 +47,7 @@ public interface PedidoRepository extends JpaRepository<Pedido, Integer> {
     Integer obterQuantidadePedidosDuranteDatas(LocalDateTime dataComeco, LocalDateTime dataFim);
 
     @Query("SELECT COUNT(p) FROM Pedido p WHERE p.status.descricao = 'Concluído' AND p.dataAula BETWEEN :diaInicio AND :diaFim")
-    Integer obterQuantidadePedidosRealizadosDuranteDatas(LocalDateTime diaInicio, LocalDateTime diaFim);
+    Optional<Integer> obterQuantidadePedidosRealizadosDuranteDatas(LocalDateTime diaInicio, LocalDateTime diaFim);
 
     @Query("SELECT COUNT(p) FROM Pedido p WHERE (p.status.descricao = 'Confirmado') AND p.dataAula BETWEEN :diaInicio AND :diaFim")
     Integer obterQuantidadePedidosPendentesDuranteDatas(LocalDateTime diaInicio, LocalDateTime diaFim);
@@ -54,5 +55,11 @@ public interface PedidoRepository extends JpaRepository<Pedido, Integer> {
     @Query("SELECT COUNT(p) FROM Pedido p WHERE p.status.descricao = 'Cancelado' AND p.dataAula BETWEEN :diaInicio AND :diaFim")
     Integer obterQuantidadePedidosCanceladosDuranteDatas(LocalDateTime diaInicio, LocalDateTime diaFim);
 
+
+    @Query("""
+        SELECT SUM(p.valorAula) FROM Pedido p
+        WHERE p.status.descricao = 'Concluído' AND p.dataAula BETWEEN :dataComeco AND :dataFim
+""")
+    Optional<Double> obterRendimentoPeriodo(LocalDateTime dataComeco, LocalDateTime dataFim);
 
 }

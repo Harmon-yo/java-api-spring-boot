@@ -30,4 +30,10 @@ public interface AulaRepository extends JpaRepository<Aula, Integer> {
     Optional<Double> obterValorMaximoAula(int idProfessor);
 
 
+    @Query("""
+        SELECT COUNT(*) FROM Aula a
+        JOIN Pedido p ON a.id = p.aula.id
+        WHERE p.dataAula BETWEEN :dataInicial AND :dataFinal AND p.status.descricao = "Concluído"
+""")
+    Integer countByDataAulaBetween(LocalDateTime dataInicial, LocalDateTime dataFinal);
 }

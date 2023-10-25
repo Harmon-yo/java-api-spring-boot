@@ -200,6 +200,11 @@ public class UsuarioController {
         return ResponseEntity.status(200).body(this.usuarioService.obterUsuariosCadastradosMes());
     }
 
+    @GetMapping("/quantidade-cadastrados-mes-soma")
+    public ResponseEntity<Integer> obterQuantidadeUsuariosCadastradosMesSoma(){
+        return ResponseEntity.status(200).body(this.usuarioService.obterUsuariosCadastradosMes().stream().mapToInt(Integer::intValue).sum());
+    }
+
     @GetMapping("/quantidade-cadastrados-mes-anterior")
     public ResponseEntity<List<Integer>> obterQuantidadeUsuariosCadastradosMesAnterior(){
         return ResponseEntity.status(200).body(this.usuarioService.obterUsuariosCadastradosMesAnterior());

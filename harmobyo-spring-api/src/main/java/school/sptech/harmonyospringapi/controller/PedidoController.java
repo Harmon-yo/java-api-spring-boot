@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -305,5 +306,16 @@ public class PedidoController {
 
         return ResponseEntity.ok(this.pedidoService.obterQuantidadePedidosTotalPeriodo(dataComecoFormatada, dataFimFormatada));
     }
+
+    @GetMapping("rendimento-mes-por-dia")
+    public ResponseEntity<List<Double>> obterRendimentoMesPorDia() {
+        return ResponseEntity.ok(this.pedidoService.obterRendimentoMesPorDia());
+    }
+
+    @GetMapping("quantidade-mes-por-dia")
+    public ResponseEntity<List<Integer>> obterQuantidadePedidoMesPorDia() {
+        return ResponseEntity.ok(this.pedidoService.obterQuantidadePedidoMesPorDia());
+    }
+
 }
 

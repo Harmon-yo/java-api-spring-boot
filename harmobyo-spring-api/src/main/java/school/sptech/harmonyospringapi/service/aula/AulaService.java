@@ -48,8 +48,16 @@ public class AulaService {
         return Math.toIntExact(this.aulaRepository.count());
     }
 
+    public Integer obterQuantidadeAulasCadastradasNesseMes() {
+        return Math.toIntExact(this.aulaRepository.countByDataAulaBetween(LocalDate.now().withDayOfMonth(1).atStartOfDay(), LocalDate.now().withDayOfMonth(LocalDate.now().lengthOfMonth()).atTime(23, 59, 59)));
+    }
+
     public Double quantidadeUsuariosPorAluno() {
         return Double.parseDouble(new DecimalFormat("#.##").format(((double) this.aulaRepository.count()) / this.alunoService.obterQuantidadeAlunos()).replace(',', '.'));
+    }
+
+    public Double quantidadeUsuariosPorAlunoNesseMes() {
+        return Double.parseDouble(new DecimalFormat("#.##").format(((double) this.aulaRepository.countByDataAulaBetween(LocalDate.now().withDayOfMonth(1).atStartOfDay(), LocalDate.now().withDayOfMonth(LocalDate.now().lengthOfMonth()).atTime(23, 59, 59))) / this.alunoService.obterQuantidadeAlunos()).replace(',', '.'));
     }
 
     public AulaExibicaoDto cadastrarAula(AulaCriacaoDto aulaCriacaoDto) {
