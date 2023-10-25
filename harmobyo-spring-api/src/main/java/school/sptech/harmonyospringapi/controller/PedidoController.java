@@ -225,7 +225,6 @@ public class PedidoController {
     @GetMapping("/usuario/hashing/{id}")
     public ResponseEntity<List<PedidoExibicaoDto>> buscarPedidosPorUsuarioIdEStatusHashing(@PathVariable Integer id, @RequestParam String status){
         if (this.hashTableService.isEmpty()) this.hashTableService.adicionarBanco();
-        // if (this.filaService.isEmpty()) this.filaService.adicionarBanco();
 
         List<PedidoExibicaoDto> pedidoExibicaoDto = this.hashTableService.buscarPedidosPorIdEStatus(id, status);
 
@@ -240,9 +239,9 @@ public class PedidoController {
         return ResponseEntity.ok(this.filaService.adicionarPedidoFilaEspera(id, data));
     }
 
-    @PutMapping("/fila-espera")
-    public ResponseEntity<PedidoExibicaoDto> removerPrimeiroPedidoFilaEspera(@RequestBody PedidoExibicaoDto pedidoExibicaoDto){
-        return ResponseEntity.ok(this.filaService.removerPrimeiroPedidoFilaEspera(pedidoExibicaoDto));
+    @PutMapping("/fila-espera/{id}")
+    public ResponseEntity<PedidoExibicaoDto> removerPrimeiroPedidoFilaEspera(@PathVariable int id){
+        return ResponseEntity.ok(this.filaService.removerPrimeiroPedidoFilaEspera(id));
     }
 
     @GetMapping("/fila-espera/posicao/{id}")
@@ -257,7 +256,6 @@ public class PedidoController {
 
     @GetMapping("/fila-espera/pai/{id}")
     public ResponseEntity<PedidoExibicaoDto> buscarPaiPorPedidoId(@PathVariable int id){
-        System.out.println("AAAAAAAAAAA" + this.filaService.buscarPai(id));
         return ResponseEntity.ok(this.filaService.buscarPai(id));
     }
 
