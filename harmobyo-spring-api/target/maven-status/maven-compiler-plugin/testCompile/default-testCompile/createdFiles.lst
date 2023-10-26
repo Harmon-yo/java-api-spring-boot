@@ -1,0 +1,17 @@
+school\sptech\harmonyospringapi\service\usuario\ProfessorBuilder.class
+school\sptech\harmonyospringapi\service\endereco\EnderecoBuilder.class
+school\sptech\harmonyospringapi\service\usuario\UsuarioServiceTest.class
+school\sptech\harmonyospringapi\service\fila_de_espera\AlunoFilaDeEsperaServiceTest.class
+school\sptech\harmonyospringapi\service\status\StatusBuilder.class
+school\sptech\harmonyospringapi\service\usuario\AlunoBuilder.class
+school\sptech\harmonyospringapi\service\instrumento\InstrumentoBuilder.class
+school\sptech\harmonyospringapi\service\aula\AulaServiceTest.class
+school\sptech\harmonyospringapi\service\naipe\NaipeServiceTest.class
+school\sptech\harmonyospringapi\service\aula\AulaBuilder.class
+school\sptech\harmonyospringapi\service\endereco\EnderecoServiceTest.class
+school\sptech\harmonyospringapi\service\status\StatusServiceTest.class
+school\sptech\harmonyospringapi\HarmobyoSpringApiApplicationTests.class
+school\sptech\harmonyospringapi\service\pedido\PedidoServiceTest.class
+school\sptech\harmonyospringapi\service\instrumento\InstrumentoServiceTest.class
+school\sptech\harmonyospringapi\service\naipe\NaipeBuilder.class
+school\sptech\harmonyospringapi\service\pedido\PedidoBuilder.class
