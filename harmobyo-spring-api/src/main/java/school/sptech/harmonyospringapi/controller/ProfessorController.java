@@ -41,6 +41,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 
 @RestController
@@ -554,5 +555,12 @@ public class ProfessorController {
 
         return ResponseEntity.status(200).body(this.professorService.getRendimentoTotalPeriodo(dataComecoFormatada, dataFimFormatada));
 
+    }
+
+    @GetMapping("/dashboard/rendimentoTotal")
+    public ResponseEntity<Double> getRendimentoTotalProfessores() {
+        LocalDateTime dataComeco = LocalDateTime.now().withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0);
+        LocalDateTime dataFim = LocalDateTime.now().with(TemporalAdjusters.lastDayOfMonth()).withHour(23).withMinute(59).withSecond(59);
+        return ResponseEntity.status(200).body(this.professorService.getRendimentoTotalPeriodo(dataComeco, dataFim));
     }
 }
