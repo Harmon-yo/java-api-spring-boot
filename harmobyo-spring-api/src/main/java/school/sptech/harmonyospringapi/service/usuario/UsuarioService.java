@@ -489,6 +489,7 @@ public class UsuarioService {
                     a.setCpf(cpf);
                     a.setEndereco(e);
                     a.setCategoria("Aluno");
+                    a.setDataCriacao(LocalDateTime.now());
 
                     usuarioRepository.save(a);
 
@@ -525,6 +526,7 @@ public class UsuarioService {
                     p.setCpf(cpf);
                     p.setEndereco(e);
                     p.setCategoria("Professor");
+                    p.setDataCriacao(LocalDateTime.now());
 
 
                     usuarioRepository.save(p);
