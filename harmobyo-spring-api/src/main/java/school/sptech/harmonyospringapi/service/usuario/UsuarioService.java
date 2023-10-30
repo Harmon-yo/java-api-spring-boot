@@ -461,16 +461,16 @@ public class UsuarioService {
                     }
                 } else if (tipoRegistro.equals("02")) {
 
-                    nomeAluno = registro.substring(5, 45);
-                    email = registro.substring(45, 95);
-                    genero = registro.substring(95, 96);
-                    telefone = registro.substring(96, 111);
-                    cpf = registro.substring(111, 125);
-                    logradouro = registro.substring(125, 155);
-                    numero = registro.substring(155, 160);
-                    complemento = registro.substring(160, 190);
-                    cidade = registro.substring(190, 210);
-                    bairro = registro.substring(210, 240);
+                    nomeAluno = registro.substring(5, 45).trim();
+                    email = registro.substring(45, 95).trim();
+                    genero = registro.substring(95, 96).trim();
+                    telefone = registro.substring(96, 111).trim();
+                    cpf = registro.substring(111, 125).trim();
+                    logradouro = registro.substring(125, 155).trim();
+                    numero = registro.substring(155, 160).trim();
+                    complemento = registro.substring(160, 190).trim();
+                    cidade = registro.substring(190, 210).trim();
+                    bairro = registro.substring(210, 240).trim();
 
 
                     Endereco e = new Endereco();
@@ -498,16 +498,16 @@ public class UsuarioService {
 
                 } else if (tipoRegistro.equals("03")) {
 
-                    nomeProfessor = registro.substring(5, 45);
-                    email = registro.substring(45, 95);
-                    genero = registro.substring(95, 96);
-                    telefone = registro.substring(96,111);
-                    cpf = registro.substring(111, 125);
-                    logradouro = registro.substring(125, 155);
-                    numero = registro.substring(155, 160);
-                    complemento = registro.substring(160, 190);
-                    cidade = registro.substring(190, 210);
-                    bairro = registro.substring(210, 240);
+                    nomeProfessor = registro.substring(5, 45).trim();
+                    email = registro.substring(45, 95).trim();
+                    genero = registro.substring(95, 96).trim();
+                    telefone = registro.substring(96,111).trim();
+                    cpf = registro.substring(111, 125).trim();
+                    logradouro = registro.substring(125, 155).trim();
+                    numero = registro.substring(155, 160).trim();
+                    complemento = registro.substring(160, 190).trim();
+                    cidade = registro.substring(190, 210).trim();
+                    bairro = registro.substring(210, 240).trim();
 
 
                     Endereco e = new Endereco();
