@@ -14,4 +14,6 @@ public interface NotificacaoRepository extends JpaRepository<Notificacao, Intege
     Page<Notificacao> findByUsuarioId(Integer idUsuario, Pageable pageable);
 
     List<Notificacao> findByUsuarioId(Integer idUsuario);
+
+    int countByUsuarioIdAndLidaFalse(Integer idUsuario);
 }

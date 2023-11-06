@@ -6,12 +6,25 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.annotation.SendToUser;
+import org.springframework.messaging.simp.annotation.SubscribeMapping;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import school.sptech.harmonyospringapi.domain.Notificacao;
 import school.sptech.harmonyospringapi.service.notificacao.NotificacaoService;
 import school.sptech.harmonyospringapi.service.notificacao.dto.NotificacaoCriacaoDto;
 import school.sptech.harmonyospringapi.service.notificacao.dto.NotificacaoExibicaoDto;
+import school.sptech.harmonyospringapi.service.socket.WebSocketMessage;
+import school.sptech.harmonyospringapi.service.socket.WebSocketService;
 
+import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/notificacoes")
@@ -19,6 +32,13 @@ public class NotificacaoController {
 
     @Autowired
     private NotificacaoService notificacaoService;
+
+    @Autowired
+    private WebSocketService webSocketService;
+
+    @Autowired
+    private SimpMessagingTemplate message;
+
 
     @GetMapping()
     public ResponseEntity<List<NotificacaoExibicaoDto>> listarNotificacoes() {
@@ -62,5 +82,10 @@ public class NotificacaoController {
     public ResponseEntity<Void> marcarComoLidaPorUsuario(@PathVariable int id) {
         this.notificacaoService.marcarTodasComoLida(id);
         return ResponseEntity.ok().build();
+    }
+
+    @MessageMapping("/envia-notificacoes") // /app/envia-notificacoes
+    public void enviarNotificacoes(@Payload WebSocketMessage webSocketMessage) {
+        this.webSocketService.enviarNotificacoes(webSocketMessage.getIdUsuario(), webSocketMessage.getPagina());
     }
 }

@@ -1,9 +1,9 @@
 package school.sptech.harmonyospringapi.service.notificacao;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Service;
 import school.sptech.harmonyospringapi.domain.Notificacao;
 import school.sptech.harmonyospringapi.domain.Usuario;
@@ -12,6 +12,7 @@ import school.sptech.harmonyospringapi.service.exceptions.EntitadeNaoEncontradaE
 import school.sptech.harmonyospringapi.service.notificacao.dto.NotificacaoCriacaoDto;
 import school.sptech.harmonyospringapi.service.notificacao.dto.NotificacaoExibicaoDto;
 import school.sptech.harmonyospringapi.service.notificacao.dto.NotificacaoMapper;
+import school.sptech.harmonyospringapi.service.socket.WebSocketService;
 import school.sptech.harmonyospringapi.service.usuario.UsuarioService;
 
 import java.time.LocalDateTime;
@@ -25,6 +26,10 @@ public class NotificacaoService {
 
     @Autowired
     private UsuarioService usuarioService;
+
+    @Autowired
+    @Lazy
+    private WebSocketService webSocketService;
 
     public NotificacaoExibicaoDto cadastrar(NotificacaoCriacaoDto notificacaoCriacaoDto) {
         Notificacao notificacao = new Notificacao();
@@ -45,12 +50,16 @@ public class NotificacaoService {
 
         notificacao.setTitulo(titulo);
         notificacao.setDescricao(descricao);
-
         notificacao.setUsuario(usuario);
-
         notificacao.setData(LocalDateTime.now());
 
-        return NotificacaoMapper.ofNotificacao(this.notificacaoRepository.save(notificacao));
+        Notificacao novaNotificacao = this.notificacaoRepository.save(notificacao);
+
+        NotificacaoExibicaoDto notificacaoExibicaoDto = NotificacaoMapper.ofNotificacao(novaNotificacao);
+
+        webSocketService.adicionarNovaNotificacao(usuario.getId(), notificacaoExibicaoDto);
+
+        return notificacaoExibicaoDto;
     }
 
     public List<NotificacaoExibicaoDto> obterTodos() {
@@ -89,5 +98,9 @@ public class NotificacaoService {
         notificacoes.forEach(notificacao -> notificacao.setLida(true));
 
         this.notificacaoRepository.saveAll(notificacoes);
+    }
+
+    public int obterQuantidadeNotificacoesNaoLidas(Integer idUsuario) {
+        return this.notificacaoRepository.countByUsuarioIdAndLidaFalse(idUsuario);
     }
 }
