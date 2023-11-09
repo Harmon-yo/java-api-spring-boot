@@ -1,6 +1,9 @@
 package school.sptech.harmonyospringapi.service.pedido;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import school.sptech.harmonyospringapi.domain.*;
 import school.sptech.harmonyospringapi.repository.*;
@@ -14,6 +17,7 @@ import school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoDto;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoMapper;
 import school.sptech.harmonyospringapi.service.pedido.fila.FilaEsperaService;
 import school.sptech.harmonyospringapi.service.pedido.hashing.HashTableService;
+import school.sptech.harmonyospringapi.service.socket.WebSocketService;
 import school.sptech.harmonyospringapi.service.status.StatusService;
 import school.sptech.harmonyospringapi.service.usuario.AlunoService;
 import school.sptech.harmonyospringapi.service.usuario.ProfessorService;
@@ -55,6 +59,10 @@ public class PedidoService {
     @Autowired
     private NotificacaoService notificacaoService;
 
+    @Autowired
+    @Lazy
+    private WebSocketService webSocketService;
+
     public List<PedidoExibicaoDto> obterTodos() {
 
         return this.repository.findAll()
@@ -95,6 +103,11 @@ public class PedidoService {
         Pedido pedido = this.repository.save(PedidoMapper.of(pedidoCriacaoDto, aluno, professor, status, aula));
         notificarProfessor("O aluno %s fez uma proposta de aula no dia %s às %s", pedido);
         notificarAluno("Você fez uma proposta de aula para %s no dia %s às %s", pedido);
+
+        PedidoExibicaoDto pedidoExibicaoDto = PedidoMapper.ofPedidoExibicaoDto(pedido);
+        webSocketService.adicionaNovoPedido(pedido.getProfessor().getId(), pedidoExibicaoDto);
+        webSocketService.adicionaNovoPedido(pedido.getAluno().getId(), pedidoExibicaoDto);
+
         return PedidoMapper.ofPedidoExibicaoDto(pedido);
     }
 
@@ -472,5 +485,10 @@ public class PedidoService {
         }
 
         return valoresDoMes;
+    }
+
+    public Page<PedidoExibicaoDto> obterTodosPedidosPorPaginaPeloIdUsuario(Integer idUsuario, Pageable pageable) {
+        Page<Pedido> pedidos = this.repository.obterTodosPedidosPorPaginaPeloIdUsuario(idUsuario, pageable);
+        return pedidos.map(PedidoMapper::ofPedidoExibicaoDto);
     }
 }

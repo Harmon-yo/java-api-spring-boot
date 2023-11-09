@@ -36,9 +36,6 @@ public class NotificacaoController {
     @Autowired
     private WebSocketService webSocketService;
 
-    @Autowired
-    private SimpMessagingTemplate message;
-
 
     @GetMapping()
     public ResponseEntity<List<NotificacaoExibicaoDto>> listarNotificacoes() {

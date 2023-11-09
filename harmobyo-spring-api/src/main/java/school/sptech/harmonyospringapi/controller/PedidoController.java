@@ -11,6 +11,8 @@ import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 import school.sptech.harmonyospringapi.domain.Pedido;
 import school.sptech.harmonyospringapi.domain.fila.FilaEspera;
@@ -20,6 +22,8 @@ import school.sptech.harmonyospringapi.service.pedido.dto.PedidoCriacaoDto;
 import school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoDto;
 import school.sptech.harmonyospringapi.service.pedido.fila.FilaEsperaService;
 import school.sptech.harmonyospringapi.service.pedido.hashing.HashTableService;
+import school.sptech.harmonyospringapi.service.socket.WebSocketMessage;
+import school.sptech.harmonyospringapi.service.socket.WebSocketService;
 import school.sptech.harmonyospringapi.utils.PilhaObj;
 
 import java.time.LocalDate;
@@ -39,6 +43,9 @@ public class PedidoController {
     @Lazy
     @Autowired
     private FilaEsperaService filaService;
+
+    @Autowired
+    private WebSocketService webSocketService;
 
     @GetMapping
     @Operation(summary = "Lista todos os pedidos cadastrados")
@@ -308,15 +315,19 @@ public class PedidoController {
         return ResponseEntity.ok(this.pedidoService.obterQuantidadePedidosTotalPeriodo(dataComecoFormatada, dataFimFormatada));
     }
 
-    @GetMapping("rendimento-mes-por-dia")
+    @GetMapping("/rendimento-mes-por-dia")
     public ResponseEntity<List<Double>> obterRendimentoMesPorDia() {
         return ResponseEntity.ok(this.pedidoService.obterRendimentoMesPorDia());
     }
 
-    @GetMapping("quantidade-mes-por-dia")
+    @GetMapping("/quantidade-mes-por-dia")
     public ResponseEntity<List<Integer>> obterQuantidadePedidoMesPorDia() {
         return ResponseEntity.ok(this.pedidoService.obterQuantidadePedidoMesPorDia());
     }
 
+    @MessageMapping("/envia-pedidos") // /app/envia-pedidos
+    public void enviarPedidos(@RequestBody WebSocketMessage webSocketMessage) {
+        this.webSocketService.enviarPedidos(webSocketMessage.getIdUsuario(), webSocketMessage.getPagina());
+    }
 }
 

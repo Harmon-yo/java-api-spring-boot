@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import school.sptech.harmonyospringapi.domain.Notificacao;
 import school.sptech.harmonyospringapi.service.notificacao.NotificacaoService;
 import school.sptech.harmonyospringapi.service.notificacao.dto.NotificacaoExibicaoDto;
+import school.sptech.harmonyospringapi.service.pedido.PedidoService;
+import school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoDto;
 
 import java.security.Principal;
 import java.util.HashMap;
@@ -26,6 +28,9 @@ public class WebSocketService {
 
     @Autowired
     private SimpMessagingTemplate message;
+
+    @Autowired
+    private PedidoService pedidoService;
 
 
     public void enviarNotificacoes(Integer idUsuario, int pagina) {
@@ -44,6 +49,7 @@ public class WebSocketService {
     public void adicionarNovaNotificacao(Integer idUsuario, NotificacaoExibicaoDto notificacaoExibicaoDto) {
         Object mensagem = new Object() {
             public final String tipo = "ADD";
+            public final int totalPaginas = notificacaoService.obterPorIdUsuario(idUsuario, PageRequest.of(0, 5)).getTotalPages();
             public final int qtdNotificacoesNaoLidas = notificacaoService.obterQuantidadeNotificacoesNaoLidas(idUsuario);
             public final NotificacaoExibicaoDto notificacao = notificacaoExibicaoDto;
         };
@@ -60,4 +66,23 @@ public class WebSocketService {
         message.convertAndSendToUser(String.valueOf(idUsuario), "/notificacao", mensagem);
     }
 
+    public void enviarPedidos(Integer idUsuario, int pagina) {
+        Object mensagem = new Object() {
+            public final String tipo = "INIT";
+
+            public final Page<PedidoExibicaoDto> pedidos = pedidoService.obterTodosPedidosPorPaginaPeloIdUsuario(idUsuario,
+                    PageRequest.of(pagina, 5, Sort.by(Sort.Order.desc("horaCriacao"))));
+        };
+
+        message.convertAndSendToUser(String.valueOf(idUsuario), "/pedido", mensagem);
+    }
+
+    public void adicionaNovoPedido(Integer idUsuario, PedidoExibicaoDto pedidoExibicaoDto) {
+        Object mensagem = new Object() {
+            public final String tipo = "ADD";
+            public final PedidoExibicaoDto pedido = pedidoExibicaoDto;
+        };
+
+        message.convertAndSendToUser(String.valueOf(idUsuario), "/pedido", mensagem);
+    }
 }

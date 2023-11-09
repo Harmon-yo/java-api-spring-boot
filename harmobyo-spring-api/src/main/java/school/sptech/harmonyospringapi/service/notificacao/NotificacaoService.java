@@ -32,17 +32,7 @@ public class NotificacaoService {
     private WebSocketService webSocketService;
 
     public NotificacaoExibicaoDto cadastrar(NotificacaoCriacaoDto notificacaoCriacaoDto) {
-        Notificacao notificacao = new Notificacao();
-
-        notificacao.setTitulo(notificacaoCriacaoDto.getTitulo());
-        notificacao.setDescricao(notificacaoCriacaoDto.getDescricao());
-
-        Usuario usuario = usuarioService.buscarPorId(notificacaoCriacaoDto.getIdUsuario());
-        notificacao.setUsuario(usuario);
-
-        notificacao.setData(LocalDateTime.now());
-
-        return NotificacaoMapper.ofNotificacao(this.notificacaoRepository.save(notificacao));
+        return criarNotificacao(notificacaoCriacaoDto.getTitulo(), notificacaoCriacaoDto.getDescricao(), usuarioService.buscarPorId(notificacaoCriacaoDto.getIdUsuario()));
     }
 
     public NotificacaoExibicaoDto criarNotificacao(String titulo, String descricao, Usuario usuario) {

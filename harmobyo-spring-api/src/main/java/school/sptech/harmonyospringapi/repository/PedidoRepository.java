@@ -1,6 +1,8 @@
 package school.sptech.harmonyospringapi.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import school.sptech.harmonyospringapi.domain.Pedido;
 import school.sptech.harmonyospringapi.service.aula.dto.AulaGraficoInformacoesDashboardDto;
@@ -62,4 +64,6 @@ public interface PedidoRepository extends JpaRepository<Pedido, Integer> {
 """)
     Optional<Double> obterRendimentoPeriodo(LocalDateTime dataComeco, LocalDateTime dataFim);
 
+    @Query("SELECT p FROM Pedido p WHERE p.aluno.id = :idUsuario OR p.professor.id = :idUsuario")
+    Page<Pedido> obterTodosPedidosPorPaginaPeloIdUsuario(Integer idUsuario, Pageable pageable);
 }
