@@ -53,8 +53,8 @@ public class PedidoService {
 
     @Autowired
     private HashTableService hashTableService;
-    @Autowired
-    private FilaEsperaService filaEsperaService;
+//    @Autowired
+//    private FilaEsperaService filaEsperaService;
 
     @Autowired
     private NotificacaoService notificacaoService;
@@ -180,10 +180,10 @@ public class PedidoService {
         }
 
         this.hashTableService.atualizarStatusPedidoPorId(idPedido, pedido, "Recusado");
-        PedidoExibicaoDto pai = this.filaEsperaService.buscarPai(idPedido);
-        if (pai != null){
-            this.filaEsperaService.removerPrimeiroPedidoFilaEspera(idPedido);
-        }
+//        PedidoExibicaoDto pai = this.filaEsperaService.buscarPai(idPedido);
+//        if (pai != null){
+//            this.filaEsperaService.removerPrimeiroPedidoFilaEspera(idPedido);
+//        }
         pedido = atualizarStatus(pedido, "Recusado");
 
         notificarAluno("O professor recusou sua proposta de aula no dia %s às %s", pedido);
@@ -205,10 +205,10 @@ public class PedidoService {
         }
 
         this.hashTableService.atualizarStatusPedidoPorId(idPedido, pedido, "Cancelado");
-        PedidoExibicaoDto pai = this.filaEsperaService.buscarPai(idPedido);
-        if (pai != null){
-            this.filaEsperaService.removerPrimeiroPedidoFilaEspera(idPedido);
-        }
+//        PedidoExibicaoDto pai = this.filaEsperaService.buscarPai(idPedido);
+//        if (pai != null){
+//            this.filaEsperaService.removerPrimeiroPedidoFilaEspera(idPedido);
+//        }
         pedido = atualizarStatus(pedido, "Cancelado");
 
         Usuario usuario = usuarioService.buscarPorId(idUsuario);
