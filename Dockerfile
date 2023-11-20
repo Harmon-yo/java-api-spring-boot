@@ -1,4 +1,4 @@
-FROM openjdk:11
+FROM openjdk:17-oracle
 VOLUME /tmp
 EXPOSE 8080
 COPY harmonyo-spring-api-0.0.1-SNAPSHOT-exec.jar harmonyo-spring-api-0.0.1-SNAPSHOT-exec.jar
