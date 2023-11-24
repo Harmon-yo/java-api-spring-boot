@@ -323,7 +323,7 @@ public class UsuarioService {
             dataInicialAux = dataAtual.withHour(0).withMinute(0).withSecond(0);
             dataFinalAux = dataAtual.withHour(23).withMinute(59).withSecond(59);
 
-            ltQtdUsuario.add(this.usuarioRepository.obterQuantidadeUsuariosCadastradosEntre(dataInicialAux, dataFinalAux));
+            ltQtdUsuario.add(this.usuarioRepository.obterQuantidadeUsuariosCadastradosEntre(dataInicialAux, dataFinalAux).orElse(0));
 
 
             dataAtual = dataAtual.plusDays(1);
@@ -351,26 +351,12 @@ public class UsuarioService {
         return ltQtdUsuario;
     }
 
-    public List<Integer> obterUsuariosCadastradosMes() {
-        LocalDateTime dataInicial = obterPrimeiroDiaMes();
-        LocalDateTime dataAtual = dataInicial;
-        LocalDateTime dataFinal = obterUltimoDiaMes();
+    public Integer obterQuantidadeUsuariosCadastradosEntre(LocalDateTime dataInicial, LocalDateTime dataFinal) {
+        return this.usuarioRepository.obterQuantidadeUsuariosCadastradosEntre(dataInicial, dataFinal).orElse(0);
+    }
 
-        List<Integer> ltQtdUsuario = new ArrayList<>();
-        int difencaDias = dataFinal.getDayOfMonth() - dataInicial.getDayOfMonth();
-
-        LocalDateTime dataInicialAux, dataFinalAux;
-
-        for(int i = 0; i <= difencaDias; i++) {
-            dataInicialAux = dataAtual.withHour(0).withMinute(0).withSecond(0);
-            dataFinalAux = dataAtual.withHour(23).withMinute(59).withSecond(59);
-
-            ltQtdUsuario.add(this.usuarioRepository.obterQuantidadeUsuariosCadastradosEntre(dataInicialAux, dataFinalAux));
-
-            dataAtual = dataAtual.plusDays(1);
-        }
-
-        return ltQtdUsuario;
+    public Integer obterQuantidadeAlunosCadastradosEntre(LocalDateTime dataInicial, LocalDateTime dataFinal) {
+        return this.usuarioRepository.obterQuantidadeAlunosCadastradosEntre(dataInicial, dataFinal).orElse(0);
     }
 
     public List<Integer> obterUsuariosCadastradosMesAnterior() {
@@ -387,7 +373,7 @@ public class UsuarioService {
             dataInicialAux = dataAtual.withHour(0).withMinute(0).withSecond(0);
             dataFinalAux = dataAtual.withHour(23).withMinute(59).withSecond(59);
 
-            ltQtdUsuario.add(this.usuarioRepository.obterQuantidadeUsuariosCadastradosEntre(dataInicialAux, dataFinalAux));
+            ltQtdUsuario.add(this.usuarioRepository.obterQuantidadeUsuariosCadastradosEntre(dataInicialAux, dataFinalAux).orElse(0));
 
             dataAtual = dataAtual.plusDays(1);
         }

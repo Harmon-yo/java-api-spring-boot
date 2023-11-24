@@ -185,29 +185,13 @@ public class UsuarioController {
         return ResponseEntity.ok(this.usuarioService.quantidadeCadastradosUsuarios(dataComecoFormatada, dataFimFormatada));
     }
 
-    @GetMapping("/quantidade-cadastrados-semana")
-    public ResponseEntity<List<Integer>> obterQuantidadeUsuariosCadastrados(){
-        return ResponseEntity.status(200).body(this.usuarioService.obterQuantidadeUsuariosCadastradosSemana());
-    }
+    @GetMapping("/quantidade-cadastrados-total")
+    public ResponseEntity<Integer> obterQuantidadeUsuariosCadastradosMes(@RequestParam String dataInicial, @RequestParam String dataFinal){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDateTime dataInicialFormatada = LocalDate.parse(dataInicial, formatter).atStartOfDay();
+        LocalDateTime dataFinalFormatada = LocalDate.parse(dataFinal, formatter).atTime(23, 59, 59);
 
-    @GetMapping("/quantidade-retidos-semana")
-    public ResponseEntity<List<Integer>> obterQuantidadeUsuariosReditos(){
-        return ResponseEntity.status(200).body(this.usuarioService.obterQuantidadeUsuariosRetidosSemana());
-    }
-
-    @GetMapping("/quantidade-cadastrados-mes")
-    public ResponseEntity<List<Integer>> obterQuantidadeUsuariosCadastradosMes(){
-        return ResponseEntity.status(200).body(this.usuarioService.obterUsuariosCadastradosMes());
-    }
-
-    @GetMapping("/quantidade-cadastrados-mes-soma")
-    public ResponseEntity<Integer> obterQuantidadeUsuariosCadastradosMesSoma(){
-        return ResponseEntity.status(200).body(this.usuarioService.obterUsuariosCadastradosMes().stream().mapToInt(Integer::intValue).sum());
-    }
-
-    @GetMapping("/quantidade-cadastrados-mes-anterior")
-    public ResponseEntity<List<Integer>> obterQuantidadeUsuariosCadastradosMesAnterior(){
-        return ResponseEntity.status(200).body(this.usuarioService.obterUsuariosCadastradosMesAnterior());
+        return ResponseEntity.status(200).body(this.usuarioService.obterQuantidadeUsuariosCadastradosEntre(dataInicialFormatada, dataFinalFormatada));
     }
 
     @PostMapping("/importacao-dados-txt")

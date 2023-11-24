@@ -71,7 +71,7 @@ public class WebSocketService {
             public final String tipo = "INIT";
 
             public final Page<PedidoExibicaoDto> pedidos = pedidoService.obterTodosPedidosPorPaginaPeloIdUsuario(idUsuario,
-                    PageRequest.of(pagina, 5, Sort.by(Sort.Order.desc("horaCriacao"))));
+                    PageRequest.of(pagina, 5, Sort.by(Sort.Order.desc("dataAula"))));
         };
 
         message.convertAndSendToUser(String.valueOf(idUsuario), "/pedido", mensagem);

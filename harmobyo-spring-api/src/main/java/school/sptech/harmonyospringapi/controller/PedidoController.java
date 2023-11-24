@@ -276,58 +276,31 @@ public class PedidoController {
 
     // ------------------------------- KPIs ------------------------------- //
 
-    @GetMapping("/quantidade-realizadas-semana")
-    public ResponseEntity<List<Integer>> obterQuantidadePedidosRealizadosSemana(){
-        return ResponseEntity.ok(this.pedidoService.obterQuantidadePedidosRealizadosSemana());
-    }
-
-    @GetMapping("/quantidade-pendentes-semana")
-    public ResponseEntity<List<Integer>> obterQuantidadePedidosPendentes(){
-        return ResponseEntity.ok(this.pedidoService.obterQuantidadePedidosPendentesSemana());
-    }
-
-    @GetMapping("/quantidade-canceladas-semana")
-    public ResponseEntity<List<Integer>> obterQuantidadePedidosCancelados(){
-        return ResponseEntity.ok(this.pedidoService.obterQuantidadePedidosCanceladosSemana());
-    }
-
-    @GetMapping("/quantidade-realizadas-semana-total")
-    public ResponseEntity<Integer> obterQuantidadePedidosRealizadosTotalnaSemana(){
-        return ResponseEntity.ok(this.pedidoService.obterQuantidadePedidosRealizadosTotalnaSemana());
-    }
-
-    @GetMapping("/quantidade-pendentes-semana-total")
-    public ResponseEntity<Integer> obterQuantidadePedidosPendentesTotalnaSemana(){
-        return ResponseEntity.ok(this.pedidoService.obterQuantidadePedidosPendentesTotalnaSemana());
-    }
-
-    @GetMapping("/quantidade-canceladas-semana-total")
-    public ResponseEntity<Integer> obterQuantidadePedidosCanceladosTotalnaSemana(){
-        return ResponseEntity.ok(this.pedidoService.obterQuantidadePedidosCanceladosTotalnaSemana());
-    }
-
-    @GetMapping("/quantidade-total-periodo")
-    public ResponseEntity<Integer> obterQuantidadePedidosTotalPeriodo(@RequestParam String dataComeco, @RequestParam String dataFim){
+    @GetMapping("/quantidade-total")
+    public ResponseEntity<Integer> obterQuantidadePedidosTotal(@RequestParam String dataInicial, @RequestParam String dataFinal){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDateTime dataComecoFormatada = LocalDate.parse(dataComeco, formatter).atStartOfDay();
-        LocalDateTime dataFimFormatada = LocalDate.parse(dataFim, formatter).atTime(23, 59, 59);
+        LocalDateTime dataInicialFormatada = LocalDate.parse(dataInicial, formatter).atStartOfDay();
+        LocalDateTime dataFinalFormatada = LocalDate.parse(dataFinal, formatter).atTime(23, 59, 59);
 
-        return ResponseEntity.ok(this.pedidoService.obterQuantidadePedidosTotalPeriodo(dataComecoFormatada, dataFimFormatada));
+        return ResponseEntity.ok(this.pedidoService.obterQuantidadePedidosTotal(dataInicialFormatada, dataFinalFormatada));
     }
 
-    @GetMapping("/rendimento-mes-por-dia")
-    public ResponseEntity<List<Double>> obterRendimentoMesPorDia() {
-        return ResponseEntity.ok(this.pedidoService.obterRendimentoMesPorDia());
+    @GetMapping("/pedido-por-aluno")
+    public ResponseEntity<Double> obterPedidosPorAluno(@RequestParam String dataInicial, @RequestParam String dataFinal){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDateTime dataInicialFormatada = LocalDate.parse(dataInicial, formatter).atStartOfDay();
+        LocalDateTime dataFinalFormatada = LocalDate.parse(dataFinal, formatter).atTime(23, 59, 59);
+
+        return ResponseEntity.ok(this.pedidoService.obterPedidosPorAluno(dataInicialFormatada, dataFinalFormatada));
     }
 
-    @GetMapping("/quantidade-mes-por-dia")
-    public ResponseEntity<List<Integer>> obterQuantidadePedidoMesPorDia() {
-        return ResponseEntity.ok(this.pedidoService.obterQuantidadePedidoMesPorDia());
-    }
+    @GetMapping("/rendimento-professores")
+    public ResponseEntity<Double> obterRendimentoProfessores(@RequestParam String dataInicial, @RequestParam String dataFinal){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDateTime dataInicialFormatada = LocalDate.parse(dataInicial, formatter).atStartOfDay();
+        LocalDateTime dataFinalFormatada = LocalDate.parse(dataFinal, formatter).atTime(23, 59, 59);
 
-    @MessageMapping("/envia-pedidos") // /app/envia-pedidos
-    public void enviarPedidos(@RequestBody WebSocketMessage webSocketMessage) {
-        this.webSocketService.enviarPedidos(webSocketMessage.getIdUsuario(), webSocketMessage.getPagina());
+        return ResponseEntity.ok(this.pedidoService.obterRendimentoProfessores(dataInicialFormatada, dataFinalFormatada));
     }
 }
 

@@ -66,4 +66,19 @@ public interface PedidoRepository extends JpaRepository<Pedido, Integer> {
 
     @Query("SELECT p FROM Pedido p WHERE p.aluno.id = :idUsuario OR p.professor.id = :idUsuario")
     Page<Pedido> obterTodosPedidosPorPaginaPeloIdUsuario(Integer idUsuario, Pageable pageable);
+
+    @Query(
+        value = """
+                WITH
+                pedidos AS (SELECT count(p.*) AS qtd
+                FROM Pedido p
+                JOIN Status s ON p.status_fk = s.id\s
+                WHERE p.data_aula >= :dataInicial AND p.data_aula <= :dataFinal AND s.descricao = 'Concluído'),
+                usuarios AS (SELECT count(*) AS qtd
+                FROM Usuario AS u
+                WHERE u.categoria = 'Aluno' AND u.data_criacao >= :dataInicial AND u.data_criacao <= :dataFinal)""", nativeQuery = true)
+    Optional<Double> obterPedidosPorAluno(LocalDateTime dataInicial, LocalDateTime dataFinal);
+
+    @Query("SELECT sum(p.valorAula) FROM Pedido p WHERE p.status.descricao = 'Concluído' AND p.dataAula >= :dataInicial AND p.dataAula <= :dataFinal")
+    Optional<Double> obterRendimentoProfessores(LocalDateTime dataInicial, LocalDateTime dataFinal);
 }

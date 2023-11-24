@@ -30,6 +30,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import static java.lang.Math.round;
+
 @Service
 public class PedidoService {
 
@@ -490,5 +492,21 @@ public class PedidoService {
     public Page<PedidoExibicaoDto> obterTodosPedidosPorPaginaPeloIdUsuario(Integer idUsuario, Pageable pageable) {
         Page<Pedido> pedidos = this.repository.obterTodosPedidosPorPaginaPeloIdUsuario(idUsuario, pageable);
         return pedidos.map(PedidoMapper::ofPedidoExibicaoDto);
+    }
+
+    public Integer obterQuantidadePedidosTotal(LocalDateTime dataInicial, LocalDateTime dataFinal) {
+        return this.repository.obterQuantidadePedidosDuranteDatas(dataInicial, dataFinal);
+    }
+
+    public Double obterPedidosPorAluno(LocalDateTime dataInicial, LocalDateTime dataFinal) {
+        double quantidadePedidos = (double) this.repository.obterQuantidadePedidosRealizadosDuranteDatas(dataInicial, dataFinal).orElse(0);
+        double quantidadeUsuarios = (double) this.usuarioService.obterQuantidadeAlunosCadastradosEntre(dataInicial, dataFinal);
+        System.out.println("Qtd pedidos: " + quantidadePedidos);
+        System.out.println("Qtd usuarios: " + quantidadeUsuarios);
+        return quantidadePedidos / quantidadeUsuarios;
+    }
+
+    public Double obterRendimentoProfessores(LocalDateTime dataInicial, LocalDateTime dataFinal) {
+        return this.repository.obterRendimentoProfessores(dataInicial, dataFinal).orElse(0d);
     }
 }
