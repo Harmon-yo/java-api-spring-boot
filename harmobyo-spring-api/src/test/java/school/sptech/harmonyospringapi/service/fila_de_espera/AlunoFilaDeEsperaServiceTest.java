@@ -13,16 +13,16 @@ import school.sptech.harmonyospringapi.utils.FilaObj;*/
 
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-=======
+
 //import school.sptech.harmonyospringapi.service.fila_de_espera.dto.AlunoFilaDeEsperaDTO;
 import school.sptech.harmonyospringapi.utils.FilaObj;
->>>>>>> 73b462e58ed86726b0248336acc8f0147c43d59a
+
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class AlunoFilaDeEsperaServiceTest {
-<<<<<<< HEAD
+
 /*
 
     @Mock
@@ -54,7 +54,7 @@ class AlunoFilaDeEsperaServiceTest {
         assertThrows(FilaVaziaException.class, () -> service.pollAluno(1));
     }
 */
-=======
+
 //
 //    @Mock
 //    AlunoFilaDeEsperaDTO alunoDTO;
@@ -84,6 +84,6 @@ class AlunoFilaDeEsperaServiceTest {
 //
 //        assertThrows(FilaVaziaException.class, () -> service.pollAluno(1));
 //    }
->>>>>>> 73b462e58ed86726b0248336acc8f0147c43d59a
+
 
 }
