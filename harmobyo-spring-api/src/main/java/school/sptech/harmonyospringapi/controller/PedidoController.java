@@ -163,7 +163,7 @@ public class PedidoController {
         List<PedidoExibicaoDto> pedidoExibicaoDto = this.pedidoService.buscarPorUsuarioId(id);
 
         if(pedidoExibicaoDto.isEmpty()) return ResponseEntity.noContent().build();
-        if(this.filaService.isEmpty()) this.filaService.adicionarBanco();
+        //if(this.filaService.isEmpty()) this.filaService.adicionarBanco();
         return ResponseEntity.ok(pedidoExibicaoDto);
     }
 
