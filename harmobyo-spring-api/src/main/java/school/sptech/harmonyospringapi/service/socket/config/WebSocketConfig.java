@@ -35,7 +35,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry){
         registry.addEndpoint("/ws")
-                .setAllowedOrigins(url)
+                .setAllowedOrigins("http://localhost:3000", "http://harmonyoapp.sytes.net", "http://harmonyo.sytes.net")
                 .withSockJS()
                 .setSuppressCors(true);
     }
@@ -46,7 +46,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/ws/**")
-                        .allowedOrigins(url)
+                        .allowedOrigins("http://localhost:3000", "http://harmonyoapp.sytes.net", "http://harmonyo.sytes.net")
                         .allowedMethods("GET", "POST")
                         .allowCredentials(true);
             }

@@ -11,13 +11,13 @@ import java.io.IOException;
 @WebFilter("/*")
 public class CorsFilter implements Filter {
 
-    private String url = "http://localhost:3000"; //  54.209.110.127:80 -> IP do front na AWS
+    private String url = ""; //  54.209.110.127:80 -> IP do front na AWS
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-        httpServletResponse.setHeader("Access-Control-Allow-Origin", url);
+        //httpServletResponse.setHeader("Access-Control-Allow-Origin", url);
         httpServletResponse.setHeader("Access-Control-Allow-Methods", "GET, POST");
         httpServletResponse.setHeader("Access-Control-Allow-Credentials", "true");
         chain.doFilter(request, response);

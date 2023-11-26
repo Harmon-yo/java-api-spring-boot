@@ -6,15 +6,13 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-@CrossOrigin(origins = "http://localhost:3000") // 54.209.110.127:80 -> IP do front na AWS
+@CrossOrigin(origins = {"http://localhost:3000", "http://harmonyoapp.sytes.net", "http://harmonyo.sytes.net"})
 public class CorsConfig implements WebMvcConfigurer {
-
-    private String url = "http://localhost:3000"; //  54.209.110.127:80 -> IP do front na AWS
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/ws/**")
-                .allowedOrigins(url)
+                .allowedOrigins("http://localhost:3000", "http://harmonyoapp.sytes.net", "http://harmonyo.sytes.net")
                 .allowedMethods("GET", "POST")
                 .allowCredentials(true);
     }
