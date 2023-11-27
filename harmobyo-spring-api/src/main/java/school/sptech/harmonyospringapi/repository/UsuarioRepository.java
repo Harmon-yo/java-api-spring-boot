@@ -44,6 +44,9 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
     @Query("SELECT COUNT(u) FROM Usuario u WHERE u.dataCriacao BETWEEN :dataInicial AND :dataFinal")
     Optional<Integer> obterQuantidadeUsuariosCadastradosEntre(LocalDateTime dataInicial, LocalDateTime dataFinal);
 
+    @Query("SELECT COUNT(u) FROM Usuario u WHERE u.dataCriacao BETWEEN :dataInicial AND :dataFinal AND u.categoria = :tipo")
+    Optional<Integer> obterQuantidadeUsuariosCadastradosEntre(LocalDateTime dataInicial, LocalDateTime dataFinal, String tipo);
+
     @Query("SELECT COUNT(u) FROM Usuario u WHERE u.dataCriacao BETWEEN :dataInicial AND :dataFinal AND u.categoria = 'Aluno'")
     Optional<Integer> obterQuantidadeAlunosCadastradosEntre(LocalDateTime dataInicial, LocalDateTime dataFinal);
 

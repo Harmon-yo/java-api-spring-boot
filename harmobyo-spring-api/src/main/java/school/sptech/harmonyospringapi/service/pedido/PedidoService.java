@@ -1,5 +1,6 @@
 package school.sptech.harmonyospringapi.service.pedido;
 
+import jakarta.persistence.EntityManagerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
@@ -26,9 +27,9 @@ import school.sptech.harmonyospringapi.utils.PilhaObj;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.lang.Math.round;
 
@@ -495,18 +496,75 @@ public class PedidoService {
     }
 
     public Integer obterQuantidadePedidosTotal(LocalDateTime dataInicial, LocalDateTime dataFinal) {
+        if ((int) ChronoUnit.DAYS.between(dataInicial, dataFinal) > dataFinal.getMonth().length(dataFinal.toLocalDate().isLeapYear())) {
+            dataInicial = dataInicial.withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0);
+            dataFinal = dataFinal.withDayOfMonth(dataFinal.getMonth().length(dataFinal.toLocalDate().isLeapYear())).withHour(23).withMinute(59).withSecond(59);
+        }
+
         return this.repository.obterQuantidadePedidosDuranteDatas(dataInicial, dataFinal);
+    }
+    public Double obterRendimentoProfessores(LocalDateTime dataInicial, LocalDateTime dataFinal) {
+        if ((int) ChronoUnit.DAYS.between(dataInicial, dataFinal) > dataFinal.getMonth().length(dataFinal.toLocalDate().isLeapYear())) {
+            dataInicial = dataInicial.withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0);
+            dataFinal = dataFinal.withDayOfMonth(dataFinal.getMonth().length(dataFinal.toLocalDate().isLeapYear())).withHour(23).withMinute(59).withSecond(59);
+        }
+
+        return this.repository.obterRendimentoProfessores(dataInicial, dataFinal).orElse(0d);
     }
 
     public Double obterPedidosPorAluno(LocalDateTime dataInicial, LocalDateTime dataFinal) {
-        double quantidadePedidos = (double) this.repository.obterQuantidadePedidosRealizadosDuranteDatas(dataInicial, dataFinal).orElse(0);
-        double quantidadeUsuarios = (double) this.usuarioService.obterQuantidadeAlunosCadastradosEntre(dataInicial, dataFinal);
-        System.out.println("Qtd pedidos: " + quantidadePedidos);
-        System.out.println("Qtd usuarios: " + quantidadeUsuarios);
+        Double quantidadePedidos, quantidadeUsuarios;
+
+        if ((int) ChronoUnit.DAYS.between(dataInicial, dataFinal) > dataFinal.getMonth().length(dataFinal.toLocalDate().isLeapYear())) {
+            dataInicial = dataInicial.withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0);
+            dataFinal = dataFinal.withDayOfMonth(dataFinal.getMonth().length(dataFinal.toLocalDate().isLeapYear())).withHour(23).withMinute(59).withSecond(59);
+        }
+
+        quantidadePedidos = (double) this.repository.obterQuantidadePedidosRealizadosDuranteDatas(dataInicial, dataFinal).orElse(0);
+        quantidadeUsuarios = (double) this.usuarioService.obterQuantidadeAlunosCadastradosEntre(dataInicial, dataFinal);
+
+        if (quantidadeUsuarios == 0 || quantidadePedidos == 0) return 0d;
         return quantidadePedidos / quantidadeUsuarios;
     }
 
-    public Double obterRendimentoProfessores(LocalDateTime dataInicial, LocalDateTime dataFinal) {
-        return this.repository.obterRendimentoProfessores(dataInicial, dataFinal).orElse(0d);
+    public List<Integer> obterQuantidadeAulasHistorico(LocalDateTime dataInicial, LocalDateTime dataFinal, String status) {
+        LocalDateTime aux = dataInicial;
+        List<Integer> valores = new ArrayList<>();
+
+        LocalDateTime primeiroDiaMes, ultimoDiaMes;
+        while (aux.isBefore(dataFinal)) {
+            if ((int) ChronoUnit.DAYS.between(dataInicial, dataFinal) > dataFinal.getMonth().length(dataFinal.toLocalDate().isLeapYear())) {
+                primeiroDiaMes = aux.withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0);
+                ultimoDiaMes = aux.withDayOfMonth(aux.getMonth().length(aux.toLocalDate().isLeapYear())).withHour(23).withMinute(59).withSecond(59);
+                valores.add(this.repository.obterQuantidadeAulasHistorico(primeiroDiaMes, ultimoDiaMes, status).orElse(0));
+                aux = aux.withDayOfMonth(1).plusMonths(1);
+            } else {
+                valores.add(this.repository.obterQuantidadeAulasHistorico(aux.withHour(0).withMinute(0).withSecond(0), aux.withHour(23).withMinute(59).withSecond(59), status).orElse(0));
+                aux = aux.plusDays(1);
+            }
+        }
+
+
+        return valores;
+    }
+
+    public Map<String, Long> obterInstrumentosMaisPedidos(LocalDateTime dataInicial, LocalDateTime dataFinal) {
+        if ((int) ChronoUnit.DAYS.between(dataInicial, dataFinal) > dataFinal.getMonth().length(dataFinal.toLocalDate().isLeapYear())) {
+            LocalDateTime primeiroDiaMes = dataInicial.withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0);
+            LocalDateTime ultimoDiaMes = dataInicial.withDayOfMonth(dataInicial.getMonth().length(dataInicial.toLocalDate().isLeapYear())).withHour(23).withMinute(59).withSecond(59);
+            return this.repository.obterQuantidadePedidosInstrumentoPorPeriodo(primeiroDiaMes, ultimoDiaMes).stream().collect(Collectors.toMap(o -> (String) ((Object[]) o)[0], o -> (Long) ((Object[]) o)[1]));
+        } else {
+            return this.repository.obterQuantidadePedidosInstrumentoPorPeriodo(dataInicial, dataFinal).stream().collect(Collectors.toMap(o -> (String) ((Object[]) o)[0], o -> (Long) ((Object[]) o)[1]));
+        }
+    }
+
+    public Map<String, Long> obterRegioesMaisPedidos(LocalDateTime dataInicial, LocalDateTime dataFinal) {
+        if ((int) ChronoUnit.DAYS.between(dataInicial, dataFinal) > dataFinal.getMonth().length(dataFinal.toLocalDate().isLeapYear())) {
+            LocalDateTime primeiroDiaMes = dataInicial.withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0);
+            LocalDateTime ultimoDiaMes = dataInicial.withDayOfMonth(dataInicial.getMonth().length(dataInicial.toLocalDate().isLeapYear())).withHour(23).withMinute(59).withSecond(59);
+            return this.repository.obterQuantidadePedidosRegiaoPorPeriodo(primeiroDiaMes, ultimoDiaMes).stream().collect(Collectors.toMap(o -> (String) ((Object[]) o)[0], o -> (Long) ((Object[]) o)[1]));
+        } else {
+            return this.repository.obterQuantidadePedidosRegiaoPorPeriodo(dataInicial, dataFinal).stream().collect(Collectors.toMap(o -> (String) ((Object[]) o)[0], o -> (Long) ((Object[]) o)[1]));
+        }
     }
 }

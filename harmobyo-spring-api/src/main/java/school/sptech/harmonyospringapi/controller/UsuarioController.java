@@ -36,6 +36,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
 
@@ -176,22 +177,25 @@ public class UsuarioController {
         return ResponseEntity.status(200).build();
     }
 
-    @GetMapping("/quantidade-cadastrados-periodo")
-    public ResponseEntity<Integer> quantidadeCadastradosUsuarios(@RequestParam String dataComeco, @RequestParam String dataFim){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDateTime dataComecoFormatada = LocalDate.parse(dataComeco, formatter).atStartOfDay();
-        LocalDateTime dataFimFormatada = LocalDate.parse(dataFim, formatter).atTime(23, 59, 59);
-
-        return ResponseEntity.ok(this.usuarioService.quantidadeCadastradosUsuarios(dataComecoFormatada, dataFimFormatada));
+    @GetMapping("/quantidade-cadastrados-total")
+    public ResponseEntity<Integer> obterQuantidadeUsuariosCadastrados(@RequestParam String dataInicial, @RequestParam String dataFinal){
+        return ResponseEntity.status(200).body(this.usuarioService.obterQuantidadeUsuariosCadastradosEntre(
+                converterStringParaLocalDateTime(dataInicial).atStartOfDay(),
+                converterStringParaLocalDateTime(dataFinal).atTime(23, 59, 59)));
     }
 
-    @GetMapping("/quantidade-cadastrados-total")
-    public ResponseEntity<Integer> obterQuantidadeUsuariosCadastradosMes(@RequestParam String dataInicial, @RequestParam String dataFinal){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDateTime dataInicialFormatada = LocalDate.parse(dataInicial, formatter).atStartOfDay();
-        LocalDateTime dataFinalFormatada = LocalDate.parse(dataFinal, formatter).atTime(23, 59, 59);
 
-        return ResponseEntity.status(200).body(this.usuarioService.obterQuantidadeUsuariosCadastradosEntre(dataInicialFormatada, dataFinalFormatada));
+    @GetMapping("/quantidade-cadastrados-hist")
+    public ResponseEntity<List<Integer>> obterUsuariosCadastradosHist(@RequestParam String dataInicial, @RequestParam String dataFinal, @RequestParam(required = false, defaultValue = "") String tipo){
+        if (tipo.equals("")) {
+            return ResponseEntity.status(200).body(this.usuarioService.obterUsuariosCadastradosHist(
+                    converterStringParaLocalDateTime(dataInicial).atStartOfDay(),
+                    converterStringParaLocalDateTime(dataFinal).atTime(23, 59, 59)));
+        } else {
+            return ResponseEntity.status(200).body(this.usuarioService.obterUsuariosCadastradosHist(
+                    converterStringParaLocalDateTime(dataInicial).atStartOfDay(),
+                    converterStringParaLocalDateTime(dataFinal).atTime(23, 59, 59), tipo));
+        }
     }
 
     @PostMapping("/importacao-dados-txt")
@@ -380,5 +384,10 @@ public class UsuarioController {
         headers.setContentDispositionFormData("attachment", "data.txt");
 
         return new ResponseEntity<>(txtBytes, headers, HttpStatus.OK);
+    }
+
+    private LocalDate converterStringParaLocalDateTime(String data) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return LocalDate.parse(data, formatter);
     }
 }

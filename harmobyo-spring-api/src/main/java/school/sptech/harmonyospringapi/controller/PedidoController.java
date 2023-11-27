@@ -29,7 +29,9 @@ import school.sptech.harmonyospringapi.utils.PilhaObj;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/pedidos")
@@ -278,29 +280,65 @@ public class PedidoController {
 
     @GetMapping("/quantidade-total")
     public ResponseEntity<Integer> obterQuantidadePedidosTotal(@RequestParam String dataInicial, @RequestParam String dataFinal){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDateTime dataInicialFormatada = LocalDate.parse(dataInicial, formatter).atStartOfDay();
-        LocalDateTime dataFinalFormatada = LocalDate.parse(dataFinal, formatter).atTime(23, 59, 59);
-
-        return ResponseEntity.ok(this.pedidoService.obterQuantidadePedidosTotal(dataInicialFormatada, dataFinalFormatada));
+        return ResponseEntity.ok(this.pedidoService.obterQuantidadePedidosTotal(
+                converterStringParaLocalDateTime(dataInicial).atStartOfDay(),
+                converterStringParaLocalDateTime(dataFinal).atTime(23, 59, 59)
+        ));
     }
 
     @GetMapping("/pedido-por-aluno")
     public ResponseEntity<Double> obterPedidosPorAluno(@RequestParam String dataInicial, @RequestParam String dataFinal){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDateTime dataInicialFormatada = LocalDate.parse(dataInicial, formatter).atStartOfDay();
-        LocalDateTime dataFinalFormatada = LocalDate.parse(dataFinal, formatter).atTime(23, 59, 59);
+        return ResponseEntity.ok(this.pedidoService.obterPedidosPorAluno(
+                converterStringParaLocalDateTime(dataInicial).atStartOfDay(),
+                converterStringParaLocalDateTime(dataFinal).atTime(23, 59, 59)
+        ));
+    }
 
-        return ResponseEntity.ok(this.pedidoService.obterPedidosPorAluno(dataInicialFormatada, dataFinalFormatada));
+    @GetMapping("/quantidade-aulas-hist")
+    public ResponseEntity<List<Integer>> obterQuantidadeAulasHistorico(@RequestParam String dataInicial, @RequestParam String dataFinal, @RequestParam Integer status){
+        Map<Integer, String> statusMap = new HashMap<>();
+        statusMap.put(1, "Concluído");
+        statusMap.put(2, "Confirmado");
+        statusMap.put(3, "Em Fila");
+        statusMap.put(4, "Aguardando Pagamento");
+        statusMap.put(5, "Pendente");
+        statusMap.put(6, "Cancelado");
+        statusMap.put(7, "Recusado");
+
+        return ResponseEntity.ok(this.pedidoService.obterQuantidadeAulasHistorico(
+                converterStringParaLocalDateTime(dataInicial).atStartOfDay(),
+                converterStringParaLocalDateTime(dataFinal).atTime(23, 59, 59),
+                statusMap.get(status)
+        ));
     }
 
     @GetMapping("/rendimento-professores")
     public ResponseEntity<Double> obterRendimentoProfessores(@RequestParam String dataInicial, @RequestParam String dataFinal){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDateTime dataInicialFormatada = LocalDate.parse(dataInicial, formatter).atStartOfDay();
-        LocalDateTime dataFinalFormatada = LocalDate.parse(dataFinal, formatter).atTime(23, 59, 59);
+        return ResponseEntity.ok(this.pedidoService.obterRendimentoProfessores(
+                converterStringParaLocalDateTime(dataInicial).atStartOfDay(),
+                converterStringParaLocalDateTime(dataFinal).atTime(23, 59, 59)
+        ));
+    }
 
-        return ResponseEntity.ok(this.pedidoService.obterRendimentoProfessores(dataInicialFormatada, dataFinalFormatada));
+    @GetMapping("/instrumentos-mais-pedidos")
+    public ResponseEntity<Map<String, Long>> obterInstrumentosMaisPedidos(@RequestParam String dataInicial, @RequestParam String dataFinal){
+        return ResponseEntity.ok(this.pedidoService.obterInstrumentosMaisPedidos(
+                converterStringParaLocalDateTime(dataInicial).atStartOfDay(),
+                converterStringParaLocalDateTime(dataFinal).atTime(23, 59, 59)
+        ));
+    }
+
+    @GetMapping("/regioes-mais-pedidos")
+    public ResponseEntity<Map<String, Long>> obterRegioesMaisPedidos(@RequestParam String dataInicial, @RequestParam String dataFinal){
+        return ResponseEntity.ok(this.pedidoService.obterRegioesMaisPedidos(
+                converterStringParaLocalDateTime(dataInicial).atStartOfDay(),
+                converterStringParaLocalDateTime(dataFinal).atTime(23, 59, 59)
+        ));
+    }
+
+    private LocalDate converterStringParaLocalDateTime(String data) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return LocalDate.parse(data, formatter);
     }
 }
 

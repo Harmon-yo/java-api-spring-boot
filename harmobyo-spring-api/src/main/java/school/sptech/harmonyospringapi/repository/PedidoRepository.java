@@ -10,6 +10,7 @@ import school.sptech.harmonyospringapi.service.pedido.dto.PedidoExibicaoDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface PedidoRepository extends JpaRepository<Pedido, Integer> {
@@ -57,7 +58,6 @@ public interface PedidoRepository extends JpaRepository<Pedido, Integer> {
     @Query("SELECT COUNT(p) FROM Pedido p WHERE p.status.descricao = 'Cancelado' AND p.dataAula BETWEEN :diaInicio AND :diaFim")
     Integer obterQuantidadePedidosCanceladosDuranteDatas(LocalDateTime diaInicio, LocalDateTime diaFim);
 
-
     @Query("""
         SELECT SUM(p.valorAula) FROM Pedido p
         WHERE p.status.descricao = 'Concluído' AND p.dataAula BETWEEN :dataComeco AND :dataFim
@@ -67,18 +67,27 @@ public interface PedidoRepository extends JpaRepository<Pedido, Integer> {
     @Query("SELECT p FROM Pedido p WHERE p.aluno.id = :idUsuario OR p.professor.id = :idUsuario")
     Page<Pedido> obterTodosPedidosPorPaginaPeloIdUsuario(Integer idUsuario, Pageable pageable);
 
-    @Query(
-        value = """
-                WITH
-                pedidos AS (SELECT count(p.*) AS qtd
-                FROM Pedido p
-                JOIN Status s ON p.status_fk = s.id\s
-                WHERE p.data_aula >= :dataInicial AND p.data_aula <= :dataFinal AND s.descricao = 'Concluído'),
-                usuarios AS (SELECT count(*) AS qtd
-                FROM Usuario AS u
-                WHERE u.categoria = 'Aluno' AND u.data_criacao >= :dataInicial AND u.data_criacao <= :dataFinal)""", nativeQuery = true)
-    Optional<Double> obterPedidosPorAluno(LocalDateTime dataInicial, LocalDateTime dataFinal);
+    @Query("SELECT count(*) FROM Pedido p WHERE (p.dataAula BETWEEN :diaInicio AND :diaFim) AND p.status.descricao LIKE :status")
+    Optional<Integer> obterQuantidadeAulasHistorico(LocalDateTime diaInicio, LocalDateTime diaFim, String status);
 
     @Query("SELECT sum(p.valorAula) FROM Pedido p WHERE p.status.descricao = 'Concluído' AND p.dataAula >= :dataInicial AND p.dataAula <= :dataFinal")
     Optional<Double> obterRendimentoProfessores(LocalDateTime dataInicial, LocalDateTime dataFinal);
+
+    @Query("""
+        SELECT p.aula.instrumento.nome, COUNT(p.aula.instrumento.nome) AS qtd_pedidos
+        FROM Pedido p
+        WHERE p.status.descricao = 'Concluído' AND p.dataAula BETWEEN :dataInicial AND :dataFinal
+        GROUP BY p.aula.instrumento.nome
+        ORDER BY qtd_pedidos DESC
+        """)
+    List<Object> obterQuantidadePedidosInstrumentoPorPeriodo(LocalDateTime dataInicial, LocalDateTime dataFinal);
+
+    @Query("""
+        SELECT CONCAT(p.professor.endereco.estado, " - ", p.professor.endereco.cidade), COUNT(p.professor.endereco.cidade) AS qtd_pedidos
+        FROM Pedido p
+        WHERE p.status.descricao = 'Concluído' AND p.dataAula BETWEEN :dataInicial AND :dataFinal
+        GROUP BY p.professor.endereco.estado, p.professor.endereco.cidade
+        ORDER BY qtd_pedidos DESC
+        """)
+    List<Object> obterQuantidadePedidosRegiaoPorPeriodo(LocalDateTime dataInicial, LocalDateTime dataFinal);
 }

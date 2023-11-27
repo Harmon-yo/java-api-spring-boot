@@ -34,6 +34,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 @Service
@@ -352,6 +353,11 @@ public class UsuarioService {
     }
 
     public Integer obterQuantidadeUsuariosCadastradosEntre(LocalDateTime dataInicial, LocalDateTime dataFinal) {
+        if ((int) ChronoUnit.DAYS.between(dataInicial, dataFinal) > dataFinal.getMonth().length(dataFinal.toLocalDate().isLeapYear())) {
+            dataInicial = dataInicial.withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0);
+            dataFinal = dataFinal.withDayOfMonth(dataFinal.getMonth().length(dataFinal.toLocalDate().isLeapYear())).withHour(23).withMinute(59).withSecond(59);
+        }
+
         return this.usuarioRepository.obterQuantidadeUsuariosCadastradosEntre(dataInicial, dataFinal).orElse(0);
     }
 
@@ -359,23 +365,41 @@ public class UsuarioService {
         return this.usuarioRepository.obterQuantidadeAlunosCadastradosEntre(dataInicial, dataFinal).orElse(0);
     }
 
-    public List<Integer> obterUsuariosCadastradosMesAnterior() {
-        LocalDateTime dataInicial = obterPrimeiroDiaMes().minusMonths(1);
-        LocalDateTime dataAtual = dataInicial;
-        LocalDateTime dataFinal = obterUltimoDiaMes().minusMonths(1);
-
+    public List<Integer> obterUsuariosCadastradosHist(LocalDateTime dataInicial, LocalDateTime dataFinal) {
         List<Integer> ltQtdUsuario = new ArrayList<>();
-        int difencaDias = dataFinal.getDayOfMonth() - dataInicial.getDayOfMonth();
+        LocalDateTime dataAux = dataInicial;
 
-        LocalDateTime dataInicialAux, dataFinalAux;
+        LocalDateTime primeiroDiaMes, ultimoDiaMes;
+        while (dataAux.isBefore(dataFinal)) {
+            if ((int) ChronoUnit.DAYS.between(dataInicial, dataFinal) > dataFinal.getMonth().length(dataFinal.toLocalDate().isLeapYear())) {
+                primeiroDiaMes = dataAux.withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0);
+                ultimoDiaMes = dataAux.withDayOfMonth(dataAux.getMonth().length(dataAux.toLocalDate().isLeapYear())).withHour(23).withMinute(59).withSecond(59);
+                ltQtdUsuario.add(this.usuarioRepository.obterQuantidadeUsuariosCadastradosEntre(primeiroDiaMes, ultimoDiaMes).orElse(0));
+                dataAux = dataAux.withDayOfMonth(1).plusMonths(1);
+            } else {
+                ltQtdUsuario.add(this.usuarioRepository.obterQuantidadeUsuariosCadastradosEntre(dataAux.withHour(0).withMinute(0).withSecond(0), dataAux.withHour(23).withMinute(59).withSecond(59)).orElse(0));
+                dataAux = dataAux.plusDays(1);
+            }
+        }
 
-        for(int i = 0; i <= difencaDias; i++) {
-            dataInicialAux = dataAtual.withHour(0).withMinute(0).withSecond(0);
-            dataFinalAux = dataAtual.withHour(23).withMinute(59).withSecond(59);
+        return ltQtdUsuario;
+    }
 
-            ltQtdUsuario.add(this.usuarioRepository.obterQuantidadeUsuariosCadastradosEntre(dataInicialAux, dataFinalAux).orElse(0));
+    public List<Integer> obterUsuariosCadastradosHist(LocalDateTime dataInicial, LocalDateTime dataFinal, String tipo) {
+        List<Integer> ltQtdUsuario = new ArrayList<>();
+        LocalDateTime dataAux = dataInicial;
 
-            dataAtual = dataAtual.plusDays(1);
+        LocalDateTime primeiroDiaMes, ultimoDiaMes;
+        while (dataAux.isBefore(dataFinal)) {
+            if ((int) ChronoUnit.DAYS.between(dataInicial, dataFinal) > dataFinal.getMonth().length(dataFinal.toLocalDate().isLeapYear())) {
+                primeiroDiaMes = dataAux.withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0);
+                ultimoDiaMes = dataAux.withDayOfMonth(dataAux.getMonth().length(dataAux.toLocalDate().isLeapYear())).withHour(23).withMinute(59).withSecond(59);
+                ltQtdUsuario.add(this.usuarioRepository.obterQuantidadeUsuariosCadastradosEntre(primeiroDiaMes, ultimoDiaMes, tipo).orElse(0));
+                dataAux = dataAux.withDayOfMonth(1).plusMonths(1);
+            } else {
+                ltQtdUsuario.add(this.usuarioRepository.obterQuantidadeUsuariosCadastradosEntre(dataAux.withHour(0).withMinute(0).withSecond(0), dataAux.withHour(23).withMinute(59).withSecond(59), tipo).orElse(0));
+                dataAux = dataAux.plusDays(1);
+            }
         }
 
         return ltQtdUsuario;
