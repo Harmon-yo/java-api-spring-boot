@@ -551,7 +551,7 @@ public class PedidoService {
     public Map<String, Long> obterInstrumentosMaisPedidos(LocalDateTime dataInicial, LocalDateTime dataFinal) {
         if ((int) ChronoUnit.DAYS.between(dataInicial, dataFinal) > dataFinal.getMonth().length(dataFinal.toLocalDate().isLeapYear())) {
             LocalDateTime primeiroDiaMes = dataInicial.withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0);
-            LocalDateTime ultimoDiaMes = dataInicial.withDayOfMonth(dataInicial.getMonth().length(dataInicial.toLocalDate().isLeapYear())).withHour(23).withMinute(59).withSecond(59);
+            LocalDateTime ultimoDiaMes = dataFinal.withDayOfMonth(dataFinal.getMonth().length(dataFinal.toLocalDate().isLeapYear())).withHour(23).withMinute(59).withSecond(59);
             return this.repository.obterQuantidadePedidosInstrumentoPorPeriodo(primeiroDiaMes, ultimoDiaMes).stream().collect(Collectors.toMap(o -> (String) ((Object[]) o)[0], o -> (Long) ((Object[]) o)[1]));
         } else {
             return this.repository.obterQuantidadePedidosInstrumentoPorPeriodo(dataInicial, dataFinal).stream().collect(Collectors.toMap(o -> (String) ((Object[]) o)[0], o -> (Long) ((Object[]) o)[1]));
@@ -561,7 +561,7 @@ public class PedidoService {
     public Map<String, Long> obterRegioesMaisPedidos(LocalDateTime dataInicial, LocalDateTime dataFinal) {
         if ((int) ChronoUnit.DAYS.between(dataInicial, dataFinal) > dataFinal.getMonth().length(dataFinal.toLocalDate().isLeapYear())) {
             LocalDateTime primeiroDiaMes = dataInicial.withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0);
-            LocalDateTime ultimoDiaMes = dataInicial.withDayOfMonth(dataInicial.getMonth().length(dataInicial.toLocalDate().isLeapYear())).withHour(23).withMinute(59).withSecond(59);
+            LocalDateTime ultimoDiaMes = dataFinal.withDayOfMonth(dataFinal.getMonth().length(dataFinal.toLocalDate().isLeapYear())).withHour(23).withMinute(59).withSecond(59);
             return this.repository.obterQuantidadePedidosRegiaoPorPeriodo(primeiroDiaMes, ultimoDiaMes).stream().collect(Collectors.toMap(o -> (String) ((Object[]) o)[0], o -> (Long) ((Object[]) o)[1]));
         } else {
             return this.repository.obterQuantidadePedidosRegiaoPorPeriodo(dataInicial, dataFinal).stream().collect(Collectors.toMap(o -> (String) ((Object[]) o)[0], o -> (Long) ((Object[]) o)[1]));
